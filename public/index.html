@@ -1,0 +1,2908 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ink Boarding Pass</title>
+<meta name="description" content="A live Ink ecosystem boarding pass built from public NADO, Tydro, and Ink onchain data.">
+<link rel="icon" href="data:,">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #16171a; }
+  a { color: #6C2BF5; text-decoration: none; }
+  a:hover { color: #8b5cff; }
+  input { font-family: 'IBM Plex Mono', monospace; }
+  input::placeholder { color: rgba(24,26,32,0.6); }
+  @keyframes ringIn {
+    0%   { transform: scale(1.02); opacity: 0; }
+    9%   { opacity: 1; }
+    68%  { opacity: 0.9; }
+    100% { transform: scale(0.012); opacity: 0; }
+  }
+  @keyframes stackSpin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(14deg); }
+  }
+  @keyframes converge {
+    0%   { transform: translateX(880px) scaleX(1.6); opacity: 0; }
+    16%  { opacity: 0.95; }
+    100% { transform: translateX(18px) scaleX(0.1); opacity: 0; }
+  }
+  @keyframes dustIn {
+    0%   { transform: translateX(0) scale(1); opacity: 0; }
+    18%  { opacity: 1; }
+    100% { transform: translateX(-460px) scale(0.3); opacity: 0; }
+  }
+  @keyframes coreBloom {
+    0%   { transform: scale(0.1); opacity: 0; }
+    44%  { transform: scale(0.4); opacity: 0.72; }
+    74%  { transform: scale(0.24); opacity: 1; }
+    100% { transform: scale(1.3); opacity: 0; }
+  }
+  @keyframes coreDot {
+    0%   { transform: scale(0); opacity: 0; }
+    50%  { transform: scale(1); opacity: 1; }
+    74%  { transform: scale(2.4); opacity: 1; }
+    100% { transform: scale(10); opacity: 0; }
+  }
+  @keyframes shock {
+    0%   { transform: scale(0.1); opacity: 0; }
+    18%  { opacity: 0.85; }
+    100% { transform: scale(4.6); opacity: 0; }
+  }
+  @keyframes flare {
+    0%   { transform: scaleX(0.02); opacity: 0; }
+    28%  { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(1.55); opacity: 0; }
+  }
+  @keyframes holeFade {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  @keyframes laserSweep {
+    0% { transform: translate3d(-6%,0,0); opacity: 0; }
+    12% { opacity: 1; }
+    88% { opacity: 1; }
+    100% { transform: translate3d(106%,0,0); opacity: 0; }
+  }
+  @keyframes sparkPulse {
+    0%, 100% { opacity: 0.55; transform: translate(-50%,0) scale(0.85); }
+    50% { opacity: 1; transform: translate(-50%,0) scale(1.15); }
+  }
+  @keyframes riseIn {
+    0% { opacity: 0; transform: translate3d(0,14px,0); }
+    100% { opacity: 1; transform: translate3d(0,0,0); }
+  }
+  @keyframes ticketLand {
+    0% { opacity: 0; transform: translate3d(0,32px,0) scale(.97); }
+    100% { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+  }
+  @keyframes nadoFan {
+    0% { opacity: 0; transform: translate3d(80px,70px,0) rotate(0deg); }
+    100% { opacity: 1; transform: translate3d(0,0,0) rotate(-1.2deg); }
+  }
+  @keyframes tydroFan {
+    0% { opacity: 0; transform: translate3d(-80px,70px,0) rotate(0deg); }
+    100% { opacity: 1; transform: translate3d(0,0,0) rotate(1.2deg); }
+  }
+  @keyframes scanLine {
+    0% { transform: translateX(-115%); }
+    100% { transform: translateX(115%); }
+  }
+  @keyframes laserFlicker {
+    0%,100% { opacity:.74; transform:translateX(-50%) scaleY(.82); }
+    42% { opacity:1; transform:translateX(-50%) scaleY(1.12); }
+    58% { opacity:.88; transform:translateX(-50%) scaleY(.94); }
+  }
+  @keyframes laserSpark {
+    0%,100% { opacity:.25; transform:translate(-50%,-50%) scale(.55) rotate(0deg); }
+    50% { opacity:1; transform:translate(-50%,-50%) scale(1.35) rotate(45deg); }
+  }
+  @keyframes barcodeRead {
+    0% { top:-7px; opacity:0; }
+    14% { opacity:1; }
+    44% { top:46%; opacity:1; }
+    56% { opacity:.5; }
+    68% { top:46%; opacity:1; }
+    93% { top:calc(100% + 5px); opacity:1; }
+    100% { top:calc(100% + 5px); opacity:0; }
+  }
+  @keyframes barcodePulse {
+    0%,100% { filter:none; opacity:.88; }
+    35% { filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 14px rgba(255,31,68,.98)); opacity:1; }
+    62% { filter:drop-shadow(0 0 10px rgba(255,31,68,.72)); opacity:1; }
+  }
+  @keyframes barcodeArrivalFlash {
+    0%,100% { opacity:0; transform:scale(.78); }
+    28% { opacity:1; transform:scale(1); }
+    58% { opacity:.7; transform:scale(1.08); }
+  }
+  @keyframes stampHit {
+    0%,58% { opacity:0; transform:translate(-50%,-50%) rotate(-8deg) scale(1.8); }
+    68% { opacity:1; transform:translate(-50%,-50%) rotate(-8deg) scale(.92); }
+    76% { transform:translate(-50%,-50%) rotate(-8deg) scale(1.04); }
+    100% { opacity:.94; transform:translate(-50%,-50%) rotate(-8deg) scale(1); }
+  }
+  @keyframes seamIgnite {
+    0% { opacity:0; filter:blur(4px); transform:scaleY(.1); }
+    22% { opacity:1; filter:blur(0); transform:scaleY(1); }
+    70% { opacity:.9; }
+    100% { opacity:0; filter:blur(3px); transform:scaleY(.75); }
+  }
+  @keyframes stubDetach {
+    0% { transform:translate3d(var(--tear-release-x,0px),var(--tear-release-y,0px),0) rotate(var(--tear-release-rotate,0deg)); opacity:1; }
+    16% { transform:translate3d(calc(var(--tear-release-x,0px) + 4px),calc(var(--tear-release-y,0px) + 2px),0) rotate(1deg); }
+    30% { transform:translate3d(calc(var(--tear-release-x,0px) + 12px),calc(var(--tear-release-y,0px) + 5px),0) rotate(1.5deg); }
+    46% { transform:translate3d(calc(var(--tear-release-x,0px) + 28px),calc(var(--tear-release-y,0px) + 12px),0) rotate(2.2deg); opacity:1; }
+    64% { transform:translate3d(calc(var(--tear-release-x,0px) + 86px),calc(var(--tear-release-y,0px) + 35px),0) rotate(3.5deg); opacity:1; }
+    100% { transform:translate3d(calc(var(--tear-release-x,0px) + 390px),calc(var(--tear-release-y,0px) + 155px),0) rotate(8deg); opacity:0; }
+  }
+  @keyframes ticketTension {
+    0%,8%,48%,100% { transform:translate3d(0,0,0); }
+    14% { transform:translate3d(-1px,0,0); }
+    19% { transform:translate3d(2px,0,0); }
+    25% { transform:translate3d(-2px,0,0); }
+    31% { transform:translate3d(1px,0,0); }
+    38% { transform:translate3d(-1px,0,0); }
+  }
+  @keyframes stubAwaiting {
+    0%,100% { transform:translate3d(0,0,0); }
+    20% { transform:translate3d(2px,1px,0); }
+    38% { transform:translate3d(0,0,0); }
+    62% { transform:translate3d(4px,2px,0); }
+    80% { transform:translate3d(1px,.5px,0); }
+  }
+  @keyframes stubAwaitingMobile {
+    0%,100% { transform:translate3d(0,0,0); }
+    20% { transform:translate3d(2px,1px,0); }
+    38% { transform:translate3d(0,0,0); }
+    62% { transform:translate3d(4px,2px,0); }
+    80% { transform:translate3d(1px,.5px,0); }
+  }
+  @keyframes tearGuidePulse {
+    0%,100% { opacity:.84; box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 0 rgba(255,255,255,0); }
+    50% { opacity:1; box-shadow:0 8px 24px rgba(0,0,0,.34),0 0 0 4px rgba(255,255,255,.12),0 0 22px rgba(178,149,255,.5); }
+  }
+  @keyframes stubReturn {
+    0% { transform:translate3d(var(--tear-release-x,0px),var(--tear-release-y,0px),0) rotate(var(--tear-release-rotate,0deg)); }
+    72% { transform:translate3d(-2px,-1px,0) rotate(-.15deg); }
+    100% { transform:translate3d(0,0,0); }
+  }
+  @keyframes ticketScanTravel {
+    0% { offset-distance:0%; opacity:0; }
+    7% { offset-distance:0%; opacity:.78; animation-timing-function:cubic-bezier(.42,.05,.58,.95); }
+    86% { offset-distance:100%; opacity:1; }
+    94% { offset-distance:100%; opacity:.9; }
+    100% { offset-distance:100%; opacity:0; }
+  }
+  @keyframes scannerHalo {
+    0%,100% { opacity:.44; }
+    50% { opacity:.72; }
+  }
+  @keyframes issuanceReveal {
+    0%,58% { opacity:1; }
+    100% { opacity:0; }
+  }
+  @keyframes issuanceDrift {
+    0% { transform:translate3d(2%,0,0) scale(1.04); }
+    100% { transform:translate3d(-2%,0,0) scale(1.09); }
+  }
+  @keyframes issuanceSingleEdge {
+    0% { left:-10vw; opacity:0; }
+    10% { opacity:1; }
+    72% { left:108vw; opacity:.9; }
+    100% { left:112vw; opacity:0; }
+  }
+  @keyframes issuanceCurtain {
+    0% { transform:translate3d(118%,0,0) skewX(-8deg); }
+    43% { transform:translate3d(-4%,0,0) skewX(-8deg); }
+    59% { transform:translate3d(-4%,0,0) skewX(-8deg); }
+    100% { transform:translate3d(-118%,0,0) skewX(-8deg); }
+  }
+  @keyframes issuanceEdge {
+    0% { transform:translate3d(86vw,0,0) skewX(-8deg); opacity:0; }
+    12% { opacity:1; }
+    43% { transform:translate3d(-5vw,0,0) skewX(-8deg); opacity:1; }
+    59% { transform:translate3d(-5vw,0,0) skewX(-8deg); opacity:1; }
+    100% { transform:translate3d(-88vw,0,0) skewX(-8deg); opacity:0; }
+  }
+  @keyframes stubDetachMobile {
+    0% { transform:translate3d(var(--tear-release-x,0px),var(--tear-release-y,0px),0) rotate(var(--tear-release-rotate,0deg)); opacity:1; }
+    20% { transform:translate3d(calc(var(--tear-release-x,0px) + 4px),calc(var(--tear-release-y,0px) + 2px),0) rotate(1deg); }
+    42% { transform:translate3d(calc(var(--tear-release-x,0px) + 20px),calc(var(--tear-release-y,0px) + 9px),0) rotate(1.8deg); opacity:1; }
+    64% { transform:translate3d(calc(var(--tear-release-x,0px) + 70px),calc(var(--tear-release-y,0px) + 30px),0) rotate(3deg); opacity:1; }
+    100% { transform:translate3d(calc(var(--tear-release-x,0px) + 310px),calc(var(--tear-release-y,0px) + 130px),0) rotate(7deg); opacity:0; }
+  }
+  @keyframes wipeLockup {
+    0%,30% { opacity:0; transform:translate(-50%,-45%) scale(.92); }
+    44%,61% { opacity:1; transform:translate(-50%,-50%) scale(1); }
+    76%,100% { opacity:0; transform:translate(-50%,-55%) scale(1.04); }
+  }
+  @keyframes summaryArrival {
+    0% { opacity:0; transform:translate3d(0,22px,0) scale(.975); filter:blur(7px); }
+    45% { opacity:1; filter:blur(0); }
+    100% { opacity:1; transform:translate3d(0,0,0) scale(1); filter:none; }
+  }
+  @keyframes finalTornReveal {
+    0% { opacity:0; transform:translate3d(0,26px,0); }
+    32% { opacity:1; }
+    72% { opacity:1; transform:translate3d(0,-3px,0); }
+    100% { opacity:1; transform:translate3d(0,0,0); }
+  }
+  @keyframes finalPassHalo {
+    0% { opacity:0; transform:scale(.82); }
+    35% { opacity:.92; }
+    100% { opacity:0; transform:scale(1.08); }
+  }
+  @keyframes finalPassSheen {
+    0%,12% { opacity:0; transform:translate3d(-125%,0,0) skewX(-16deg); }
+    28% { opacity:.7; }
+    76% { opacity:.22; }
+    100% { opacity:0; transform:translate3d(125%,0,0) skewX(-16deg); }
+  }
+  @keyframes stubRelock {
+    0%,16% { opacity:0; transform:translate3d(24px,0,0); }
+    64% { opacity:1; transform:translate3d(-2px,0,0); box-shadow:inset 12px 0 28px rgba(255,255,255,.16),0 0 28px rgba(108,43,245,.32); }
+    100% { opacity:1; transform:translate3d(0,0,0); box-shadow:none; }
+  }
+  @keyframes statusPulse {
+    0%, 100% { opacity: .45; box-shadow: 0 0 0 0 rgba(121,255,177,0); }
+    50% { opacity: 1; box-shadow: 0 0 0 5px rgba(121,255,177,.08); }
+  }
+  * { box-sizing: border-box; }
+  button, input { font: inherit; }
+  button:focus-visible, input:focus-visible { outline: 2px solid #a989ff; outline-offset: 3px; }
+  .journey-page {
+    position: relative;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    color: #f7f5ef;
+    font-family: 'Manrope', system-ui, sans-serif;
+    background:
+      radial-gradient(900px 520px at 50% 44%, rgba(108,43,245,.16), transparent 67%),
+      radial-gradient(620px 420px at 82% 78%, rgba(192,255,105,.055), transparent 70%),
+      #070709;
+  }
+  .journey-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .42;
+    background-image:
+      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), transparent 88%);
+  }
+  .journey-shell {
+    position: relative;
+    z-index: 1;
+    width: min(1080px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 42px 0 46px;
+  }
+  .journey-header {
+    width: min(900px, 100%);
+    margin: 0 auto 34px;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: end;
+    gap: 24px;
+  }
+  .eyebrow-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .chain-pill {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 10px; border:1px solid rgba(255,255,255,.16); border-radius:999px;
+    font:600 9px/1 'IBM Plex Mono',monospace; letter-spacing:.16em; color:rgba(255,255,255,.72);
+    background:rgba(255,255,255,.035); text-transform:uppercase;
+  }
+  .chain-pill i { width:6px; height:6px; border-radius:50%; background:#79ffb1; box-shadow:0 0 10px rgba(121,255,177,.7); }
+  .journey-kicker { font:600 10px/1 'IBM Plex Mono',monospace; letter-spacing:.19em; color:#b79cff; text-transform:uppercase; }
+  .journey-title-lockup { display:flex; align-items:center; justify-content:space-between; gap:32px; }
+  .journey-title {
+    margin:0; font:600 clamp(36px,4.7vw,54px)/1 'Manrope',sans-serif;
+    letter-spacing:-.045em; color:#f4f1e9;
+  }
+  .journey-title span { color:#8b5cff; }
+  .journey-ink-logo { position:relative; flex:none; width:104px; height:39px; overflow:visible; opacity:.94; }
+  .journey-sub {
+    max-width:285px; margin:0 0 4px; font:500 12px/1.65 'IBM Plex Mono',monospace;
+    color:rgba(244,241,233,.53); text-align:right;
+  }
+  .ticket-stage {
+    position:relative; width:min(900px,100%); height:460px; margin:0 auto;
+    animation:riseIn 850ms 1.9s both cubic-bezier(.2,.75,.2,1);
+  }
+  .ticket-stage.solo-stage { height:430px; }
+  .ticket-capture { position:absolute; inset:0; }
+  .rear-pass, .main-pass { overflow:hidden; box-shadow:0 34px 70px -30px rgba(0,0,0,.94); }
+  .rear-slot {
+    position:absolute; top:18px; width:70%; height:286px;
+  }
+  .rear-slot-nado { z-index:1; left:2%; }
+  .rear-slot-tydro { z-index:2; right:2%; }
+  .rear-pass {
+    position:absolute; top:30px; left:0; width:100%; height:238px; border-radius:20px;
+    padding:22px 26px; transform-origin:50% 90%; border:1px solid rgba(255,255,255,.13);
+    transition:transform 520ms cubic-bezier(.18,.86,.24,1),filter 420ms ease,box-shadow 420ms ease;
+  }
+  .rear-pass::after {
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(115deg,transparent 24%,rgba(255,255,255,.08) 42%,transparent 60%);
+  }
+  .rear-nado {
+    color:#f1f5f4; transform:rotate(-1.2deg);
+    background:
+      radial-gradient(420px 240px at 82% 12%,#242424 0%,transparent 40%),
+      repeating-linear-gradient(135deg,rgba(255,255,255,.018) 0 1px,transparent 1px 8px),#000000;
+    animation:nadoFan 900ms 2.03s backwards cubic-bezier(.18,.9,.24,1);
+  }
+  .rear-tydro {
+    color:#f5f4ef; transform:rotate(1.2deg);
+    background:linear-gradient(180deg,#20221D 0%,#1F211C 44%,#2D3329 76%,#3F4A39 100%);
+    border-color:rgba(255,255,255,.16);
+    animation:tydroFan 900ms 2.12s backwards cubic-bezier(.18,.9,.24,1);
+  }
+  @media (hover:hover) and (pointer:fine) {
+    .rear-slot-nado:hover, .rear-slot-tydro:hover { z-index:3; }
+    .rear-slot-nado:hover .rear-nado { transform:translateY(-28px) rotate(-1.2deg); filter:brightness(1.07); box-shadow:0 42px 78px -30px rgba(0,0,0,.98); }
+    .rear-slot-tydro:hover .rear-tydro { transform:translateY(-28px) rotate(1.2deg); filter:brightness(1.04); box-shadow:0 42px 78px -30px rgba(0,0,0,.98); }
+  }
+  .rear-head { position:relative; z-index:1; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; }
+  .rear-logo { position:relative; width:124px; height:38px; overflow:visible; flex:none; }
+  .rear-tag { font:700 9px/1.35 'Manrope',sans-serif; letter-spacing:.14em; text-transform:uppercase; opacity:.74; text-align:right; }
+  .rear-route { position:relative; z-index:1; display:flex; align-items:center; gap:12px; margin-top:8px; }
+  .rear-code { font:800 34px/.9 'Barlow Condensed',sans-serif; letter-spacing:.02em; }
+  .rear-line { height:1px; width:58px; opacity:.35; background:currentColor; }
+  .rear-kind { font:700 9px/1 'Manrope',sans-serif; letter-spacing:.16em; text-transform:uppercase; opacity:.76; }
+  .rear-metrics { position:relative; z-index:1; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin-top:10px; }
+  .rear-metric { min-width:0; opacity:.82; }
+  .rear-metric small { display:block; font:700 8px/1.2 'Manrope',sans-serif; letter-spacing:.08em; text-transform:uppercase; opacity:.76; }
+  .rear-metric b { display:block; margin-top:5px; font:700 12.5px/1.2 'Manrope',sans-serif; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .main-pass {
+    position:absolute; z-index:5; left:4.5%; top:160px; width:91%; min-height:290px;
+    display:grid; grid-template-columns:minmax(0,1fr) 164px; border-radius:22px;
+    color:#16151a; background:#f5f2ea; border:1px solid rgba(255,255,255,.88);
+    animation:ticketLand 820ms 2.2s both cubic-bezier(.18,.9,.24,1);
+  }
+  .solo-stage .main-pass { left:3%; top:44px; width:94%; min-height:350px; grid-template-columns:minmax(0,1fr) 174px; animation:none; }
+  .main-pass::before {
+    content:''; position:absolute; inset:0; pointer-events:none; opacity:.48;
+    background:
+      linear-gradient(110deg,transparent 20%,rgba(255,255,255,.7) 39%,transparent 54%),
+      repeating-linear-gradient(0deg,rgba(26,21,44,.018) 0 1px,transparent 1px 5px);
+  }
+  .pass-body { position:relative; padding:25px 29px 23px; min-width:0; }
+  .pass-topline { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .pass-type { font:700 10px/1 'Manrope',sans-serif; letter-spacing:.2em; text-transform:uppercase; }
+  .pass-live { display:flex; align-items:center; gap:7px; font:700 8.5px/1 'Manrope',sans-serif; letter-spacing:.13em; text-transform:uppercase; color:#4d4a51; }
+  .pass-live i { width:6px; height:6px; border-radius:50%; background:var(--live-color,#6c2bf5); }
+  .route-board { display:grid; grid-template-columns:auto 1fr auto 1fr auto; align-items:center; gap:13px; margin-top:20px; }
+  .route-stop { min-width:82px; }
+  .route-stop.center { text-align:center; }
+  .route-stop.right { text-align:right; }
+  .route-brand { display:flex; align-items:center; gap:8px; }
+  .route-stop.center .route-brand { justify-content:center; }
+  .route-stop.right .route-brand { justify-content:flex-end; }
+  .route-symbol { position:relative; width:23px; height:23px; overflow:hidden; flex:none; }
+  .route-code { font:800 clamp(30px,4.5vw,47px)/.78 'Barlow Condensed',sans-serif; letter-spacing:-.01em; }
+  .route-name { margin-top:8px; font:700 8.5px/1 'Manrope',sans-serif; letter-spacing:.14em; text-transform:uppercase; color:#625e65; }
+  .flight-line { position:relative; height:1px; background:#aaa5a9; }
+  .flight-line::before, .flight-line::after { content:''; position:absolute; top:50%; width:5px; height:5px; border-radius:50%; background:#6c2bf5; transform:translateY(-50%); }
+  .flight-line::before { left:0; } .flight-line::after { right:0; }
+  .flight-line span { position:absolute; left:50%; top:50%; transform:translate(-50%,-55%); padding:0 7px; background:#f1efe7; color:#6c2bf5; font-size:13px; }
+  .holder-row { position:relative; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:24px; align-items:end; margin-top:21px; padding-top:15px; border-top:1px solid #cbc6bf; }
+  .field-label { display:block; font:700 8.5px/1 'Manrope',sans-serif; letter-spacing:.13em; text-transform:uppercase; color:#6d6870; }
+  .holder-address-shell { position:relative; min-width:0; min-height:19px; margin-top:7px; }
+  .holder-address { display:block; color:#2b2e35; font:700 11.5px/1 'IBM Plex Mono',monospace; letter-spacing:.015em; text-shadow:0 1px 0 rgba(255,255,255,.9),0 -1px 1px rgba(10,12,16,.5); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .laser-address { position:relative; display:inline-block; max-width:100%; min-height:16px; font-family:'IBM Plex Mono',monospace; white-space:nowrap; }
+  .engraving-laser { position:absolute; z-index:5; top:-5px; width:2px; height:23px; pointer-events:none; background:#202127; box-shadow:0 0 3px #fff,0 0 8px rgba(25,26,31,.48),0 0 18px rgba(255,255,255,.45); transition:left 56ms linear; animation:laserFlicker 150ms steps(2,end) infinite; will-change:left,opacity; }
+  .engraving-laser::before { content:''; position:absolute; right:0; top:10px; width:36px; height:1px; background:linear-gradient(90deg,transparent,#303138); box-shadow:0 0 6px rgba(255,255,255,.55); }
+  .engraving-laser::after { content:''; position:absolute; left:50%; top:50%; width:6px; height:6px; border:1px solid #292a30; box-shadow:0 0 7px rgba(255,255,255,.72); animation:laserSpark 180ms linear infinite; }
+  .holder-row strong { display:block; margin-top:6px; font:700 10.5px/1 'Manrope',sans-serif; letter-spacing:.05em; text-align:right; }
+  .ink-snapshot { display:grid; grid-template-columns:56px minmax(0,1fr); gap:18px; align-items:start; margin-top:22px; padding-top:16px; border-top:1px solid #d1ccc4; }
+  .snapshot-label b { display:block; font:800 22px/.9 'Barlow Condensed',sans-serif; letter-spacing:.04em; }
+  .snapshot-label small { display:block; margin-top:6px; font:700 6.5px/1.2 'Manrope',sans-serif; letter-spacing:.11em; color:#817b83; text-transform:uppercase; }
+  .snapshot-metrics { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:17px; }
+  .snapshot-metric { min-width:0; }
+  .snapshot-metric small { display:block; font:700 7.5px/1.15 'Manrope',sans-serif; letter-spacing:.06em; color:#777179; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .snapshot-metric b { display:block; margin-top:6px; font:700 13px/1.15 'Manrope',sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .manifest-locked { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:22px; padding-top:18px; border-top:1px solid #d1ccc4; }
+  .manifest-locked b { font:800 20px/.9 'Barlow Condensed',sans-serif; letter-spacing:.04em; }
+  .manifest-locked span { font:700 8px/1.4 'Manrope',sans-serif; letter-spacing:.11em; color:#79737b; text-align:right; text-transform:uppercase; }
+  .total-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:22px; padding-top:18px; border-top:1px solid #d1ccc4; }
+  .summary-group { position:relative; z-index:0; min-width:0; padding:0 17px; isolation:isolate; }
+  .summary-group:first-child { padding-left:0; }
+  .summary-group:last-child { padding-right:0; }
+  .summary-group:not(:first-child)::before { content:''; position:absolute; left:0; top:2px; bottom:2px; width:1px; background:#d7d2ca; }
+  .summary-group::after { content:''; position:absolute; z-index:-1; inset:-12px -13px; border-radius:16px; pointer-events:none; }
+  .summary-group:nth-child(1)::after { background:radial-gradient(ellipse at 18% 48%,rgba(15,16,18,.17),rgba(35,36,40,.075) 48%,rgba(35,36,40,.025) 70%,transparent 88%); }
+  .summary-group:nth-child(2)::after { background:radial-gradient(ellipse at 24% 48%,rgba(102,126,82,.25),rgba(102,126,82,.105) 48%,rgba(102,126,82,.035) 71%,transparent 89%); }
+  .summary-group:nth-child(3)::after { background:radial-gradient(ellipse at 26% 48%,rgba(108,43,245,.24),rgba(108,43,245,.105) 48%,rgba(108,43,245,.035) 71%,transparent 89%); }
+  .summary-group:nth-child(2) .summary-group-head b { color:#4d5c43; }
+  .summary-group:nth-child(3) .summary-group-head b { color:#5420c9; }
+  .summary-group-head b::after { content:''; display:inline-block; width:14px; height:2px; margin:0 0 4px 8px; border-radius:999px; background:currentColor; opacity:.28; }
+  .summary-group:nth-child(2) .summary-group-head b::after { background:#6f815f; opacity:.62; }
+  .summary-group:nth-child(3) .summary-group-head b::after { background:#6c2bf5; opacity:.72; }
+  .summary-group-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .summary-group-head b { font:800 20px/.9 'Barlow Condensed',sans-serif; letter-spacing:.04em; }
+  .summary-group-head small { font:700 6.5px/1 'Manrope',sans-serif; letter-spacing:.11em; color:#888289; text-transform:uppercase; }
+  .summary-primary { display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-top:10px; }
+  .summary-primary small, .summary-metric small { display:block; font:700 7px/1.1 'Manrope',sans-serif; letter-spacing:.055em; color:#777179; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .summary-primary b { font:700 16px/1 'Manrope',sans-serif; letter-spacing:-.02em; white-space:nowrap; }
+  .summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 12px; margin-top:12px; }
+  .summary-metric { min-width:0; }
+  .summary-metric b { display:block; margin-top:4px; font:700 10px/1.1 'Manrope',sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .main-stub {
+    position:relative; display:flex; flex-direction:column; justify-content:space-between;
+    min-width:0; padding:20px 17px 18px 22px; color:white; background:linear-gradient(155deg,#7b3cff 0%,#6625f2 56%,#5619db 100%);
+    border-left:1px dashed rgba(255,255,255,.72);
+  }
+  .main-stub::before, .main-stub::after {
+    content:''; position:absolute; left:-10px; width:19px; height:19px; border-radius:50%; background:#070709;
+  }
+  .main-stub::before { top:-10px; } .main-stub::after { bottom:-10px; }
+  .stub-logo { position:relative; width:112px; height:42px; overflow:visible; }
+  .stub-label { margin-top:8px; font:700 8px/1.4 'Manrope',sans-serif; letter-spacing:.16em; text-transform:uppercase; opacity:.78; }
+  .stub-code { margin-top:5px; font:800 34px/.9 'Barlow Condensed',sans-serif; letter-spacing:.02em; }
+  .stub-meta { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .stub-meta small { display:block; font:700 7.5px/1 'Manrope',sans-serif; letter-spacing:.09em; text-transform:uppercase; opacity:.72; }
+  .stub-meta b { display:block; margin-top:5px; font:700 10.5px/1.1 'Manrope',sans-serif; }
+  .stub-bottom { display:flex; align-items:end; justify-content:space-between; gap:10px; }
+  .barcode-wrap { position:relative; z-index:1; isolation:isolate; width:90px; height:34px; overflow:visible; }
+  .barcode-wrap::before { content:''; position:absolute; z-index:0; inset:-28px -38px; opacity:0; pointer-events:none; border-radius:50%; background:radial-gradient(ellipse,rgba(255,255,255,.72) 0%,rgba(255,28,67,.46) 18%,rgba(255,22,62,.2) 45%,transparent 74%); filter:blur(5px); }
+  .barcode { position:relative; z-index:1; display:flex; align-items:stretch; gap:1px; width:90px; height:30px; opacity:.88; background:transparent; }
+  .barcode i { display:block; flex:1 1 1px; min-width:1px; height:100%; background:#fff; }
+  .barcode i:nth-child(3n) { flex-grow:1.8; }
+  .barcode i:nth-child(5n) { flex-grow:2.4; }
+  .barcode i:nth-child(7n) { flex-grow:.65; }
+  .barcode-reader { position:absolute; z-index:3; left:-7px; top:-7px; width:calc(100% + 14px); height:2px; opacity:0; background:linear-gradient(90deg,transparent,#ff173f 8%,#ff405f 38%,#fff 50%,#ff244a 62%,#ff173f 92%,transparent); box-shadow:0 0 4px #fff,0 0 10px #ff244c,0 0 24px rgba(255,21,63,.88); }
+  .barcode-reader::after { content:''; position:absolute; left:50%; top:50%; width:112%; height:24px; background:radial-gradient(ellipse,rgba(255,31,68,.34),rgba(255,24,63,.12) 48%,transparent 76%); filter:blur(3px); transform:translate(-50%,-50%); }
+  .barcode-stamp { position:absolute; z-index:4; left:50%; top:48%; opacity:0; padding:4px 7px; border:1.5px solid #ff4666; border-radius:3px; color:#fff; background:rgba(101,0,25,.28); box-shadow:0 0 13px rgba(255,30,69,.7),inset 0 0 9px rgba(255,30,69,.25); font:800 7px/1 'Manrope',sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+  .ticket-scan-path { position:absolute; z-index:11; inset:0; overflow:hidden; pointer-events:none; border-radius:inherit; }
+  .scan-tracer { position:absolute; left:0; top:0; width:clamp(96px,17%,144px); height:2px; opacity:0; offset-path:path('M -130 72 C 20 66 105 118 215 116 C 325 114 392 178 492 176 C 592 174 645 244 690 252 C 712 258 724 286 730 308'); offset-anchor:50% 50%; offset-rotate:0deg; background:linear-gradient(90deg,transparent,#ff173f 9%,#ff304f 38%,#fff 50%,#ff304f 62%,#ff173f 91%,transparent); box-shadow:0 0 3px #fff,0 0 10px #ff1745,0 0 22px rgba(255,23,69,.84); animation:ticketScanTravel 2.65s linear both; will-change:offset-distance,opacity; }
+  .scan-tracer::before { content:''; position:absolute; inset:-32px -26px; background:radial-gradient(ellipse at center,rgba(255,25,64,.28) 0%,rgba(255,23,69,.13) 42%,transparent 74%); filter:blur(7px); animation:scannerHalo 520ms ease-in-out infinite; }
+  .main-pass.is-scanning .barcode-wrap::before { animation:barcodeArrivalFlash .54s 2.14s cubic-bezier(.18,.74,.2,1) both; }
+  .main-pass.is-scanning .barcode { animation:barcodePulse .54s 2.14s ease both; }
+  .main-pass.is-scanning .barcode-reader { animation:barcodeRead .58s 2.1s cubic-bezier(.2,.72,.2,1) both; }
+  .main-pass.is-scanning .barcode-stamp { animation:stampHit .62s 2.06s cubic-bezier(.2,.9,.2,1) both; }
+  .main-pass.is-scanning .main-stub { box-shadow:inset 0 0 46px rgba(255,24,66,.17),0 0 26px rgba(255,24,66,.1); }
+  .main-pass.is-awaiting-tear { overflow:visible; }
+  .main-pass.is-awaiting-tear::after { content:''; position:absolute; z-index:12; top:0; bottom:0; right:173px; width:2px; pointer-events:none; transform:scaleY(var(--tear-progress,0)); transform-origin:top; opacity:var(--tear-progress,0); background:linear-gradient(180deg,#fff,#ff3658 38%,#fff 72%,#ff3658); box-shadow:0 0 7px #fff,0 0 19px rgba(255,23,69,.82); }
+  .main-pass.is-awaiting-tear .barcode-stamp { opacity:.94; transform:translate(-50%,-50%) rotate(-8deg) scale(1); }
+  .main-pass.is-awaiting-tear .barcode { filter:drop-shadow(0 0 7px rgba(255,42,75,.42)); opacity:1; }
+  .main-pass.is-awaiting-tear .main-stub { cursor:grab; touch-action:none; user-select:none; border-radius:0 21px 21px 0; animation:stubAwaiting 1.9s cubic-bezier(.45,0,.55,1) infinite; box-shadow:inset 12px 0 30px rgba(255,255,255,.08),0 0 28px rgba(108,43,245,.25); }
+  .main-pass.is-awaiting-tear .main-stub:hover { animation-play-state:paused; transform:translate3d(3px,1px,0); filter:brightness(1.045); }
+  .main-pass.is-awaiting-tear .main-stub.is-dragging { cursor:grabbing; animation:none; transform:translate3d(var(--tear-x,0px),var(--tear-y,0px),0) rotate(var(--tear-rotate,0deg)); transform-origin:left top; filter:brightness(1.05); transition:none; }
+  .main-pass.is-awaiting-tear .main-stub.is-returning { animation:stubReturn .38s cubic-bezier(.2,.8,.2,1) both; }
+  .main-pass.is-awaiting-tear .main-stub.is-armed .tear-guide { border-color:rgba(255,255,255,.72); background:rgba(82,28,188,.96); box-shadow:0 0 0 4px rgba(255,255,255,.12),0 0 28px rgba(178,149,255,.7); animation:none; }
+  .main-pass.is-awaiting-tear .main-stub:focus-visible { outline:2px solid #fff; outline-offset:4px; }
+  .tear-guide { position:absolute; z-index:20; left:50%; top:54%; display:flex; align-items:center; gap:9px; padding:9px 12px; transform:translate(-50%,-50%); pointer-events:none; border:1px solid rgba(255,255,255,.32); border-radius:999px; color:#fff; background:rgba(12,11,16,.9); backdrop-filter:blur(8px); font:800 10px/1 'Barlow Condensed',sans-serif; letter-spacing:.13em; text-transform:uppercase; white-space:nowrap; animation:tearGuidePulse 1.55s ease-in-out infinite; }
+  .tear-guide b { color:#bda7ff; font:800 16px/1 'Manrope',sans-serif; }
+  .tear-guide .release-copy { display:none; }
+  .main-stub.is-armed .tear-guide .drag-copy { display:none; }
+  .main-stub.is-armed .tear-guide .release-copy { display:inline; }
+  .main-pass.is-tearing .barcode-stamp { opacity:.94; transform:translate(-50%,-50%) rotate(-8deg) scale(1); }
+  .stub-serial { writing-mode:vertical-rl; font:600 6px/1 'IBM Plex Mono',monospace; letter-spacing:.1em; opacity:.72; }
+  .main-pass.is-tearing { overflow:visible; }
+  .main-pass.is-tearing .pass-body { animation:ticketTension 2.1s cubic-bezier(.36,.08,.22,1) both; will-change:transform; }
+  .main-pass.is-tearing .main-stub { animation:stubDetach 2.1s cubic-bezier(.3,.02,.18,1) both; will-change:transform,opacity; }
+  .tear-edge { position:absolute; z-index:12; top:0; bottom:0; right:173px; width:3px; pointer-events:none; background:linear-gradient(180deg,transparent,#fff 8%,#ff244d 22%,#fff 48%,#ff244d 76%,transparent); box-shadow:0 0 7px #fff,0 0 18px #ff1745,0 0 34px rgba(255,23,69,.8); transform-origin:center; animation:seamIgnite 2.1s ease both; }
+  .main-pass.is-final-summary { opacity:1; transform:none; animation:none; }
+  .ticket-capture.is-summary-reveal .main-pass { visibility:hidden; opacity:0; animation:none; }
+  .main-pass.is-torn-final { width:calc(94% - 174px); grid-template-columns:1fr; overflow:visible; border-right-color:transparent; border-radius:22px 7px 7px 22px; }
+  .main-pass.is-torn-final .main-stub { display:none; }
+  .main-pass.is-torn-final .pass-body::after {
+    content:''; position:absolute; z-index:2; top:4px; right:-8px; bottom:4px; width:10px; pointer-events:none;
+    background:radial-gradient(circle at 0 7px,#f5f2ea 0 6px,transparent 6.5px) 0 0/10px 14px repeat-y;
+    filter:drop-shadow(2px 0 1px rgba(0,0,0,.18));
+  }
+  .ticket-capture.is-final-landing::before { content:''; position:absolute; z-index:4; left:3%; top:22px; width:94%; height:405px; pointer-events:none; border-radius:30px; background:radial-gradient(ellipse at 58% 48%,rgba(181,151,255,.42),rgba(108,43,245,.18) 38%,transparent 72%); filter:blur(18px); animation:finalPassHalo 1.18s cubic-bezier(.16,.82,.2,1) both; }
+  .ticket-capture.is-final-landing .main-pass { animation:finalTornReveal 1.15s cubic-bezier(.16,.82,.2,1) both; }
+  .ticket-capture.is-final-landing .main-pass::after { content:''; position:absolute; z-index:18; inset:-12% -36%; pointer-events:none; background:linear-gradient(102deg,transparent 41%,rgba(255,255,255,.7) 49%,rgba(255,255,255,.2) 54%,transparent 62%); mix-blend-mode:soft-light; animation:finalPassSheen 1.12s 80ms cubic-bezier(.28,.02,.18,1) both; }
+  .ticket-capture.is-final-landing .main-stub { animation:stubRelock .92s 100ms cubic-bezier(.16,.82,.2,1) both; }
+  .scan-beam { position:absolute; z-index:8; inset:0; pointer-events:none; overflow:hidden; border-radius:20px; }
+  .scan-beam::after { content:''; display:block; width:42%; height:100%; background:linear-gradient(90deg,transparent,rgba(173,136,255,.19),rgba(255,255,255,.54),transparent); animation:scanLine 1.35s linear infinite; }
+  .issuance-wipe { position:fixed; z-index:55; inset:0; overflow:hidden; pointer-events:none; background:linear-gradient(112deg,#42129b 0%,#6c2bf5 37%,#8050ff 56%,#5317cc 100%); animation:issuanceReveal 2.25s cubic-bezier(.4,0,.2,1) both; will-change:opacity; }
+  .issuance-wipe::before { content:''; position:absolute; inset:-10%; background:radial-gradient(ellipse at 38% 44%,rgba(255,255,255,.16),transparent 32%),repeating-linear-gradient(120deg,rgba(255,255,255,.025) 0 1px,transparent 1px 9px); animation:issuanceDrift 2.25s ease-out both; will-change:transform; }
+  .issuance-wipe::after { content:''; position:absolute; top:-20%; bottom:-20%; left:-10vw; width:4px; background:#fff; box-shadow:0 0 18px #fff,0 0 46px #bda5ff; animation:issuanceSingleEdge 2.25s cubic-bezier(.28,.02,.16,1) both; will-change:left,opacity; }
+  .wipe-lockup { position:absolute; z-index:2; left:50%; top:50%; display:flex; flex-direction:column; align-items:center; gap:13px; animation:wipeLockup 2.25s ease both; }
+  .wipe-ink-logo { position:relative; width:142px; height:52px; overflow:visible; }
+  .wipe-lockup span { color:#fff; font:800 10px/1 'Manrope',sans-serif; letter-spacing:.24em; text-transform:uppercase; text-shadow:0 0 18px rgba(255,255,255,.55); }
+  .address-panel {
+    position:relative; width:min(900px,100%); margin:26px auto 0; padding:0 3%;
+  }
+  .checkin-ticket {
+    position:relative; padding:10px 0 4px; color:#f4f1e9;
+    border:0; background:transparent; box-shadow:none;
+  }
+  .checkin-ticket::before, .checkin-ticket::after {
+    display:none;
+  }
+  .checkin-ticket::before { left:-8px; }
+  .checkin-ticket::after { right:-8px; }
+  .checkin-topline {
+    display:flex; align-items:center; justify-content:space-between; gap:18px; margin:0 3px 14px;
+    font:700 15px/1 'Barlow Condensed',sans-serif; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.86);
+  }
+  .checkin-topline span:first-child { color:#c1adff; text-shadow:0 0 16px rgba(139,92,255,.18); }
+  .address-form { display:flex; align-items:center; gap:18px; }
+  .address-input-wrap { flex:1; min-width:0; }
+  .address-input-wrap label { display:block; margin:0 0 10px; font:700 15px/1 'Barlow Condensed',sans-serif; letter-spacing:.14em; color:rgba(255,255,255,.84); text-transform:uppercase; }
+  .address-input {
+    width:100%; height:58px; padding:0; border:0; border-bottom:1px solid rgba(255,255,255,.46); border-radius:0;
+    color:#fffdf8; background:transparent; font:600 17px/1 'IBM Plex Mono',monospace;
+  }
+  .address-input::placeholder { color:rgba(255,255,255,.61); }
+  .issue-button, .action-button {
+    border:0; cursor:pointer; border-radius:11px; text-transform:uppercase; transition:transform .18s ease,background .18s ease,opacity .18s ease;
+  }
+  .issue-button { align-self:end; height:58px; min-width:176px; padding:0 24px; color:#faf7ff; background:rgba(108,43,245,.16); border:1px solid #b295ff; font:800 16px/1 'Barlow Condensed',sans-serif; letter-spacing:.14em; }
+  .issue-button::after { content:'  →'; }
+  .issue-button:hover:not(:disabled), .action-button:hover { transform:translateY(-1px); }
+  .issue-button:disabled { cursor:not-allowed; background:rgba(108,43,245,.1); border-color:rgba(178,149,255,.62); color:rgba(244,239,255,.78); }
+  .form-foot { display:flex; align-items:center; justify-content:space-between; gap:18px; min-height:18px; margin:9px 3px 0; }
+  .form-error { font:600 9px/1.35 'IBM Plex Mono',monospace; color:#ff8294; }
+  .privacy-note { margin-left:auto; font:600 8px/1.35 'IBM Plex Mono',monospace; color:rgba(255,255,255,.5); text-align:right; }
+  .action-panel { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:10px; min-height:78px; padding:14px 15px; border:1px solid rgba(255,255,255,.15); border-radius:18px; background:rgba(16,16,20,.9); box-shadow:0 24px 70px -38px #000; }
+  .action-button { height:48px; min-width:112px; padding:0 18px; font:800 14px/1 'Barlow Condensed',sans-serif; letter-spacing:.12em; }
+  .action-button.primary { color:white; background:#6c2bf5; }
+  .action-button.dark { color:white; background:#27262c; border:1px solid rgba(255,255,255,.1); }
+  .action-button.light { color:#222026; background:#ece9df; }
+  .privacy-toggle { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-width:144px; color:#eee9ff; background:#17161d; border:1px solid rgba(255,255,255,.18); }
+  .privacy-switch { position:relative; flex:none; width:30px; height:17px; border-radius:999px; background:#4a4750; box-shadow:inset 0 0 0 1px rgba(255,255,255,.08); transition:background .22s ease; }
+  .privacy-switch::after { content:''; position:absolute; left:3px; top:3px; width:11px; height:11px; border-radius:50%; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.38); transition:transform .24s cubic-bezier(.2,.8,.2,1); }
+  .privacy-toggle.is-active { color:#fff; background:rgba(108,43,245,.18); border-color:#9c77ff; }
+  .privacy-toggle.is-active .privacy-switch { background:#6c2bf5; }
+  .privacy-toggle.is-active .privacy-switch::after { transform:translateX(13px); }
+  .action-button:disabled { cursor:wait; opacity:.58; transform:none !important; }
+  .status-strip { flex:1; min-width:220px; font:600 11px/1.45 'Manrope',sans-serif; color:rgba(255,255,255,.74); }
+  .status-strip b { display:inline-block; margin-bottom:2px; color:#c2afff; font:800 15px/1 'Barlow Condensed',sans-serif; letter-spacing:.06em; }
+  .site-credit {
+    position:relative; z-index:2; display:flex; justify-content:center;
+    margin:-18px auto 0; padding:0 20px 30px;
+    font:650 11px/1 'IBM Plex Mono',monospace; letter-spacing:.08em;
+  }
+  .site-credit a {
+    display:inline-flex; align-items:center; gap:7px; padding:8px 11px;
+    color:#a987ff; text-decoration:none; opacity:.8;
+    transition:color .2s ease,opacity .2s ease,transform .2s ease;
+  }
+  .site-credit a::before { content:'✦'; color:#6c2bf5; font-size:8px; }
+  .site-credit a:hover { color:#c3afff; opacity:1; transform:translateY(-1px); }
+  .site-credit a:focus-visible { outline:2px solid #a989ff; outline-offset:3px; border-radius:7px; }
+  @media (max-width: 760px) {
+    .journey-shell { display:flex; flex-direction:column; width:min(560px,calc(100% - 20px)); padding:26px 0 30px; }
+    .journey-header { order:1; }
+    .ticket-stage { order:2; }
+    .address-panel { order:3; margin:30px auto 0; padding:0 2%; }
+    .journey-header { grid-template-columns:1fr; gap:12px; margin-bottom:26px; }
+    .journey-title-lockup { gap:12px; }
+    .journey-title { font-size:34px; line-height:1.04; }
+    .journey-ink-logo { width:76px; height:29px; }
+    .journey-sub { max-width:none; text-align:left; font-size:10px; }
+    .ticket-stage { height:890px; margin:6px auto 0; }
+    .ticket-stage.solo-stage { height:510px; }
+    .ticket-stage.solo-stage.summary-stage { height:700px; }
+    .ticket-stage.solo-stage.summary-stage.torn-stage { height:570px; }
+    .rear-slot { top:6px; width:88%; height:276px; }
+    .rear-slot-nado { left:3%; }
+    .rear-slot-tydro { top:160px; right:3%; }
+    .rear-pass { top:26px; left:0; width:100%; height:232px; padding:18px 20px; }
+    .rear-metrics { grid-template-columns:repeat(5,minmax(0,1fr)); gap:5px; }
+    .rear-metric small { font-size:7.4px; }
+    .rear-metric b { font-size:10.5px; }
+    .main-pass { left:2%; top:330px; width:96%; min-height:468px; grid-template-columns:1fr; border-radius:19px; }
+    .solo-stage .main-pass { left:2%; top:22px; width:96%; min-height:460px; grid-template-columns:1fr; }
+    .solo-stage .main-pass.is-final-summary { min-height:650px; }
+    .solo-stage .main-pass.is-torn-final { left:2%; width:96%; min-height:520px; grid-template-columns:1fr; border-right-color:rgba(255,255,255,.88); border-bottom-color:transparent; border-radius:19px 19px 7px 7px; }
+    .main-pass.is-torn-final .pass-body::after { left:4px; right:4px; top:auto; bottom:-8px; width:auto; height:10px; background:radial-gradient(circle at 7px 0,#f5f2ea 0 6px,transparent 6.5px) 0 0/14px 10px repeat-x; filter:drop-shadow(0 2px 1px rgba(0,0,0,.18)); }
+    .pass-body { padding:22px 19px 20px; }
+    .route-board { grid-template-columns:78px minmax(4px,1fr) 56px minmax(4px,1fr) 82px; gap:4px; }
+    .route-board > .flight-line:nth-child(4) { margin-right:8px; }
+    .route-stop { min-width:0; }
+    .route-code { font-size:30px; }
+    .route-brand { gap:5px; }
+    .route-symbol { width:18px; height:18px; }
+    .route-name { letter-spacing:.1em; }
+    .holder-row { grid-template-columns:1fr; gap:8px; }
+    .holder-row strong { text-align:left; }
+    .ink-snapshot { grid-template-columns:1fr; gap:13px; margin-top:19px; padding-top:15px; }
+    .snapshot-label { display:flex; align-items:baseline; gap:8px; }
+    .snapshot-label small { margin-top:0; }
+    .snapshot-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px 20px; }
+    .snapshot-metric small { font-size:8px; }
+    .snapshot-metric b { font-size:11.5px; }
+    .total-summary { grid-template-columns:1fr; }
+    .summary-group { padding:13px 0; }
+    .summary-group:first-child { padding-top:0; }
+    .summary-group:last-child { padding-bottom:0; }
+    .summary-group:not(:first-child)::before { left:0; right:0; top:0; bottom:auto; width:auto; height:1px; }
+    .summary-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+    .main-stub { min-height:130px; padding:17px 18px; border-left:0; border-top:1px dashed rgba(255,255,255,.72); flex-direction:row; align-items:center; }
+    .main-stub::before, .main-stub::after { top:-10px; left:auto; }
+    .main-stub::before { left:-10px; } .main-stub::after { right:-10px; bottom:auto; }
+    .stub-logo { width:96px; height:34px; }
+    .stub-code { font-size:29px; }
+    .stub-meta { margin-top:10px; }
+    .stub-bottom { align-self:stretch; }
+    .barcode-wrap { width:68px; }
+    .barcode { width:68px; height:40px; }
+    .scan-tracer { offset-path:path('M -100 54 C 26 50 96 108 162 144 C 225 178 280 242 324 292 C 366 340 392 382 408 410'); }
+    .main-pass.is-awaiting-tear .main-stub { border-radius:0 0 19px 19px; animation-name:stubAwaitingMobile; box-shadow:inset 0 12px 30px rgba(255,255,255,.08),0 0 28px rgba(108,43,245,.25); }
+    .main-pass.is-awaiting-tear::after { left:0; right:0; top:auto; bottom:129px; width:auto; height:2px; transform:scaleX(var(--tear-progress,0)); transform-origin:left; }
+    .tear-guide { left:50%; top:0; transform:translate(-50%,-50%); }
+    .main-pass.is-tearing .main-stub { animation:stubDetachMobile 2.1s cubic-bezier(.3,.02,.18,1) both; }
+    .tear-edge { left:0; right:0; top:auto; bottom:129px; width:auto; height:3px; }
+    .address-form { flex-direction:column; align-items:stretch; }
+    .issue-button { align-self:stretch; width:100%; }
+    .form-foot { align-items:flex-start; flex-direction:column; gap:5px; }
+    .privacy-note { margin-left:0; text-align:left; }
+    .status-strip { width:100%; text-align:center; }
+    .action-panel { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
+    .action-panel .status-strip { grid-column:1/-1; min-width:0; }
+    .action-button { width:100%; min-width:0; height:46px; padding:0 7px; font-size:12px; }
+    .site-credit { margin:-8px auto 0; padding-bottom:24px; font-size:10px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ticket-stage, .main-pass, .rear-pass, .scan-beam::after,
+    .engraving-laser, .barcode-reader, .barcode-stamp, .tear-edge,
+    .scan-tracer, .issuance-wipe::before, .issuance-wipe::after, .wipe-lockup { animation:none !important; }
+    .ticket-capture.is-final-landing::before, .ticket-capture.is-final-landing .main-pass::after { display:none !important; }
+  }
+  .ticket-capture.capture-export {
+    position:relative !important; inset:auto !important; width:1000px !important; height:535px !important;
+    overflow:hidden; border-radius:28px; transform:none !important; transform-style:flat !important; animation:none !important;
+    background:radial-gradient(700px 330px at 50% 55%,rgba(108,43,245,.18),transparent 72%),#09090c;
+  }
+  .ticket-capture.capture-export * { animation:none !important; transition:none !important; }
+  .ticket-capture.capture-export .rear-pass,
+  .ticket-capture.capture-export .main-pass { box-shadow:none !important; }
+  .ticket-capture.capture-export .rear-pass::after,
+  .ticket-capture.capture-export .main-pass::before { display:none !important; }
+  .ticket-capture.capture-export::before,
+  .ticket-capture.capture-export .main-pass::after { display:none !important; }
+  .ticket-capture.capture-export .rear-slot { top:20px; width:47.5%; height:205px; }
+  .ticket-capture.capture-export .rear-slot-nado { left:2%; }
+  .ticket-capture.capture-export .rear-slot-tydro { right:2%; }
+  .ticket-capture.capture-export .rear-pass { top:0; left:0; width:100%; height:205px; padding:19px 22px; border-radius:19px; }
+  .ticket-capture.capture-export .rear-nado { transform:rotate(-.8deg) !important; }
+  .ticket-capture.capture-export .rear-tydro { transform:rotate(.8deg) !important; }
+  .ticket-capture.capture-export .rear-logo { width:112px; height:34px; }
+  .ticket-capture.capture-export .rear-tag { font-size:8px; }
+  .ticket-capture.capture-export .rear-code { font-size:31px; }
+  .ticket-capture.capture-export .rear-line { width:42px; }
+  .ticket-capture.capture-export .rear-kind { font-size:7.5px; }
+  .ticket-capture.capture-export .rear-metrics { grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin-top:12px; }
+  .ticket-capture.capture-export .rear-metric { display:block; }
+  .ticket-capture.capture-export .rear-metric small { font-size:7px; }
+  .ticket-capture.capture-export .rear-metric b { font-size:11.5px; }
+  .ticket-capture.capture-export .main-pass { left:4.5%; top:218px; width:91%; min-height:290px; grid-template-columns:minmax(0,1fr) 174px; border-radius:22px; transform:none !important; }
+  .ticket-capture.capture-export .pass-body { padding:25px 29px 23px; }
+  .ticket-capture.capture-export .route-board { grid-template-columns:auto 1fr auto 1fr auto; gap:12px; }
+  .ticket-capture.capture-export .route-stop { min-width:82px; }
+  .ticket-capture.capture-export .route-code { font-size:47px; }
+  .ticket-capture.capture-export .holder-row { grid-template-columns:minmax(0,1fr) auto; gap:18px; }
+  .ticket-capture.capture-export .holder-row strong { text-align:right; }
+  .ticket-capture.capture-export .ink-snapshot { grid-template-columns:56px minmax(0,1fr); gap:18px; margin-top:22px; padding-top:16px; }
+  .ticket-capture.capture-export .snapshot-metrics { grid-template-columns:repeat(5,minmax(0,1fr)); gap:17px; }
+  .ticket-capture.capture-export .snapshot-metric small { font-size:7.5px; }
+  .ticket-capture.capture-export .snapshot-metric b { font-size:13px; }
+  .ticket-capture.capture-export .main-stub { min-height:0; padding:21px 17px 18px 23px; border-left:1px dashed rgba(255,255,255,.72); border-top:0; flex-direction:column; align-items:stretch; }
+  .ticket-capture.capture-export .main-stub::before, .ticket-capture.capture-export .main-stub::after { left:-10px; right:auto; }
+  .ticket-capture.capture-export .main-stub::before { top:-10px; }
+  .ticket-capture.capture-export .main-stub::after { top:auto; bottom:-10px; }
+  .ticket-capture.capture-export .stub-logo { width:112px; height:42px; }
+  .ticket-capture.capture-export .stub-code { font-size:34px; }
+  .ticket-capture.capture-export .stub-bottom { align-self:auto; }
+  .ticket-capture.capture-export .barcode { width:90px; height:30px; }
+  .ticket-capture.capture-export.solo-capture .main-pass { left:3% !important; top:70px !important; width:94% !important; min-height:395px !important; grid-template-columns:minmax(0,1fr) 174px !important; }
+  .ticket-capture.capture-export .main-pass.is-torn-final { overflow:hidden !important; border:1px solid rgba(255,255,255,.88) !important; border-radius:22px !important; }
+  .ticket-capture.capture-export .main-pass.is-torn-final .main-stub { display:flex !important; }
+  .ticket-capture.capture-export .main-pass.is-torn-final .pass-body::after { display:none !important; }
+  .ticket-capture.capture-export .tear-edge,
+  .ticket-capture.capture-export .ticket-scan-path,
+  .ticket-capture.capture-export .barcode-reader,
+  .ticket-capture.capture-export .barcode-stamp { display:none !important; }
+  .ticket-capture.capture-export .total-summary { grid-template-columns:repeat(3,minmax(0,1fr)); }
+</style>
+</helmet>
+
+<div class="journey-page">
+  <main class="journey-shell">
+    <header class="journey-header">
+      <div class="journey-title-lockup">
+        <h1 class="journey-title">Your <span>INK</span> onchain journey.</h1>
+        <div class="journey-ink-logo"><div style="{{ inkMarkWhiteStyle }}"></div></div>
+      </div>
+    </header>
+
+    <section class="{{ stageClass }}">
+      <div ref="{{ cardRef }}" class="{{ ticketCaptureClass }}">
+        <sc-if value="{{ showRearPasses }}" hint-placeholder-val="{{ false }}">
+        <div class="rear-slot rear-slot-nado">
+        <article class="rear-pass rear-nado">
+          <div class="rear-head">
+            <div class="rear-logo"><div style="{{ nadoMarkWhiteStyle }}"></div></div>
+            <div class="rear-tag">TRADING LEG<br/>INK ECOSYSTEM</div>
+          </div>
+          <div class="rear-route"><span class="rear-code">NADO</span><span class="rear-line"></span><span class="rear-kind">TRADE / SETTLE</span></div>
+          <div class="rear-metrics">
+            <div class="rear-metric"><small>Volume</small><b>{{ nadoVolume }}</b></div>
+            <div class="rear-metric"><small>Net PnL</small><b>{{ nadoPnl }}</b></div>
+            <div class="rear-metric"><small>Deposited</small><b>{{ nadoDeposits }}</b></div>
+            <div class="rear-metric"><small>Acct outflow</small><b>{{ nadoWithdrawals }}</b></div>
+            <div class="rear-metric"><small>NADO Points</small><b>{{ nadoPoints }}</b></div>
+          </div>
+        </article>
+        </div>
+
+        <div class="rear-slot rear-slot-tydro">
+        <article class="rear-pass rear-tydro">
+          <div class="rear-head">
+            <div class="rear-logo"><div style="{{ tydroMarkWhiteStyle }}"></div></div>
+            <div class="rear-tag">LIQUIDITY LEG<br/>INK ECOSYSTEM</div>
+          </div>
+          <div class="rear-route"><span class="rear-code">TYDRO</span><span class="rear-line"></span><span class="rear-kind">SUPPLY / BORROW</span></div>
+          <div class="rear-metrics">
+            <div class="rear-metric"><small>Supplied</small><b>{{ tydroSupplied }}</b></div>
+            <div class="rear-metric"><small>Collateral</small><b>{{ tydroCollateral }}</b></div>
+            <div class="rear-metric"><small>Debt</small><b>{{ tydroDebt }}</b></div>
+            <div class="rear-metric"><small>Health</small><b>{{ tydroHealth }}</b></div>
+            <div class="rear-metric"><small>Assets</small><b>{{ tydroAssets }}</b></div>
+          </div>
+        </article>
+        </div>
+        </sc-if>
+
+        <article class="{{ mainPassClass }}">
+          <section class="pass-body">
+            <div class="pass-topline">
+              <div class="pass-type">{{ passTypeLabel }}</div>
+              <div class="pass-live"><i style="{{ liveDotStyle }}"></i>{{ liveLabel }}</div>
+            </div>
+
+            <div class="route-board">
+              <div class="route-stop">
+                <div class="route-brand"><div class="route-symbol"><div style="{{ nadoSymbolDarkStyle }}"></div></div><div class="route-code">NADO</div></div>
+                <div class="route-name">Trade</div>
+              </div>
+              <div class="flight-line"><span>✦</span></div>
+              <div class="route-stop center">
+                <div class="route-brand"><div class="route-symbol"><div style="{{ inkSymbolDarkStyle }}"></div></div><div class="route-code">INK</div></div>
+                <div class="route-name">Settle</div>
+              </div>
+              <div class="flight-line"><span>✦</span></div>
+              <div class="route-stop right">
+                <div class="route-brand"><div class="route-symbol"><div style="{{ tydroSymbolDarkStyle }}"></div></div><div class="route-code">TYDRO</div></div>
+                <div class="route-name">Lend</div>
+              </div>
+            </div>
+
+            <div class="{{ holderRowClass }}">
+              <div>
+                <span class="field-label">Passenger / public wallet</span>
+                <div class="holder-address-shell">
+                  <sc-if value="{{ laserAddress }}" hint-placeholder-val="{{ false }}">
+                    <span class="laser-address">
+                      <sc-for list="{{ chars }}" as="glyph" hint-placeholder-count="42"><span style="{{ glyph.style }}">{{ glyph.c }}</span></sc-for>
+                      <i class="engraving-laser" style="{{ laserStyle }}"></i>
+                    </span>
+                  </sc-if>
+                  <sc-if value="{{ staticAddress }}" hint-placeholder-val="{{ true }}"><span class="holder-address">{{ holderAddress }}</span></sc-if>
+                </div>
+              </div>
+              <div><span class="field-label">Issued on</span><strong>{{ issuedDate }}</strong></div>
+            </div>
+
+            <sc-if value="{{ summaryHidden }}" hint-placeholder-val="{{ true }}">
+              <div class="manifest-locked"><b>JOURNEY MANIFEST</b><span>Summary unlocks after barcode clearance</span></div>
+            </sc-if>
+
+            <sc-if value="{{ summaryVisible }}" hint-placeholder-val="{{ false }}">
+              <div class="total-summary">
+                <section class="summary-group">
+                  <div class="summary-group-head"><b>NADO</b><small>Trading</small></div>
+                  <div class="summary-primary"><small>Volume</small><b>{{ nadoVolume }}</b></div>
+                  <div class="summary-grid">
+                    <div class="summary-metric"><small>Net PnL</small><b>{{ nadoPnl }}</b></div>
+                    <div class="summary-metric"><small>Deposited</small><b>{{ nadoDeposits }}</b></div>
+                    <div class="summary-metric"><small>Outflow</small><b>{{ nadoWithdrawals }}</b></div>
+                    <div class="summary-metric"><small>Points</small><b>{{ nadoPoints }}</b></div>
+                  </div>
+                </section>
+                <section class="summary-group">
+                  <div class="summary-group-head"><b>TYDRO</b><small>Liquidity</small></div>
+                  <div class="summary-primary"><small>Supplied</small><b>{{ tydroSupplied }}</b></div>
+                  <div class="summary-grid">
+                    <div class="summary-metric"><small>Collateral</small><b>{{ tydroCollateral }}</b></div>
+                    <div class="summary-metric"><small>Debt</small><b>{{ tydroDebt }}</b></div>
+                    <div class="summary-metric"><small>Health</small><b>{{ tydroHealth }}</b></div>
+                    <div class="summary-metric"><small>Assets</small><b>{{ tydroAssets }}</b></div>
+                  </div>
+                </section>
+                <section class="summary-group">
+                  <div class="summary-group-head"><b>INK</b><small>Chain</small></div>
+                  <div class="summary-primary"><small>Balance</small><b>{{ inkBalance }}</b></div>
+                  <div class="summary-grid">
+                    <div class="summary-metric"><small>Canonical in</small><b>{{ inkBridged }}</b></div>
+                    <div class="summary-metric"><small>Sent txs</small><b>{{ inkTxCount }}</b></div>
+                    <div class="summary-metric"><small>Block</small><b>{{ inkBlock }}</b></div>
+                    <div class="summary-metric"><small>Sources</small><b>{{ sourceLabel }}</b></div>
+                  </div>
+                </section>
+              </div>
+            </sc-if>
+          </section>
+
+          <aside ref="{{ stubRef }}" class="{{ stubClass }}" onPointerDown="{{ onTearPointerDown }}" onPointerMove="{{ onTearPointerMove }}" onPointerUp="{{ onTearPointerUp }}" onPointerCancel="{{ onTearPointerCancel }}" onLostPointerCapture="{{ onTearPointerCancel }}" onKeyDown="{{ onTearStubKey }}" role="button" tabindex="{{ stubTabIndex }}" aria-disabled="{{ stubAriaDisabled }}" aria-label="{{ stubAriaLabel }}">
+            <div>
+              <div class="stub-logo"><div style="{{ inkMarkWhiteStyle }}"></div></div>
+              <div class="stub-label">Destination</div>
+              <div class="stub-code">INK</div>
+              <div class="stub-meta">
+                <div><small>Chain</small><b>57073</b></div>
+                <div><small>Status</small><b>{{ stubStatus }}</b></div>
+              </div>
+            </div>
+            <div class="stub-bottom">
+              <div class="barcode-wrap"><div class="barcode"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="barcode-stamp">Cleared</span></div>
+              <div class="stub-serial">{{ serial }}</div>
+            </div>
+            <sc-if value="{{ tearGuideActive }}" hint-placeholder-val="{{ false }}"><div class="tear-guide"><span class="drag-copy">Hold + drag</span><span class="release-copy">Release to detach</span><b>↘</b></div></sc-if>
+          </aside>
+          <sc-if value="{{ scanning }}" hint-placeholder-val="{{ false }}"><div class="ticket-scan-path"><i class="scan-tracer"></i></div></sc-if>
+          <sc-if value="{{ tearing }}" hint-placeholder-val="{{ false }}"><div class="tear-edge"></div></sc-if>
+        </article>
+      </div>
+    </section>
+
+    <sc-if value="{{ transitionActive }}" hint-placeholder-val="{{ false }}">
+      <div class="issuance-wipe"><div class="wipe-lockup"><div class="wipe-ink-logo"><div style="{{ inkMarkWhiteStyle }}"></div></div><span>Journey cleared</span></div></div>
+    </sc-if>
+
+    <section class="address-panel">
+      <sc-if value="{{ idle }}" hint-placeholder-val="{{ true }}">
+        <div class="checkin-ticket">
+          <div class="checkin-topline"><span>Online check-in</span><span>INK · GATE 57073</span></div>
+          <div class="address-form">
+            <div class="address-input-wrap">
+              <label>Passenger / public wallet</label>
+              <input class="address-input" type="text" value="{{ addr }}" onChange="{{ onAddressInput }}" onKeyDown="{{ onAddressKey }}" disabled="{{ inputDisabled }}" maxlength="42" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0x0000000000000000000000000000000000000000" />
+            </div>
+            <button class="issue-button" onClick="{{ onSubmitAddress }}" disabled="{{ primaryDisabled }}">{{ primaryLabel }}</button>
+          </div>
+          <div class="form-foot"><div class="form-error">{{ err }}</div></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ marking }}" hint-placeholder-val="{{ false }}">
+        <div class="action-panel">
+          <div class="status-strip"><b>{{ statusLabel }}</b><br/>{{ progressLabel }}</div>
+          <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+            <button class="action-button primary" onClick="{{ onCapture }}" disabled="{{ actionsDisabled }}">{{ captureLabel }} PNG</button>
+            <button class="{{ privacyToggleClass }}" onClick="{{ onToggleWallet }}" disabled="{{ actionsDisabled }}" aria-pressed="{{ walletHidden }}"><span class="privacy-switch"></span><span>{{ privacyLabel }}</span></button>
+            <button class="action-button dark" onClick="{{ onShare }}" disabled="{{ shareDisabled }}">{{ shareLabel }}</button>
+            <button class="action-button light" onClick="{{ onNewAddress }}" disabled="{{ actionsDisabled }}">New address</button>
+          </sc-if>
+        </div>
+      </sc-if>
+    </section>
+  </main>
+
+  <footer class="site-credit">
+    <a href="https://x.com/0x_snatch" target="_blank" rel="noopener noreferrer" aria-label="Visit 0x_snatch on X">Crafted by @0x_snatch</a>
+  </footer>
+
+  <sc-if value="{{ intro }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed;inset:0;z-index:60;pointer-events:none;background:#030304;animation:holeFade 950ms 1800ms cubic-bezier(.4,0,.6,1) forwards">
+      <div style="position:absolute;inset:0;animation:stackSpin 2600ms linear forwards">
+      <div style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.8);box-shadow:0 0 10px rgba(214,222,232,0.48),inset 0 0 10px rgba(214,222,232,0.36);filter:blur(0px);animation:ringIn 2200ms 0ms cubic-bezier(.66,0,.34,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.66);box-shadow:0 0 10px rgba(214,222,232,0.40),inset 0 0 10px rgba(214,222,232,0.30);filter:blur(0.3px);animation:ringIn 2200ms 110ms cubic-bezier(.66,0,.34,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.55);box-shadow:0 0 10px rgba(214,222,232,0.33),inset 0 0 10px rgba(214,222,232,0.25);filter:blur(0.5px);animation:ringIn 2200ms 230ms cubic-bezier(.66,0,.34,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.46);box-shadow:0 0 10px rgba(214,222,232,0.28),inset 0 0 10px rgba(214,222,232,0.21);filter:blur(0.7px);animation:ringIn 2200ms 350ms cubic-bezier(.66,0,.34,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.38);box-shadow:0 0 10px rgba(214,222,232,0.23),inset 0 0 10px rgba(214,222,232,0.17);filter:blur(0.9px);animation:ringIn 2200ms 470ms cubic-bezier(.66,0,.34,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.3);box-shadow:0 0 10px rgba(214,222,232,0.18),inset 0 0 10px rgba(214,222,232,0.14);filter:blur(1.1px);animation:ringIn 2200ms 590ms cubic-bezier(.66,0,.34,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.22);box-shadow:0 0 10px rgba(214,222,232,0.13),inset 0 0 10px rgba(214,222,232,0.10);filter:blur(1.3px);animation:ringIn 2200ms 710ms cubic-bezier(.66,0,.34,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.16);box-shadow:0 0 10px rgba(214,222,232,0.10),inset 0 0 10px rgba(214,222,232,0.07);filter:blur(1.6px);animation:ringIn 2200ms 830ms cubic-bezier(.66,0,.34,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.11);box-shadow:0 0 10px rgba(214,222,232,0.07),inset 0 0 10px rgba(214,222,232,0.05);filter:blur(1.9px);animation:ringIn 2200ms 950ms cubic-bezier(.66,0,.34,1) forwards"></div>
+      </div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(0.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:340px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 160ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(24.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:240px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 242ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(40.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:180px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 324ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(64.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:340px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 406ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(80.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:240px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 488ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(104.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:180px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 570ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(120.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:340px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 652ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(144.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:240px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 734ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(160.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:180px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 816ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(184.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:340px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 160ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(200.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:240px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 242ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(224.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:180px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 324ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(240.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:340px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 406ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(264.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:240px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 488ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(280.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:180px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 570ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(304.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:340px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 652ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(320.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:240px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 734ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(344.0deg)"><div style="position:absolute;left:0;top:-0.5px;width:180px;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(238,243,250,0) 0%,rgba(238,243,250,0.7) 62%,rgba(255,255,255,0.98) 100%);animation:converge 2200ms 816ms cubic-bezier(.52,0,.28,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(0.0deg)"><div style="position:absolute;left:420px;top:-1.3px;width:2.5px;height:2.5px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 120ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(137.5deg)"><div style="position:absolute;left:550px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 196ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(275.0deg)"><div style="position:absolute;left:680px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 272ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(52.5deg)"><div style="position:absolute;left:810px;top:-0.9px;width:1.8px;height:1.8px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 348ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(190.0deg)"><div style="position:absolute;left:940px;top:-1.3px;width:2.5px;height:2.5px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 424ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(327.5deg)"><div style="position:absolute;left:1070px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 500ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(105.0deg)"><div style="position:absolute;left:420px;top:-0.9px;width:1.8px;height:1.8px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 576ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(242.5deg)"><div style="position:absolute;left:550px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 652ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(20.0deg)"><div style="position:absolute;left:680px;top:-1.3px;width:2.5px;height:2.5px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 728ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(157.5deg)"><div style="position:absolute;left:810px;top:-0.9px;width:1.8px;height:1.8px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 804ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(295.0deg)"><div style="position:absolute;left:940px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 880ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(72.5deg)"><div style="position:absolute;left:1070px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 956ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(210.0deg)"><div style="position:absolute;left:420px;top:-1.3px;width:2.5px;height:2.5px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 120ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(347.5deg)"><div style="position:absolute;left:550px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 196ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(125.0deg)"><div style="position:absolute;left:680px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 272ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(262.5deg)"><div style="position:absolute;left:810px;top:-0.9px;width:1.8px;height:1.8px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 348ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(40.0deg)"><div style="position:absolute;left:940px;top:-1.3px;width:2.5px;height:2.5px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 424ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(177.5deg)"><div style="position:absolute;left:1070px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 500ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(315.0deg)"><div style="position:absolute;left:420px;top:-0.9px;width:1.8px;height:1.8px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 576ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(92.5deg)"><div style="position:absolute;left:550px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 652ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(230.0deg)"><div style="position:absolute;left:680px;top:-1.3px;width:2.5px;height:2.5px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 728ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(7.5deg)"><div style="position:absolute;left:810px;top:-0.9px;width:1.8px;height:1.8px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 804ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(145.0deg)"><div style="position:absolute;left:940px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 880ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(282.5deg)"><div style="position:absolute;left:1070px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 956ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(60.0deg)"><div style="position:absolute;left:420px;top:-1.3px;width:2.5px;height:2.5px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 120ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(197.5deg)"><div style="position:absolute;left:550px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 196ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(335.0deg)"><div style="position:absolute;left:680px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 272ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(112.5deg)"><div style="position:absolute;left:810px;top:-0.9px;width:1.8px;height:1.8px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 348ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(250.0deg)"><div style="position:absolute;left:940px;top:-1.3px;width:2.5px;height:2.5px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 424ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(27.5deg)"><div style="position:absolute;left:1070px;top:-0.6px;width:1.2px;height:1.2px;border-radius:50%;background:rgba(244,247,252,0.95);box-shadow:0 0 6px rgba(226,233,242,0.8);animation:dustIn 2200ms 500ms cubic-bezier(.55,0,.25,1) forwards"></div></div>
+      <div style="position:absolute;left:50%;top:50%;width:1300px;height:1300px;margin:-650px 0 0 -650px;border-radius:50%;background:radial-gradient(circle,rgba(234,239,246,0.4) 0%,rgba(192,201,213,0.11) 20%,rgba(120,127,138,0.035) 40%,rgba(0,0,0,0) 60%);animation:coreBloom 2200ms cubic-bezier(.4,0,.2,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#ffffff;box-shadow:0 0 18px 7px rgba(240,245,252,0.92),0 0 56px 24px rgba(206,215,226,0.42);animation:coreDot 2200ms cubic-bezier(.4,0,.2,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:260px;height:260px;margin:-130px 0 0 -130px;border-radius:50%;border:1.5px solid rgba(240,245,252,0.9);animation:shock 2200ms 1140ms cubic-bezier(.2,.8,.2,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1000px;height:1.5px;margin:-0.75px 0 0 -500px;background:linear-gradient(90deg,rgba(232,237,244,0) 0%,rgba(255,255,255,0.96) 50%,rgba(232,237,244,0) 100%);animation:flare 2200ms 1120ms cubic-bezier(.25,0,.2,1) forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:1.5px;height:560px;margin:-280px 0 0 -0.75px;background:linear-gradient(180deg,rgba(232,237,244,0) 0%,rgba(255,255,255,0.75) 50%,rgba(232,237,244,0) 100%);animation:flare 2200ms 1120ms cubic-bezier(.25,0,.2,1) forwards"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(54% 46% at 50% 50%,rgba(0,0,0,0) 28%,rgba(3,3,4,0.92) 72%)"></div>
+      <div style="position:absolute;inset:0;opacity:0.08;mix-blend-mode:screen;background:radial-gradient(circle at 68% 41%,rgba(255,255,255,0.08) 0%,rgba(255,255,255,0) 54%)"></div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#6C2BF5&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#6C2BF5&quot;,&quot;#4A17D6&quot;,&quot;#8B5CFF&quot;,&quot;#5B21B6&quot;]},&quot;showIntro&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;engraveSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:56,&quot;min&quot;:20,&quot;max&quot;:160,&quot;step&quot;:2,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;}}">
+const INK_RPC_URL = '/api/rpc';
+const NADO_ARCHIVE_URL = '/api/nado/archive';
+const NADO_REWARDS_URL = '/api/nado/rewards';
+const NADO_SYMBOLS_URL = '/api/nado/symbols';
+const TYDRO_ADDRESSES_PROVIDER = '0x4172E6aAEC070ACB31aaCE343A58c93E4C70f44D';
+const TYDRO_POOL_START_BLOCK = 19954047;
+const INK_EXPLORER_API = '/api/explorer';
+const INK_L2_STANDARD_BRIDGE = '0x4200000000000000000000000000000000000010';
+const INK_ETH_BRIDGE_IN_TOPIC = '0x31b2166ff604fc5672ea5df08a78081d2bc6d746cadce880747f3643d819e83d';
+const INK_ETH_BRIDGE_OUT_TOPIC = '0x2849b43074093a05396b6f2a937dee8565b15a48a7b3d4bffb732a5017380af5';
+const TYDRO_EVENT_QUERIES = {
+  supply: { topic0: '0x2b627736bca15cd5381dcf80b0bf11fd197d01a037c52b927a881a10fb73ba61', walletTopic: 2 },
+  withdraw: { topic0: '0x3115d1449a7b732c986cba18244e897a450f61e1bb8d589cd2e69e6c8924f9f7', walletTopic: 2 },
+  borrow: { topic0: '0xb3d084820fb1a9decffb176436bd02558d15fac9b0ddfed8c465bc7359d7dce0', walletTopic: 2 },
+  repay: { topic0: '0xa534c8dbe71f871f9f3530e97a74601fea17b426cae02e1c5aee42c96c784051', walletTopic: 2 },
+  liquidation: { topic0: '0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286', walletTopic: 3 }
+};
+const TRANSPARENT_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+
+class Component extends DCLogic {
+  state = {
+    addr: '',
+    phase: 'idle',
+    shown: 0,
+    target: '',
+    err: '',
+    intro: true,
+    profileReady: false,
+    engraveDone: false,
+    nado: null,
+    tydro: null,
+    tydroHistoryStatus: 'idle',
+    ink: null,
+    sourceErrors: [],
+    capturing: false,
+    copied: false,
+    sharing: false,
+    shareStatus: '',
+    walletHidden: false,
+    shareImageReady: false,
+    inkMark: TRANSPARENT_PIXEL,
+    nadoMark: TRANSPARENT_PIXEL,
+    tydroMark: TRANSPARENT_PIXEL,
+    inkMarkDark: TRANSPARENT_PIXEL,
+    nadoMarkDark: TRANSPARENT_PIXEL,
+    tydroMarkDark: TRANSPARENT_PIXEL
+  };
+
+  cardRef = React.createRef();
+  stubRef = React.createRef();
+  requestSeq = 0;
+  rpcId = 1;
+  mountedFlag = false;
+  historyController = null;
+  scanTimer = null;
+  tearTimer = null;
+  coverTimer = null;
+  revealTimer = null;
+  landingTimer = null;
+  engraveFinishTimer = null;
+  shareTimer = null;
+  shareBlob = null;
+  shareBlobSeq = 0;
+  shareBlobHidden = false;
+  sharePreparePromise = null;
+  sharePrepareKey = '';
+  tearTriggered = false;
+  tearDragActive = false;
+  tearPointerId = null;
+  tearDragStartX = 0;
+  tearDragStartY = 0;
+  tearDragDistance = 0;
+  tearDragVisualX = 0;
+  tearDragVisualY = 0;
+  tearDragRotation = 0;
+  tearDragThreshold = 78;
+  tearReturnTimer = null;
+
+  clamp = (v, m) => Math.max(-m, Math.min(m, v));
+
+  isAddress(value) {
+    const address = String(value || '').trim();
+    return /^0x[0-9a-fA-F]{40}$/.test(address) && !/^0x0{40}$/i.test(address);
+  }
+
+  cleanAddress(value) {
+    const address = String(value || '').trim();
+    if (!this.isAddress(address)) throw new Error('Enter a valid 42-character EVM wallet address.');
+    return address;
+  }
+
+  shortAddress(value) {
+    return this.isAddress(value) ? value.slice(0, 6) + '…' + value.slice(-4) : '';
+  }
+
+  privateAddressLabel() {
+    return 'ADDRESS HIDDEN · PRIVATE PASSENGER';
+  }
+
+  extractWhiteMark = url => new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        const context = canvas.getContext('2d', { willReadFrequently: true });
+        context.drawImage(image, 0, 0);
+        const frame = context.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = frame.data;
+        let minX = canvas.width;
+        let minY = canvas.height;
+        let maxX = -1;
+        let maxY = -1;
+        for (let i = 0; i < pixels.length; i += 4) {
+          const luminance = pixels[i] * 0.2126 + pixels[i + 1] * 0.7152 + pixels[i + 2] * 0.0722;
+          const strength = Math.max(0, Math.min(1, (luminance - 145) / 90));
+          pixels[i] = 255;
+          pixels[i + 1] = 255;
+          pixels[i + 2] = 255;
+          pixels[i + 3] = Math.round(pixels[i + 3] * strength);
+          if (pixels[i + 3] > 8) {
+            const pixelIndex = i / 4;
+            const x = pixelIndex % canvas.width;
+            const y = Math.floor(pixelIndex / canvas.width);
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+        context.putImageData(frame, 0, 0);
+        if (maxX >= minX && maxY >= minY) {
+          const padding = Math.max(2, Math.ceil(Math.max(canvas.width, canvas.height) * 0.018));
+          const sourceX = Math.max(0, minX - padding);
+          const sourceY = Math.max(0, minY - padding);
+          const sourceWidth = Math.min(canvas.width, maxX + padding + 1) - sourceX;
+          const sourceHeight = Math.min(canvas.height, maxY + padding + 1) - sourceY;
+          const cropped = document.createElement('canvas');
+          cropped.width = sourceWidth;
+          cropped.height = sourceHeight;
+          cropped.getContext('2d').drawImage(canvas, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, sourceWidth, sourceHeight);
+          resolve(cropped.toDataURL('image/png'));
+        } else {
+          resolve(canvas.toDataURL('image/png'));
+        }
+      } catch (error) {
+        reject(error);
+      }
+    };
+    image.onerror = () => reject(new Error('Logo asset could not be loaded.'));
+    image.src = url;
+  });
+
+  createDarkMark = source => new Promise((resolve, reject) => {
+    if (!source || source === TRANSPARENT_PIXEL) {
+      resolve(TRANSPARENT_PIXEL);
+      return;
+    }
+    const image = new Image();
+    image.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0);
+        context.globalCompositeOperation = 'source-in';
+        context.fillStyle = '#17151a';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/png'));
+      } catch (error) {
+        reject(error);
+      }
+    };
+    image.onerror = () => reject(new Error('Logo tint could not be prepared.'));
+    image.src = source;
+  });
+
+  prepareEngravedMarks = async () => {
+    const results = await Promise.allSettled([
+      this.extractWhiteMark('./ink-wordmark.png'),
+      this.extractWhiteMark('./uploads/nado.png'),
+      this.extractWhiteMark('./uploads/tydro.png')
+    ]);
+    if (!this.mountedFlag) return;
+    const whiteMarks = results.map(item => item.status === 'fulfilled' ? item.value : TRANSPARENT_PIXEL);
+    const darkResults = await Promise.allSettled(whiteMarks.map(this.createDarkMark));
+    if (!this.mountedFlag) return;
+    this.setState({
+      inkMark: whiteMarks[0],
+      nadoMark: whiteMarks[1],
+      tydroMark: whiteMarks[2],
+      inkMarkDark: darkResults[0].status === 'fulfilled' ? darkResults[0].value : whiteMarks[0],
+      nadoMarkDark: darkResults[1].status === 'fulfilled' ? darkResults[1].value : whiteMarks[1],
+      tydroMarkDark: darkResults[2].status === 'fulfilled' ? darkResults[2].value : whiteMarks[2]
+    });
+  };
+
+  emptyProfileState() {
+    return {
+      target: '',
+      shown: 0,
+      profileReady: false,
+      engraveDone: false,
+      nado: null,
+      tydro: null,
+      tydroHistoryStatus: 'idle',
+      ink: null,
+      sourceErrors: [],
+      capturing: false,
+      copied: false,
+      sharing: false,
+      shareStatus: '',
+      walletHidden: false,
+      shareImageReady: false
+    };
+  }
+
+  cancelProfile() {
+    this.requestSeq += 1;
+    clearInterval(this.tick);
+    clearTimeout(this.scanTimer);
+    clearTimeout(this.tearTimer);
+    clearTimeout(this.coverTimer);
+    clearTimeout(this.revealTimer);
+    clearTimeout(this.landingTimer);
+    clearTimeout(this.engraveFinishTimer);
+    clearTimeout(this.shareTimer);
+    clearTimeout(this.tearReturnTimer);
+    this.scanTimer = null;
+    this.tearTimer = null;
+    this.coverTimer = null;
+    this.revealTimer = null;
+    this.landingTimer = null;
+    this.engraveFinishTimer = null;
+    this.shareTimer = null;
+    this.tearReturnTimer = null;
+    this.shareBlob = null;
+    this.shareBlobSeq = 0;
+    this.shareBlobHidden = false;
+    this.sharePreparePromise = null;
+    this.sharePrepareKey = '';
+    this.tearTriggered = false;
+    this.tearDragActive = false;
+    this.tearPointerId = null;
+    this.tearDragDistance = 0;
+    this.tearDragVisualX = 0;
+    this.tearDragVisualY = 0;
+    this.tearDragRotation = 0;
+    const stub = this.stubRef.current;
+    if (stub) {
+      stub.classList.remove('is-dragging', 'is-armed', 'is-returning');
+      stub.style.removeProperty('--tear-x');
+      stub.style.removeProperty('--tear-y');
+      stub.style.removeProperty('--tear-rotate');
+      stub.style.removeProperty('--tear-release-x');
+      stub.style.removeProperty('--tear-release-y');
+      stub.style.removeProperty('--tear-release-rotate');
+      const pass = stub.closest('.main-pass');
+      if (pass) pass.style.removeProperty('--tear-progress');
+    }
+    if (this.profileController) this.profileController.abort();
+    this.profileController = null;
+    if (this.historyController) this.historyController.abort();
+    this.historyController = null;
+  }
+
+  componentDidMount() {
+    this.mountedFlag = true;
+    // DC hot reload can carry old component state. Never carry a completed profile.
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const queryWallet = new URLSearchParams(window.location.search).get('wallet') || '';
+    const initialWallet = this.isAddress(queryWallet) ? queryWallet : '';
+    this.setState(Object.assign({
+      addr: initialWallet,
+      phase: 'idle',
+      err: '',
+      intro: reduceMotion ? false : this.state.intro
+    }, this.emptyProfileState()), () => {
+      if (initialWallet && this.mountedFlag) this.buildFromAddress();
+    });
+
+    this.introTimer = setTimeout(() => {
+      if (this.mountedFlag) this.setState({ intro: false });
+    }, 2750);
+
+    this.prepareEngravedMarks();
+  }
+
+  componentWillUnmount() {
+    this.mountedFlag = false;
+    this.cancelProfile();
+    clearTimeout(this.introTimer);
+    clearTimeout(this.copyTimer);
+    clearTimeout(this.shareTimer);
+  }
+
+  handleAddressInput = event => {
+    this.setState({ addr: event.target.value, err: '' });
+  };
+
+  handleAddressKey = event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.buildFromAddress();
+    }
+  };
+
+  buildFromAddress = async () => {
+    if (this.state.phase !== 'idle') return;
+    let address;
+    try {
+      address = this.cleanAddress(this.state.addr);
+    } catch (error) {
+      this.setState({ err: error.message });
+      return;
+    }
+
+    this.cancelProfile();
+    const seq = this.requestSeq;
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.setState(Object.assign({}, this.emptyProfileState(), {
+      addr: address,
+      target: address,
+      shown: reduceMotion ? address.length : 0,
+      phase: reduceMotion ? 'waiting' : 'engraving',
+      engraveDone: reduceMotion,
+      err: ''
+    }), () => reduceMotion ? this.maybeAdvanceIssuance(seq) : this.beginEngraving(seq));
+    try {
+      await this.loadProfile(address, seq);
+    } catch (error) {
+      if (!this.mountedFlag || seq !== this.requestSeq) return;
+      clearInterval(this.tick);
+      this.setState(Object.assign({
+        addr: address,
+        phase: 'idle',
+        err: 'Public data could not be read. Please try again.'
+      }, this.emptyProfileState()));
+    }
+  };
+
+  startNewAddress = () => {
+    if (this.state.capturing || this.state.sharing) return;
+    this.cancelProfile();
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('wallet');
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    } catch (error) {
+      console.warn('Could not clear the shared wallet query.', error);
+    }
+    this.setState(Object.assign({
+      addr: '',
+      phase: 'idle',
+      err: ''
+    }, this.emptyProfileState()));
+  };
+
+  toggleWalletHidden = () => {
+    if (this.state.phase !== 'done' || this.state.capturing || this.state.sharing) return;
+    this.shareBlob = null;
+    this.shareBlobSeq = 0;
+    this.setState(previous => ({
+      walletHidden: !previous.walletHidden,
+      shareImageReady: false,
+      copied: false,
+      shareStatus: ''
+    }), () => {
+      if (this.state.walletHidden) {
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('wallet');
+          window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+        } catch (error) {
+          console.warn('Could not remove the wallet from the current URL.', error);
+        }
+      }
+      this.prepareShareBlob(this.requestSeq);
+    });
+  };
+
+  requestJson = async (url, init, signal, timeoutMs) => {
+    const controller = new AbortController();
+    const forwardAbort = () => controller.abort();
+    if (signal) {
+      if (signal.aborted) forwardAbort();
+      else signal.addEventListener('abort', forwardAbort, { once: true });
+    }
+    const timer = setTimeout(() => controller.abort(), timeoutMs || 18000);
+    try {
+      const response = await fetch(url, Object.assign({
+        mode: 'cors',
+        credentials: 'omit',
+        cache: 'no-store'
+      }, init || {}, { signal: controller.signal }));
+      const text = await response.text();
+      let data = null;
+      try {
+        data = text ? JSON.parse(text) : null;
+      } catch (error) {
+        throw new Error('Upstream returned invalid JSON.');
+      }
+      if (!response.ok) {
+        const message = data && (data.reason || data.message || data.error);
+        throw new Error(message || ('HTTP ' + response.status));
+      }
+      if (data && data.status === 'failure') throw new Error(data.error || data.reason || 'Upstream query failed.');
+      return data;
+    } finally {
+      clearTimeout(timer);
+      if (signal) signal.removeEventListener('abort', forwardAbort);
+    }
+  };
+
+  rpc = async (method, params, signal) => {
+    const payload = {
+      jsonrpc: '2.0',
+      id: this.rpcId++,
+      method: method,
+      params: params
+    };
+    const data = await this.requestJson(INK_RPC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }, signal, 15000);
+    if (data && data.error) throw new Error(data.error.message || 'Ink RPC error.');
+    return data ? data.result : null;
+  };
+
+  nadoArchive = (body, signal) => this.requestJson(NADO_ARCHIVE_URL, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  }, signal, 20000);
+
+  nadoRewards = (body, signal) => this.requestJson(NADO_REWARDS_URL, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  }, signal, 20000);
+
+  decimalStringToX18(value) {
+    const match = String(value === null || value === undefined ? '0' : value).trim().match(/^([+-]?)(\d+)(?:\.(\d*))?$/);
+    if (!match) throw new Error('NADO returned an invalid decimal value.');
+    const fraction = (match[3] || '').slice(0, 18).padEnd(18, '0');
+    const magnitude = BigInt(match[2]) * 1000000000000000000n + BigInt(fraction || '0');
+    return match[1] === '-' ? -magnitude : magnitude;
+  }
+
+  fetchNadoPoints = async (owner, signal) => {
+    const data = await this.nadoRewards({ nado_points: { address: owner } }, signal);
+    const allTime = data && data.all_time_points ? data.all_time_points : null;
+    if (!allTime) throw new Error('NADO points response is incomplete.');
+    return {
+      pointsX18: String(allTime.points || '0'),
+      rank: Number(allTime.rank || 0),
+      tier: Number(allTime.tier || 0)
+    };
+  };
+
+  fetchNadoNetPnl = async (subaccounts, signal) => {
+    if (!subaccounts.length) return null;
+    const parts = await Promise.all(subaccounts.map(async item => {
+      const data = await this.nadoArchive({ portfolio: { subaccount: item.subaccount } }, signal);
+      const rows = Array.isArray(data) ? data : (data && Array.isArray(data.portfolio) ? data.portfolio : []);
+      const histories = Object.fromEntries(rows);
+      const history = histories && histories.allTime && Array.isArray(histories.allTime.pnlHistory)
+        ? histories.allTime.pnlHistory
+        : [];
+      if (!history.length) throw new Error('NADO portfolio history is incomplete.');
+      return this.decimalStringToX18(history[history.length - 1][1]);
+    }));
+    return parts.reduce((total, value) => total + value, 0n).toString();
+  };
+
+  nadoEventBalance = value => BigInt(
+    value && value.spot && value.spot.balance && value.spot.balance.amount !== undefined
+      ? value.spot.balance.amount
+      : (value && value.perp && value.perp.balance && value.perp.balance.amount !== undefined ? value.perp.balance.amount : 0)
+  );
+
+  nadoEventOracle = event => BigInt(
+    event && event.product && event.product.spot && event.product.spot.oracle_price_x18 !== undefined
+      ? event.product.spot.oracle_price_x18
+      : (event && event.product && event.product.perp && event.product.perp.oracle_price_x18 !== undefined
+        ? event.product.perp.oracle_price_x18
+        : (event && event.product && event.product.oracle_price_x18 !== undefined ? event.product.oracle_price_x18 : 0))
+  );
+
+  fetchNadoCashflowEvents = async (subaccount, signal) => {
+    const result = [];
+    const seen = new Set();
+    let cursor = null;
+    let complete = false;
+    for (let pageNo = 0; pageNo < 1000; pageNo += 1) {
+      const query = {
+        subaccounts: [subaccount],
+        event_types: ['deposit_collateral', 'withdraw_collateral'],
+        limit: { raw: 500 }
+      };
+      if (cursor !== null) query.idx = cursor.toString();
+      const data = await this.nadoArchive({ events: query }, signal);
+      const page = data && Array.isArray(data.events) ? data.events : [];
+      let minIndex = null;
+      page.forEach(event => {
+        const index = BigInt(event.submission_idx);
+        if (minIndex === null || index < minIndex) minIndex = index;
+        const key = [event.subaccount, event.product_id, event.submission_idx, event.event_type, event.isolated, event.isolated_product_id].join(':');
+        if (!seen.has(key)) {
+          seen.add(key);
+          result.push(event);
+        }
+      });
+      if (page.length < 500) {
+        complete = true;
+        break;
+      }
+      if (minIndex === null || (cursor !== null && minIndex >= cursor)) throw new Error('NADO event pagination did not advance.');
+      cursor = minIndex;
+    }
+    if (!complete) throw new Error('NADO event history exceeds the client-side pagination limit.');
+    return result;
+  };
+
+  fetchNadoCashflows = async (subaccounts, signal) => {
+    let depositUsd = 0n;
+    let withdrawalUsd = 0n;
+    let depositCount = 0;
+    let withdrawalCount = 0;
+    let depositComplete = true;
+    let withdrawalComplete = true;
+    for (const item of subaccounts) {
+      const events = await this.fetchNadoCashflowEvents(item.subaccount, signal);
+      events.forEach(event => {
+        const pre = this.nadoEventBalance(event.pre_balance);
+        const post = this.nadoEventBalance(event.post_balance);
+        const price = this.nadoEventOracle(event);
+        const deposit = event.event_type === 'deposit_collateral';
+        const amount = deposit ? post - pre : pre - post;
+        const valid = amount >= 0n && (price > 0n || amount === 0n);
+        if (deposit) {
+          depositCount += 1;
+          if (valid) depositUsd += amount * price / 1000000000000000000n;
+          else depositComplete = false;
+        } else {
+          withdrawalCount += 1;
+          if (valid) withdrawalUsd += amount * price / 1000000000000000000n;
+          else withdrawalComplete = false;
+        }
+      });
+    }
+    return {
+      depositUsdX18: depositComplete ? depositUsd.toString() : null,
+      withdrawalUsdX18: withdrawalComplete ? withdrawalUsd.toString() : null,
+      depositCount: depositCount,
+      withdrawalCount: withdrawalCount
+    };
+  };
+
+  fetchAllNadoSubaccounts = async (owner, signal) => {
+    const result = [];
+    const seen = new Set();
+    let start = 0n;
+    let complete = false;
+    for (let pageNo = 0; pageNo < 100; pageNo += 1) {
+      const data = await this.nadoArchive({
+        subaccounts: {
+          address: owner,
+          start: start.toString(),
+          limit: 500
+        }
+      }, signal);
+      const page = data && Array.isArray(data.subaccounts) ? data.subaccounts : [];
+      let maxId = null;
+      page.forEach(item => {
+        if (String(item.address || '').toLowerCase() !== owner) return;
+        const subaccount = String(item.subaccount || '').toLowerCase();
+        if (!/^0x[0-9a-f]{64}$/.test(subaccount) || seen.has(subaccount)) return;
+        seen.add(subaccount);
+        result.push({
+          id: String(item.id),
+          subaccount: subaccount,
+          createdAt: Number(item.created_at),
+          isolated: Boolean(item.isolated)
+        });
+        const id = BigInt(item.id);
+        if (maxId === null || id > maxId) maxId = id;
+      });
+      if (page.length < 500) {
+        complete = true;
+        break;
+      }
+      if (maxId === null || maxId < start) throw new Error('NADO pagination did not advance.');
+      start = maxId + 1n;
+    }
+    if (!complete) throw new Error('NADO subaccount history exceeds the client-side pagination limit.');
+    return result;
+  };
+
+  fetchNado = async (address, signal) => {
+    const owner = this.cleanAddress(address).toLowerCase();
+    const subaccounts = await this.fetchAllNadoSubaccounts(owner, signal);
+    const createdTimes = subaccounts.map(item => item.createdAt).filter(Number.isFinite);
+    if (!subaccounts.length) {
+      let points = null;
+      try {
+        points = await this.fetchNadoPoints(owner, signal);
+      } catch (error) {
+        if (signal && signal.aborted) throw error;
+      }
+      return {
+        active: false,
+        volumeX18: '0',
+        tradeCount: '0',
+        marketCount: 0,
+        favorite: '',
+        joinedAt: null,
+        netPnlX18: null,
+        depositUsdX18: null,
+        withdrawalUsdX18: null,
+        depositCount: 0,
+        withdrawalCount: 0,
+        pointsX18: points ? points.pointsX18 : null,
+        pointsRank: points ? points.rank : null,
+        pointsTier: points ? points.tier : null
+      };
+    }
+
+    const crossSubaccounts = subaccounts.filter(item => !item.isolated);
+    const rows = [];
+    const timestamp = Math.floor(Date.now() / 1000);
+    for (let i = 0; i < crossSubaccounts.length; i += 20) {
+      const chunk = crossSubaccounts.slice(i, i + 20).map(item => item.subaccount);
+      const data = await this.nadoArchive({
+        account_snapshots: {
+          subaccounts: chunk,
+          timestamps: [timestamp],
+          active: false
+        }
+      }, signal);
+      chunk.forEach(subaccount => {
+        const buckets = data && data.snapshots && data.snapshots[subaccount] ? data.snapshots[subaccount] : {};
+        Object.values(buckets).forEach(bucket => {
+          if (Array.isArray(bucket)) rows.push.apply(rows, bucket);
+        });
+      });
+    }
+
+    let symbols = {};
+    try {
+      const symbolData = await this.requestJson(NADO_SYMBOLS_URL, {}, signal, 15000);
+      symbols = symbolData && symbolData.data && symbolData.data.symbols ? symbolData.data.symbols : {};
+    } catch (error) {
+      if (signal && signal.aborted) throw error;
+    }
+    const symbolById = {};
+    Object.keys(symbols).forEach(key => {
+      const item = symbols[key];
+      if (item && Number.isInteger(Number(item.product_id))) {
+        symbolById[Number(item.product_id)] = String(item.symbol || key);
+      }
+    });
+
+    const byProduct = {};
+    let totalVolume = 0n;
+    let totalTrades = 0n;
+    rows.forEach(row => {
+      const productId = Number(row.product_id);
+      if (!Number.isInteger(productId)) return;
+      let volume = BigInt(row.quote_volume_cumulative || 0);
+      let trades = BigInt(row.cumulative_trade_count || 0);
+      if (volume < 0n) volume = 0n;
+      if (trades < 0n) trades = 0n;
+      totalVolume += volume;
+      totalTrades += trades;
+      if (!byProduct[productId]) byProduct[productId] = { volume: 0n, trades: 0n };
+      byProduct[productId].volume += volume;
+      byProduct[productId].trades += trades;
+    });
+
+    const markets = Object.keys(byProduct).map(key => {
+      const productId = Number(key);
+      return {
+        productId: productId,
+        symbol: symbolById[productId] || ('MARKET-' + productId),
+        volume: byProduct[productId].volume,
+        trades: byProduct[productId].trades
+      };
+    }).filter(item => item.volume > 0n || item.trades > 0n).sort((a, b) => {
+      if (a.volume === b.volume) return a.trades === b.trades ? a.productId - b.productId : (a.trades > b.trades ? -1 : 1);
+      return a.volume > b.volume ? -1 : 1;
+    });
+    const favorite = markets.find(item => item.productId !== 0) || markets[0] || null;
+    const enrichment = await Promise.allSettled([
+      this.fetchNadoNetPnl(crossSubaccounts, signal),
+      this.fetchNadoCashflows(crossSubaccounts, signal),
+      this.fetchNadoPoints(owner, signal)
+    ]);
+    if (signal && signal.aborted) throw new Error('NADO read cancelled.');
+    const netPnl = enrichment[0].status === 'fulfilled' ? enrichment[0].value : null;
+    const cashflows = enrichment[1].status === 'fulfilled' ? enrichment[1].value : null;
+    const points = enrichment[2].status === 'fulfilled' ? enrichment[2].value : null;
+    return {
+      active: totalVolume > 0n || totalTrades > 0n,
+      volumeX18: totalVolume.toString(),
+      tradeCount: totalTrades.toString(),
+      marketCount: markets.filter(item => item.trades > 0n).length,
+      favorite: favorite ? favorite.symbol : '',
+      joinedAt: createdTimes.length ? Math.min.apply(null, createdTimes) : null,
+      netPnlX18: netPnl,
+      depositUsdX18: cashflows ? cashflows.depositUsdX18 : null,
+      withdrawalUsdX18: cashflows ? cashflows.withdrawalUsdX18 : null,
+      depositCount: cashflows ? cashflows.depositCount : null,
+      withdrawalCount: cashflows ? cashflows.withdrawalCount : null,
+      pointsX18: points ? points.pointsX18 : null,
+      pointsRank: points ? points.rank : null,
+      pointsTier: points ? points.tier : null
+    };
+  };
+
+  addressWord(address) {
+    return this.cleanAddress(address).slice(2).toLowerCase().padStart(64, '0');
+  }
+
+  decodeAddress(hex) {
+    const raw = String(hex || '');
+    if (!/^0x[0-9a-fA-F]{64,}$/.test(raw)) throw new Error('Contract returned an invalid address.');
+    return '0x' + raw.slice(-40);
+  }
+
+  decodeWords(hex, minimum) {
+    const raw = String(hex || '').replace(/^0x/, '');
+    if (!/^[0-9a-fA-F]*$/.test(raw) || raw.length < minimum * 64) throw new Error('Contract returned invalid data.');
+    const words = [];
+    for (let i = 0; i + 64 <= raw.length; i += 64) {
+      words.push(BigInt('0x' + raw.slice(i, i + 64)));
+    }
+    return words;
+  }
+
+  decodeAddressArray(hex) {
+    const raw = String(hex || '').replace(/^0x/, '');
+    if (!/^[0-9a-fA-F]*$/.test(raw) || raw.length < 128) throw new Error('Contract returned an invalid address list.');
+    const offset = Number(BigInt('0x' + raw.slice(0, 64))) * 2;
+    if (!Number.isSafeInteger(offset) || offset < 0 || offset + 64 > raw.length) throw new Error('Contract returned an invalid list offset.');
+    const length = Number(BigInt('0x' + raw.slice(offset, offset + 64)));
+    if (!Number.isSafeInteger(length) || length < 0 || offset + 64 + length * 64 > raw.length) throw new Error('Contract returned an invalid list length.');
+    const result = [];
+    for (let index = 0; index < length; index += 1) {
+      const start = offset + 64 + index * 64;
+      result.push('0x' + raw.slice(start + 24, start + 64).toLowerCase());
+    }
+    return result;
+  }
+
+  addressTopic(address) {
+    return '0x' + this.addressWord(address);
+  }
+
+  explorerLogRange = async (options, signal, depth) => {
+    if (options.budget) {
+      if (options.budget.remaining <= 0) throw new Error('Ink explorer request budget reached.');
+      options.budget.remaining -= 1;
+    }
+    const query = new URLSearchParams({
+      module: 'logs',
+      action: 'getLogs',
+      fromBlock: String(options.fromBlock),
+      toBlock: String(options.toBlock),
+      address: options.address,
+      topic0: options.topic0
+    });
+    query.set('topic' + options.walletTopic, this.addressTopic(options.wallet));
+    query.set('topic0_' + options.walletTopic + '_opr', 'and');
+    const data = await this.requestJson(INK_EXPLORER_API + '?' + query.toString(), {}, signal, 24000);
+    let logs = [];
+    if (data && Array.isArray(data.result)) logs = data.result;
+    else if (data && data.status === '0' && /no (records|logs)/i.test(String(data.result || data.message || ''))) logs = [];
+    else throw new Error(data && (data.result || data.message) ? String(data.result || data.message) : 'Ink explorer log query failed.');
+    if (logs.length < 1000) return logs;
+    if (options.fromBlock >= options.toBlock || Number(depth || 0) > 24) throw new Error('Ink explorer log range is too dense.');
+    const middle = Math.floor((Number(options.fromBlock) + Number(options.toBlock)) / 2);
+    const sides = await Promise.all([
+      this.explorerLogRange(Object.assign({}, options, { toBlock: middle }), signal, Number(depth || 0) + 1),
+      this.explorerLogRange(Object.assign({}, options, { fromBlock: middle + 1 }), signal, Number(depth || 0) + 1)
+    ]);
+    return sides[0].concat(sides[1]);
+  };
+
+  logWord(data, index) {
+    const raw = String(data || '').replace(/^0x/, '');
+    const start = Number(index || 0) * 64;
+    if (raw.length < start + 64) throw new Error('Ink explorer returned incomplete event data.');
+    return BigInt('0x' + raw.slice(start, start + 64));
+  }
+
+  fetchTydroHistory = async (pool, address, head, signal) => {
+    const names = Object.keys(TYDRO_EVENT_QUERIES);
+    const budget = { remaining: 70 };
+    const pages = await Promise.all(names.map(name => {
+      const event = TYDRO_EVENT_QUERIES[name];
+      return this.explorerLogRange({
+        address: pool,
+        topic0: event.topic0,
+        wallet: address,
+        walletTopic: event.walletTopic,
+        fromBlock: TYDRO_POOL_START_BLOCK,
+        toBlock: head,
+        budget: budget
+      }, signal, 0);
+    }));
+    const counts = {};
+    names.forEach((name, index) => { counts[name] = pages[index].length; });
+    return {
+      supplyCount: counts.supply || 0,
+      withdrawCount: counts.withdraw || 0,
+      borrowCount: counts.borrow || 0,
+      repayCount: counts.repay || 0,
+      liquidationCount: counts.liquidation || 0,
+      actionCount: pages.reduce((total, page) => total + page.length, 0)
+    };
+  };
+
+  fetchCanonicalEthBridge = async (address, head, signal) => {
+    const budget = { remaining: 30 };
+    const pages = await Promise.all([
+      this.explorerLogRange({
+        address: INK_L2_STANDARD_BRIDGE,
+        topic0: INK_ETH_BRIDGE_IN_TOPIC,
+        wallet: address,
+        walletTopic: 2,
+        fromBlock: 0,
+        toBlock: head,
+        budget: budget
+      }, signal, 0),
+      this.explorerLogRange({
+        address: INK_L2_STANDARD_BRIDGE,
+        topic0: INK_ETH_BRIDGE_OUT_TOPIC,
+        wallet: address,
+        walletTopic: 1,
+        fromBlock: 0,
+        toBlock: head,
+        budget: budget
+      }, signal, 0)
+    ]);
+    const incoming = pages[0].reduce((total, log) => total + this.logWord(log.data, 0), 0n);
+    const outgoing = pages[1].reduce((total, log) => total + this.logWord(log.data, 0), 0n);
+    return {
+      incomingWei: incoming.toString(),
+      outgoingWei: outgoing.toString(),
+      incomingCount: pages[0].length,
+      outgoingCount: pages[1].length
+    };
+  };
+
+  fetchTydro = async (address, signal) => {
+    const block = await this.rpc('eth_blockNumber', [], signal);
+    const call = (to, data) => this.rpc('eth_call', [{ to: to, data: data }, block], signal);
+    const roots = await Promise.all([
+      call(TYDRO_ADDRESSES_PROVIDER, '0x026b1d5f'),
+      call(TYDRO_ADDRESSES_PROVIDER, '0xfca513a8'),
+      call(TYDRO_ADDRESSES_PROVIDER, '0xe860accb')
+    ]);
+    const pool = this.decodeAddress(roots[0]);
+    const oracle = this.decodeAddress(roots[1]);
+    const dataProvider = this.decodeAddress(roots[2]);
+    const result = await Promise.all([
+      call(pool, '0xbf92857c' + this.addressWord(address)),
+      call(oracle, '0x8c89b64f'),
+      call(pool, '0xd1946dbc')
+    ]);
+    const words = this.decodeWords(result[0], 6);
+    const unitWords = this.decodeWords(result[1], 1);
+    const reserves = this.decodeAddressArray(result[2]);
+    const collateral = words[0];
+    const debt = words[1];
+    const reserveResults = await Promise.allSettled(reserves.map(async asset => {
+      const values = await Promise.all([
+        call(dataProvider, '0x28dd2d01' + this.addressWord(asset) + this.addressWord(address)),
+        call(asset, '0x313ce567'),
+        call(oracle, '0xb3596f07' + this.addressWord(asset))
+      ]);
+      const user = this.decodeWords(values[0], 3);
+      const decimals = Number(this.decodeWords(values[1], 1)[0]);
+      const price = this.decodeWords(values[2], 1)[0];
+      if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) throw new Error('Reserve returned invalid decimals.');
+      const suppliedRaw = user[0];
+      const borrowedRaw = user[1] + user[2];
+      const tokenUnit = 10n ** BigInt(decimals);
+      return {
+        suppliedBase: suppliedRaw * price / tokenUnit,
+        borrowedBase: borrowedRaw * price / tokenUnit,
+        supplied: suppliedRaw > 0n,
+        borrowed: borrowedRaw > 0n
+      };
+    }));
+    let suppliedBase = 0n;
+    let borrowedBase = 0n;
+    let suppliedAssetCount = 0;
+    let borrowedAssetCount = 0;
+    let assetCount = 0;
+    const reserveReadComplete = reserveResults.every(item => item.status === 'fulfilled');
+    reserveResults.forEach(item => {
+      if (item.status !== 'fulfilled') return;
+      suppliedBase += item.value.suppliedBase;
+      borrowedBase += item.value.borrowedBase;
+      if (item.value.supplied) suppliedAssetCount += 1;
+      if (item.value.borrowed) borrowedAssetCount += 1;
+      if (item.value.supplied || item.value.borrowed) assetCount += 1;
+    });
+    return {
+      active: collateral > 0n || debt > 0n || (reserveReadComplete && suppliedBase > 0n),
+      collateralBase: collateral.toString(),
+      debtBase: debt.toString(),
+      suppliedBase: reserveReadComplete ? suppliedBase.toString() : null,
+      suppliedAssetCount: reserveReadComplete ? suppliedAssetCount : null,
+      borrowedAssetCount: reserveReadComplete ? borrowedAssetCount : null,
+      assetCount: reserveReadComplete ? assetCount : null,
+      reserveReadComplete: reserveReadComplete,
+      availableBase: words[2].toString(),
+      liquidationThresholdBps: Number(words[3]),
+      ltvBps: Number(words[4]),
+      healthFactorX18: words[5].toString(),
+      baseUnit: unitWords[0].toString(),
+      blockNumber: BigInt(block).toString(),
+      poolAddress: pool,
+      supplyCount: null,
+      withdrawCount: null,
+      borrowCount: null,
+      repayCount: null,
+      liquidationCount: null,
+      actionCount: null
+    };
+  };
+
+  loadTydroHistoryLater = async (address, tydro, seq) => {
+    if (!tydro || !tydro.poolAddress || !this.mountedFlag || seq !== this.requestSeq) return;
+    const controller = new AbortController();
+    this.historyController = controller;
+    this.setState({ tydroHistoryStatus: 'loading' });
+    try {
+      const history = await this.fetchTydroHistory(tydro.poolAddress, address, Number(tydro.blockNumber), controller.signal);
+      if (!this.mountedFlag || seq !== this.requestSeq || controller.signal.aborted) return;
+      this.setState(previous => ({
+        tydro: previous.tydro ? Object.assign({}, previous.tydro, history) : previous.tydro,
+        tydroHistoryStatus: 'ready'
+      }));
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        console.warn('Tydro history read failed', error);
+        if (this.mountedFlag && seq === this.requestSeq) this.setState({ tydroHistoryStatus: 'unavailable' });
+      }
+    } finally {
+      if (this.historyController === controller) this.historyController = null;
+    }
+  };
+
+  fetchInk = async (address, signal) => {
+    const head = await Promise.all([
+      this.rpc('eth_chainId', [], signal),
+      this.rpc('eth_blockNumber', [], signal)
+    ]);
+    if (BigInt(head[0]) !== 57073n) throw new Error('RPC is not Ink Mainnet.');
+    const account = await Promise.all([
+      this.rpc('eth_getBalance', [this.cleanAddress(address), head[1]], signal),
+      this.rpc('eth_getTransactionCount', [this.cleanAddress(address), head[1]], signal)
+    ]);
+    let bridge = null;
+    try {
+      bridge = await this.fetchCanonicalEthBridge(address, Number(BigInt(head[1])), signal);
+    } catch (error) {
+      if (signal && signal.aborted) throw error;
+      console.warn('Canonical bridge read failed', error);
+    }
+    return {
+      blockNumber: BigInt(head[1]).toString(),
+      balanceWei: BigInt(account[0]).toString(),
+      txCount: BigInt(account[1]).toString(),
+      bridgeAmountWei: bridge ? bridge.incomingWei : null,
+      bridgeOutWei: bridge ? bridge.outgoingWei : null,
+      bridgeInCount: bridge ? bridge.incomingCount : null,
+      bridgeOutCount: bridge ? bridge.outgoingCount : null
+    };
+  };
+
+  loadProfile = async (address, seq) => {
+    if (!this.mountedFlag || seq !== this.requestSeq) return;
+    const controller = new AbortController();
+    this.profileController = controller;
+    const settled = await Promise.allSettled([
+      this.fetchNado(address, controller.signal),
+      this.fetchTydro(address, controller.signal),
+      this.fetchInk(address, controller.signal)
+    ]);
+    if (!this.mountedFlag || seq !== this.requestSeq || controller.signal.aborted) return;
+
+    if (settled.every(item => item.status === 'rejected')) {
+      this.profileController = null;
+      clearInterval(this.tick);
+      this.setState(Object.assign({
+        phase: 'idle',
+        addr: address,
+        err: 'Live data sources are temporarily unavailable. Please try again.'
+      }, this.emptyProfileState()));
+      return;
+    }
+
+    const names = ['NADO', 'TYDRO', 'INK'];
+    const sourceErrors = [];
+    settled.forEach((item, index) => {
+      if (item.status === 'rejected') {
+        console.warn(names[index] + ' read failed', item.reason);
+        sourceErrors.push(names[index]);
+      }
+    });
+    this.profileController = null;
+    const tydroProfile = settled[1].status === 'fulfilled' ? settled[1].value : null;
+    this.setState({
+      addr: address,
+      profileReady: true,
+      nado: settled[0].status === 'fulfilled' ? settled[0].value : null,
+      tydro: tydroProfile,
+      ink: settled[2].status === 'fulfilled' ? settled[2].value : null,
+      sourceErrors: sourceErrors,
+      err: ''
+    }, () => this.maybeAdvanceIssuance(seq));
+  };
+
+  beginEngraving(seq) {
+    clearInterval(this.tick);
+    const speed = Math.max(48, this.props.engraveSpeed ?? 56);
+    this.tick = setInterval(() => {
+      if (!this.mountedFlag || seq !== this.requestSeq || (this.state.phase !== 'engraving' && this.state.phase !== 'waiting') || !this.state.target) {
+        clearInterval(this.tick);
+        return;
+      }
+      const n = Math.min(this.state.target.length, this.state.shown + 1);
+      if (n >= this.state.target.length) {
+        clearInterval(this.tick);
+        this.setState({ shown: this.state.target.length });
+        this.engraveFinishTimer = setTimeout(() => {
+          if (!this.mountedFlag || seq !== this.requestSeq || this.state.phase !== 'engraving') return;
+          this.setState({
+            engraveDone: true,
+            phase: this.state.profileReady ? 'engraving' : 'waiting'
+          }, () => this.maybeAdvanceIssuance(seq));
+        }, 140);
+        return;
+      }
+      this.setState({ shown: n });
+    }, speed);
+  }
+
+  maybeAdvanceIssuance = seq => {
+    if (!this.mountedFlag || seq !== this.requestSeq || !this.state.profileReady || !this.state.engraveDone) return;
+    if (this.state.phase !== 'engraving' && this.state.phase !== 'waiting') return;
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      this.setState({ phase: 'awaitingTear', shown: this.state.target.length });
+      return;
+    }
+
+    this.setState({ phase: 'scanning' });
+    this.scanTimer = setTimeout(() => {
+      if (!this.mountedFlag || seq !== this.requestSeq || this.state.phase !== 'scanning') return;
+      this.setState({ phase: 'awaitingTear' });
+    }, 2700);
+  };
+
+  handleTearPointerDown = event => {
+    if (this.state.phase !== 'awaitingTear' || this.tearTriggered) return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    const stub = this.stubRef.current;
+    if (!stub) return;
+    event.preventDefault();
+    clearTimeout(this.tearReturnTimer);
+    this.tearReturnTimer = null;
+    this.tearDragActive = true;
+    this.tearPointerId = event.pointerId;
+    this.tearDragStartX = event.clientX;
+    this.tearDragStartY = event.clientY;
+    this.tearDragDistance = 0;
+    this.tearDragVisualX = 0;
+    this.tearDragVisualY = 0;
+    this.tearDragRotation = 0;
+    this.tearDragThreshold = window.innerWidth <= 760 ? 78 : 86;
+    stub.classList.remove('is-returning', 'is-armed');
+    stub.classList.add('is-dragging');
+    stub.style.setProperty('--tear-x', '0px');
+    stub.style.setProperty('--tear-y', '0px');
+    stub.style.setProperty('--tear-rotate', '0deg');
+    stub.style.setProperty('--tear-release-x', '0px');
+    stub.style.setProperty('--tear-release-y', '0px');
+    stub.style.setProperty('--tear-release-rotate', '0deg');
+    const pass = stub.closest('.main-pass');
+    if (pass) pass.style.setProperty('--tear-progress', '0');
+    try { stub.setPointerCapture(event.pointerId); } catch (error) {}
+  };
+
+  handleTearPointerMove = event => {
+    if (!this.tearDragActive || event.pointerId !== this.tearPointerId || this.state.phase !== 'awaitingTear') return;
+    event.preventDefault();
+    const stub = this.stubRef.current;
+    if (!stub) return;
+    const rawX = event.clientX - this.tearDragStartX;
+    const rawY = event.clientY - this.tearDragStartY;
+    const projected = rawX * .88 + rawY * .42;
+    const maxDistance = this.tearDragThreshold * 1.38;
+    const distance = Math.max(0, Math.min(maxDistance, projected));
+    const progress = Math.min(1, distance / this.tearDragThreshold);
+    const mobileLayout = window.innerWidth <= 760;
+    const visualX = distance * (mobileLayout ? .58 : .92);
+    const visualY = distance * (mobileLayout ? .42 : .38);
+    const rotation = progress * 1.25;
+    this.tearDragDistance = distance;
+    this.tearDragVisualX = visualX;
+    this.tearDragVisualY = visualY;
+    this.tearDragRotation = rotation;
+    stub.style.setProperty('--tear-x', visualX.toFixed(1) + 'px');
+    stub.style.setProperty('--tear-y', visualY.toFixed(1) + 'px');
+    stub.style.setProperty('--tear-rotate', rotation.toFixed(2) + 'deg');
+    stub.classList.toggle('is-armed', progress >= 1);
+    const pass = stub.closest('.main-pass');
+    if (pass) pass.style.setProperty('--tear-progress', progress.toFixed(3));
+  };
+
+  returnTearStub = () => {
+    const stub = this.stubRef.current;
+    if (!stub) return;
+    stub.style.setProperty('--tear-release-x', this.tearDragVisualX.toFixed(1) + 'px');
+    stub.style.setProperty('--tear-release-y', this.tearDragVisualY.toFixed(1) + 'px');
+    stub.style.setProperty('--tear-release-rotate', this.tearDragRotation.toFixed(2) + 'deg');
+    stub.classList.remove('is-dragging', 'is-armed');
+    stub.classList.add('is-returning');
+    stub.style.removeProperty('--tear-x');
+    stub.style.removeProperty('--tear-y');
+    stub.style.removeProperty('--tear-rotate');
+    const pass = stub.closest('.main-pass');
+    if (pass) pass.style.setProperty('--tear-progress', '0');
+    clearTimeout(this.tearReturnTimer);
+    this.tearReturnTimer = setTimeout(() => {
+      if (!this.mountedFlag || this.state.phase !== 'awaitingTear') return;
+      const currentStub = this.stubRef.current;
+      if (!currentStub) return;
+      currentStub.classList.remove('is-returning');
+      currentStub.style.removeProperty('--tear-release-x');
+      currentStub.style.removeProperty('--tear-release-y');
+      currentStub.style.removeProperty('--tear-release-rotate');
+    }, 390);
+  };
+
+  finishTearPointer = (event, cancelled) => {
+    if (!this.tearDragActive || event.pointerId !== this.tearPointerId) return;
+    const stub = this.stubRef.current;
+    const shouldDetach = !cancelled && this.tearDragDistance >= this.tearDragThreshold;
+    this.tearDragActive = false;
+    this.tearPointerId = null;
+    if (stub) {
+      try { if (stub.hasPointerCapture(event.pointerId)) stub.releasePointerCapture(event.pointerId); } catch (error) {}
+      stub.style.setProperty('--tear-release-x', this.tearDragVisualX.toFixed(1) + 'px');
+      stub.style.setProperty('--tear-release-y', this.tearDragVisualY.toFixed(1) + 'px');
+      stub.style.setProperty('--tear-release-rotate', this.tearDragRotation.toFixed(2) + 'deg');
+      stub.classList.remove('is-dragging', 'is-armed');
+    }
+    if (shouldDetach) {
+      const pass = stub && stub.closest('.main-pass');
+      if (pass) pass.style.setProperty('--tear-progress', '1');
+      this.beginTear();
+    } else {
+      this.returnTearStub();
+    }
+  };
+
+  handleTearPointerUp = event => {
+    this.finishTearPointer(event, false);
+  };
+
+  handleTearPointerCancel = event => {
+    this.finishTearPointer(event, true);
+  };
+
+  beginTear = () => {
+    if (!this.mountedFlag || this.state.phase !== 'awaitingTear' || this.tearTriggered) return;
+    this.tearTriggered = true;
+    const seq = this.requestSeq;
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      this.setState({ phase: 'done' }, () => this.prepareShareBlob(seq));
+      return;
+    }
+
+    this.setState({ phase: 'tearing' });
+    this.tearTimer = setTimeout(() => {
+      if (!this.mountedFlag || seq !== this.requestSeq || this.state.phase !== 'tearing') return;
+      this.setState({ phase: 'covering' });
+    }, 2100);
+    this.revealTimer = setTimeout(() => {
+      if (!this.mountedFlag || seq !== this.requestSeq || this.state.phase !== 'covering') return;
+      this.setState({ phase: 'landing' }, () => this.prepareShareBlob(seq));
+    }, 4350);
+    this.landingTimer = setTimeout(() => {
+      if (!this.mountedFlag || seq !== this.requestSeq || this.state.phase !== 'landing') return;
+      this.setState({ phase: 'done' }, () => {
+        if (!this.state.shareImageReady) this.prepareShareBlob(seq);
+      });
+    }, 5550);
+  };
+
+  handleTearKey = event => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    if (this.state.phase !== 'awaitingTear') return;
+    const stub = this.stubRef.current;
+    if (stub) {
+      stub.style.setProperty('--tear-release-x', '68px');
+      stub.style.setProperty('--tear-release-y', '28px');
+      stub.style.setProperty('--tear-release-rotate', '1.1deg');
+      const pass = stub.closest('.main-pass');
+      if (pass) pass.style.setProperty('--tear-progress', '1');
+    }
+    this.beginTear();
+  };
+
+  decimalFromRatio(rawValue, rawUnit, fractionDigits) {
+    let value = BigInt(rawValue || 0);
+    const unit = BigInt(rawUnit || 1);
+    const negative = value < 0n;
+    if (negative) value = -value;
+    const whole = value / unit;
+    const scale = 10n ** BigInt(fractionDigits || 4);
+    const fraction = (value % unit) * scale / unit;
+    const text = (negative ? '-' : '') + whole.toString() + '.' + fraction.toString().padStart(Number(fractionDigits || 4), '0');
+    return Number(text);
+  }
+
+  formatUsd(rawValue, unit) {
+    const value = this.decimalFromRatio(rawValue, unit, 4);
+    if (value === 0) return '$0';
+    if (value < 0) return this.formatSignedUsd(rawValue, unit);
+    if (value < 0.01) return '<$0.01';
+    if (value < 1000) {
+      return '$' + new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(value);
+    }
+    return '$' + new Intl.NumberFormat('en-US', {
+      notation: 'compact',
+      maximumFractionDigits: 2
+    }).format(value);
+  }
+
+  formatSignedUsd(rawValue, unit) {
+    const value = this.decimalFromRatio(rawValue, unit, 4);
+    if (value === 0) return '$0';
+    const absolute = Math.abs(value);
+    if (absolute < 0.01) return value < 0 ? '-<$0.01' : '+<$0.01';
+    const formatted = new Intl.NumberFormat('en-US', {
+      notation: absolute >= 1000 ? 'compact' : 'standard',
+      maximumFractionDigits: 2
+    }).format(absolute);
+    return (value < 0 ? '-' : '+') + '$' + formatted;
+  }
+
+  formatTokenAmount(rawValue, unit) {
+    const value = this.decimalFromRatio(rawValue, unit, 4);
+    if (value === 0) return '0';
+    if (Math.abs(value) < 0.01) return '<0.01';
+    return new Intl.NumberFormat('en-US', {
+      notation: Math.abs(value) >= 10000 ? 'compact' : 'standard',
+      maximumFractionDigits: 2
+    }).format(value);
+  }
+
+  formatCount(rawValue) {
+    const value = Number(rawValue || 0);
+    return new Intl.NumberFormat('en-US', {
+      notation: value >= 10000 ? 'compact' : 'standard',
+      maximumFractionDigits: value >= 10000 ? 1 : 0
+    }).format(value);
+  }
+
+  formatEth(rawValue) {
+    const value = this.decimalFromRatio(rawValue, '1000000000000000000', 6);
+    if (value === 0) return '0 ETH';
+    if (value < 0.0001) return '<0.0001 ETH';
+    return new Intl.NumberFormat('en-US', { maximumFractionDigits: 4 }).format(value) + ' ETH';
+  }
+
+  formatHealthFactor(tydro) {
+    if (!tydro) return '—';
+    if (BigInt(tydro.debtBase || 0) === 0n) return tydro.active ? '∞' : '—';
+    const value = this.decimalFromRatio(tydro.healthFactorX18, '1000000000000000000', 3);
+    return value > 999 ? '999+' : value.toFixed(2);
+  }
+
+  exportStillCurrent(seq, hiddenSnapshot) {
+    return this.mountedFlag &&
+      seq === this.requestSeq &&
+      (this.state.phase === 'landing' || this.state.phase === 'done') &&
+      this.state.walletHidden === hiddenSnapshot;
+  }
+
+  renderPassBlob = async (seq, hiddenSnapshot = this.state.walletHidden) => {
+    const source = this.cardRef.current;
+    if (!source || !window.html2canvas || !this.exportStillCurrent(seq, hiddenSnapshot)) throw new Error('Boarding pass is not ready.');
+
+    const host = document.createElement('div');
+    host.setAttribute('aria-hidden', 'true');
+    host.style.cssText = 'position:fixed;left:-12000px;top:0;width:1000px;height:535px;overflow:hidden;pointer-events:none;';
+    const el = source.cloneNode(true);
+    el.classList.add('capture-export', 'capture-with-stub');
+    el.style.transform = 'none';
+    host.appendChild(el);
+    document.body.appendChild(host);
+
+    try {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (!this.exportStillCurrent(seq, hiddenSnapshot)) throw new Error('Boarding pass changed during export.');
+      const canvas = await window.html2canvas(el, {
+        backgroundColor: '#09090c',
+        scale: 1,
+        width: 1000,
+        height: 535,
+        windowWidth: 1200,
+        windowHeight: 700,
+        useCORS: true,
+        logging: false
+      });
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Could not render PNG.');
+      if (!this.exportStillCurrent(seq, hiddenSnapshot)) throw new Error('Boarding pass changed during export.');
+      return blob;
+    } finally {
+      host.remove();
+    }
+  };
+
+  getCachedPassBlob() {
+    return this.shareBlob &&
+      this.shareBlobSeq === this.requestSeq &&
+      this.shareBlobHidden === this.state.walletHidden
+      ? this.shareBlob
+      : null;
+  }
+
+  prepareShareBlob = seq => {
+    const hiddenSnapshot = this.state.walletHidden;
+    const key = String(seq) + ':' + String(hiddenSnapshot);
+    if (this.sharePreparePromise && this.sharePrepareKey === key) return this.sharePreparePromise;
+
+    const task = (async () => {
+      try {
+        const blob = await this.renderPassBlob(seq, hiddenSnapshot);
+        if (!this.exportStillCurrent(seq, hiddenSnapshot)) return;
+        this.shareBlob = blob;
+        this.shareBlobSeq = seq;
+        this.shareBlobHidden = hiddenSnapshot;
+        this.setState({ shareImageReady: true });
+      } catch (error) {
+        if (this.mountedFlag && seq === this.requestSeq && this.state.walletHidden === hiddenSnapshot) {
+          console.warn('Share image cache could not be prepared.', error);
+          this.setState({ shareImageReady: false });
+        }
+      }
+    })();
+    this.sharePrepareKey = key;
+    this.sharePreparePromise = task;
+    task.finally(() => {
+      if (this.sharePreparePromise === task) {
+        this.sharePreparePromise = null;
+        this.sharePrepareKey = '';
+      }
+    });
+    return task;
+  };
+
+  downloadPassBlob(blob) {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'ink-onchain-boarding-pass.png';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  }
+
+  capture = async () => {
+    if (!this.cardRef.current || !window.html2canvas || this.state.capturing || this.state.sharing || this.state.phase !== 'done') return;
+    const seq = this.requestSeq;
+    const hiddenSnapshot = this.state.walletHidden;
+    this.setState({ capturing: true });
+    try {
+      const blob = this.getCachedPassBlob() || await this.renderPassBlob(seq, hiddenSnapshot);
+      if (!this.exportStillCurrent(seq, hiddenSnapshot)) return;
+      this.shareBlob = blob;
+      this.shareBlobSeq = seq;
+      this.shareBlobHidden = hiddenSnapshot;
+      if (!this.state.shareImageReady) this.setState({ shareImageReady: true });
+      let placedOnClipboard = false;
+      if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
+        try {
+          await navigator.clipboard.write([new window.ClipboardItem({ 'image/png': blob })]);
+          placedOnClipboard = true;
+        } catch (error) {
+          console.warn('Clipboard unavailable; downloading PNG instead.', error);
+        }
+      }
+      if (!this.exportStillCurrent(seq, hiddenSnapshot)) return;
+      if (!placedOnClipboard) this.downloadPassBlob(blob);
+      if (!this.exportStillCurrent(seq, hiddenSnapshot)) return;
+      this.setState({ copied: true });
+      clearTimeout(this.copyTimer);
+      this.copyTimer = setTimeout(() => {
+        if (this.mountedFlag) this.setState({ copied: false });
+      }, 2000);
+    } catch (error) {
+      console.warn('copy failed', error);
+      if (this.mountedFlag && seq === this.requestSeq) this.setState({ copied: false });
+    } finally {
+      if (this.mountedFlag && seq === this.requestSeq) this.setState({ capturing: false });
+    }
+  };
+
+  buildSharePayload() {
+    const nado = this.state.nado;
+    const tydro = this.state.tydro;
+    const ink = this.state.ink;
+    const nadoVolume = nado ? this.formatUsd(nado.volumeX18 || '0', '1000000000000000000') : '—';
+    const nadoPnl = nado && nado.netPnlX18 !== null && nado.netPnlX18 !== undefined
+      ? this.formatSignedUsd(nado.netPnlX18, '1000000000000000000') : '—';
+    const nadoPoints = nado && nado.pointsX18 !== null && nado.pointsX18 !== undefined
+      ? this.formatTokenAmount(nado.pointsX18, '1000000000000000000') : '—';
+    const tydroSupplied = tydro && tydro.suppliedBase !== null && tydro.suppliedBase !== undefined
+      ? this.formatUsd(tydro.suppliedBase, tydro.baseUnit) : '—';
+    const inkBalance = ink ? this.formatEth(ink.balanceWei || '0') : '—';
+    const lines = [
+      '✈️ Your INK Ecosystem onboarding has begun!',
+      '',
+      'Grab your boarding pass and prepare for takeoff.',
+      'Connect through TYDRO, then land at NADO. 🛫',
+      '',
+      '🎫 ' + (this.state.walletHidden ? 'PRIVATE WALLET' : this.shortAddress(this.state.target)),
+      '',
+      'NADO  ' + nadoVolume + ' vol · ' + nadoPnl + ' PnL · ' + nadoPoints + ' pts',
+      'TYDRO  ' + tydroSupplied + ' supplied · HF ' + this.formatHealthFactor(tydro),
+      'INK  ' + inkBalance
+    ];
+    let shareUrl = '';
+    if (!/^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) {
+      const url = new URL(window.location.origin + window.location.pathname);
+      if (!this.state.walletHidden) url.searchParams.set('wallet', this.state.target);
+      shareUrl = url.toString();
+    }
+    return { text: lines.join('\n'), url: shareUrl };
+  }
+
+  share = async () => {
+    if (!this.cardRef.current || !window.html2canvas || this.state.capturing || this.state.sharing || this.state.phase !== 'done') return;
+    const seq = this.requestSeq;
+    const hiddenSnapshot = this.state.walletHidden;
+    const blob = this.getCachedPassBlob();
+    if (!blob || !this.exportStillCurrent(seq, hiddenSnapshot)) {
+      this.setState({ shareImageReady: false });
+      this.prepareShareBlob(seq);
+      return;
+    }
+    const payload = this.buildSharePayload();
+    const intent = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(payload.text) + (payload.url ? '&url=' + encodeURIComponent(payload.url) : '');
+    const mobileLike = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+    let file = null;
+    let supportsFileShare = false;
+    if (mobileLike && typeof File === 'function' && navigator.share && navigator.canShare) {
+      try {
+        file = new File([blob], 'ink-onchain-boarding-pass.png', { type: 'image/png' });
+        supportsFileShare = navigator.canShare({ files: [file] });
+      } catch (error) {
+        file = null;
+        console.warn('Native image share capability check failed.', error);
+      }
+    }
+
+    let composer = null;
+    if (!supportsFileShare) {
+      composer = window.open('about:blank', '_blank');
+      if (composer) composer.opener = null;
+    }
+    this.setState({ sharing: true, shareStatus: '' });
+    try {
+      if (supportsFileShare && file) {
+        try {
+          const shareData = { title: 'INK Ecosystem Boarding Pass', text: payload.text, files: [file] };
+          if (payload.url) shareData.url = payload.url;
+          const nativeShare = navigator.share(shareData);
+          await nativeShare;
+          if (this.exportStillCurrent(seq, hiddenSnapshot)) this.setState({ shareStatus: 'Boarding pass shared with image' });
+          return;
+        } catch (error) {
+          if (error && error.name === 'AbortError') {
+            return;
+          }
+          console.warn('Native file share unavailable; opening X composer.', error);
+        }
+      }
+
+      let imageCopied = false;
+      if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
+        try {
+          await navigator.clipboard.write([new window.ClipboardItem({ 'image/png': blob })]);
+          imageCopied = true;
+        } catch (error) {
+          console.warn('Image clipboard unavailable; opening X without image copy.', error);
+        }
+      }
+      if (!this.exportStillCurrent(seq, hiddenSnapshot)) {
+        if (composer && !composer.closed) composer.close();
+        return;
+      }
+      if (composer && !composer.closed) composer.location.replace(intent);
+      else window.location.assign(intent);
+      if (this.exportStillCurrent(seq, hiddenSnapshot)) {
+        this.setState({ shareStatus: imageCopied ? 'Image copied · paste it into X' : 'X opened with text · image copy unavailable' });
+      }
+    } catch (error) {
+      if (composer && !composer.closed) composer.close();
+      console.warn('share failed', error);
+      if (this.mountedFlag && seq === this.requestSeq) this.setState({ shareStatus: 'Share preparation failed · try again' });
+    } finally {
+      if (this.mountedFlag && seq === this.requestSeq) {
+        this.setState({ sharing: false });
+        clearTimeout(this.shareTimer);
+        this.shareTimer = setTimeout(() => {
+          if (this.mountedFlag && seq === this.requestSeq) this.setState({ shareStatus: '' });
+        }, 6500);
+      }
+    }
+  };
+
+  renderVals() {
+    const s = this.state;
+    const accent = this.props.accent ?? '#6C2BF5';
+    const base = {
+      position: 'relative',
+      display: 'inline-block',
+      width: '1ch',
+      textAlign: 'center',
+      fontSize: '11.5px',
+      fontWeight: 700,
+      letterSpacing: '0.015em'
+    };
+    const raised = Object.assign({}, base, {
+      color: '#2b2e35',
+      textShadow: '0 1px 0 rgba(255,255,255,0.9), 0 -1px 1px rgba(10,12,16,0.5)'
+    });
+    const hot = Object.assign({}, raised);
+    const pending = Object.assign({}, base, {
+      color: 'rgba(20,22,27,0.16)',
+      textShadow: 'none'
+    });
+    const active = Object.assign({}, base, {
+      color: '#17181d',
+      textShadow: '0 0 3px #fff, 0 1px 0 rgba(255,255,255,.95), 0 -1px 1px rgba(10,12,16,.55)'
+    });
+    hot.color = '#2b2e35';
+    hot.textShadow = '0 1px 0 rgba(255,255,255,.9), 0 -1px 1px rgba(10,12,16,.5)';
+    const chars = (s.target || '').split('').map((c, i) => {
+      const isActive = i === s.shown && s.phase === 'engraving';
+      const delta = s.shown - i;
+      return {
+        c: c,
+        style: isActive ? active : (i < s.shown ? (delta <= 3 ? hot : raised) : pending),
+        active: isActive
+      };
+    });
+    const pct = s.target ? Math.round((s.shown / s.target.length) * 100) : 0;
+    const sourceErrors = Array.isArray(s.sourceErrors) ? s.sourceErrors : [];
+    const sourceCount = 3 - sourceErrors.length;
+    const busy = s.phase !== 'idle' && s.phase !== 'done';
+    const addressValid = this.isAddress(s.addr);
+    const summaryVisible = s.phase === 'covering' || s.phase === 'landing' || s.phase === 'done';
+
+    let statusLabel = 'Ready for check-in';
+    let progressLabel = 'Enter a public Ink / EVM address';
+    let liveLabel = 'Public data';
+    let liveDot = accent;
+    if (s.phase === 'syncing') {
+      statusLabel = 'Reading ecosystem';
+      progressLabel = 'NADO archive · Tydro contracts · Ink RPC';
+      liveLabel = 'Syncing';
+    } else if (s.phase === 'engraving') {
+      statusLabel = 'Laser engraving wallet';
+      progressLabel = pct + '% · identity imprint in progress';
+      liveLabel = s.profileReady ? sourceCount + '/3 live' : 'Reading sources';
+      liveDot = accent;
+    } else if (s.phase === 'waiting') {
+      statusLabel = 'Engraving complete';
+      progressLabel = 'Finalizing live ecosystem data';
+      liveLabel = 'Gate clearance';
+      liveDot = accent;
+    } else if (s.phase === 'scanning') {
+      statusLabel = 'Reading barcode';
+      progressLabel = 'Red-line verification · gate 57073';
+      liveLabel = 'Scanning';
+      liveDot = '#ff1745';
+    } else if (s.phase === 'awaitingTear') {
+      statusLabel = 'Barcode cleared';
+      progressLabel = 'Hold the purple stub and pull diagonally right';
+      liveLabel = 'Ready to tear';
+      liveDot = '#79ffb1';
+    } else if (s.phase === 'tearing') {
+      statusLabel = 'Cleared for departure';
+      progressLabel = 'Detaching passenger stub';
+      liveLabel = 'Cleared';
+      liveDot = '#ff1745';
+    } else if (s.phase === 'covering') {
+      statusLabel = 'Stub detached';
+      progressLabel = 'Opening total journey manifest';
+      liveLabel = 'Cleared';
+      liveDot = '#ff1745';
+    } else if (s.phase === 'landing') {
+      statusLabel = 'Journey manifest cleared';
+      progressLabel = 'Returning your complete boarding pass';
+      liveLabel = sourceErrors.length ? 'Partial live' : '3/3 live';
+      liveDot = sourceErrors.length ? '#a36c17' : '#267a4c';
+    } else if (s.phase === 'revealing') {
+      statusLabel = 'Journey manifest cleared';
+      progressLabel = 'Preparing total onchain summary';
+      liveLabel = sourceErrors.length ? 'Partial live' : '3/3 live';
+      liveDot = sourceErrors.length ? '#a36c17' : '#267a4c';
+    } else if (s.phase === 'done') {
+      statusLabel = 'Total journey summary';
+      progressLabel = sourceErrors.length ? sourceCount + '/3 sources · ' + sourceErrors.join(', ') + ' unavailable' : '3 live sources · boarding pass ready';
+      liveLabel = sourceErrors.length ? 'Partial live' : 'Live data';
+      liveDot = sourceErrors.length ? '#a36c17' : '#267a4c';
+      if (!sourceErrors.length && s.tydroHistoryStatus === 'loading') progressLabel = '3 live sources · Tydro journey is still loading';
+      if (!sourceErrors.length && s.tydroHistoryStatus === 'unavailable') progressLabel = '3 live sources · current Tydro data ready';
+      if (s.shareStatus) {
+        statusLabel = 'X boarding message ready';
+        progressLabel = s.shareStatus;
+      }
+    }
+
+    let nadoPrimary = 'Unavailable';
+    let nadoSecondary = sourceErrors.indexOf('NADO') >= 0 ? 'Archive unavailable' : 'No activity';
+    if (s.nado) {
+      nadoPrimary = s.nado.active ? this.formatUsd(s.nado.volumeX18, '1000000000000000000') : 'No activity';
+      nadoSecondary = s.nado.active
+        ? this.formatCount(s.nado.tradeCount) + ' fills' + (s.nado.favorite ? ' · ' + s.nado.favorite : '')
+        : 'Wallet not indexed yet';
+    }
+
+    let tydroPrimary = 'Unavailable';
+    let tydroSecondary = sourceErrors.indexOf('TYDRO') >= 0 ? 'Contracts unavailable' : 'No position';
+    if (s.tydro) {
+      tydroPrimary = s.tydro.active ? this.formatUsd(s.tydro.collateralBase, s.tydro.baseUnit) : 'No position';
+      tydroSecondary = s.tydro.active
+        ? this.formatUsd(s.tydro.debtBase, s.tydro.baseUnit) + ' debt · HF ' + this.formatHealthFactor(s.tydro)
+        : 'No collateral or debt';
+    }
+
+    let inkPrimary = 'Unavailable';
+    let inkSecondary = sourceErrors.indexOf('INK') >= 0 ? 'RPC unavailable' : 'Reading chain';
+    if (s.ink) {
+      inkPrimary = this.formatEth(s.ink.balanceWei);
+      inkSecondary = 'Block #' + new Intl.NumberFormat('en-US').format(Number(s.ink.blockNumber));
+    }
+
+    let nadoVolume = '—';
+    let nadoPnl = '—';
+    let nadoDeposits = '—';
+    let nadoWithdrawals = '—';
+    let nadoPoints = '—';
+    if (s.nado) {
+      nadoVolume = this.formatUsd(s.nado.volumeX18 || '0', '1000000000000000000');
+      if (s.nado.netPnlX18 !== null && s.nado.netPnlX18 !== undefined) nadoPnl = this.formatSignedUsd(s.nado.netPnlX18, '1000000000000000000');
+      if (s.nado.depositUsdX18 !== null && s.nado.depositUsdX18 !== undefined) nadoDeposits = this.formatUsd(s.nado.depositUsdX18, '1000000000000000000');
+      if (s.nado.withdrawalUsdX18 !== null && s.nado.withdrawalUsdX18 !== undefined) nadoWithdrawals = this.formatUsd(s.nado.withdrawalUsdX18, '1000000000000000000');
+      if (s.nado.pointsX18 !== null && s.nado.pointsX18 !== undefined) {
+        nadoPoints = this.formatTokenAmount(s.nado.pointsX18, '1000000000000000000');
+        if (Number(s.nado.pointsTier || 0) > 0) nadoPoints += ' · T' + Number(s.nado.pointsTier);
+      }
+    }
+
+    let tydroSupplied = '—';
+    let tydroCollateral = '—';
+    let tydroDebt = '—';
+    let tydroHealth = '—';
+    let tydroAssets = '—';
+    let tydroSupplyOps = '—';
+    let tydroWithdrawOps = '—';
+    let tydroBorrowOps = '—';
+    let tydroRepayOps = '—';
+    let tydroLiquidations = '—';
+    if (s.tydroHistoryStatus === 'loading') {
+      tydroSupplyOps = '…';
+      tydroWithdrawOps = '…';
+      tydroBorrowOps = '…';
+      tydroRepayOps = '…';
+      tydroLiquidations = '…';
+    } else if (s.tydroHistoryStatus === 'unavailable') {
+      tydroSupplyOps = 'N/A';
+      tydroWithdrawOps = 'N/A';
+      tydroBorrowOps = 'N/A';
+      tydroRepayOps = 'N/A';
+      tydroLiquidations = 'N/A';
+    }
+    if (s.tydro) {
+      if (s.tydro.suppliedBase !== null && s.tydro.suppliedBase !== undefined) tydroSupplied = this.formatUsd(s.tydro.suppliedBase, s.tydro.baseUnit);
+      tydroCollateral = this.formatUsd(s.tydro.collateralBase || '0', s.tydro.baseUnit || '1');
+      tydroDebt = this.formatUsd(s.tydro.debtBase || '0', s.tydro.baseUnit || '1');
+      tydroHealth = this.formatHealthFactor(s.tydro);
+      if (s.tydro.assetCount !== null && s.tydro.assetCount !== undefined) tydroAssets = this.formatCount(s.tydro.assetCount) + ' active';
+      if (s.tydro.supplyCount !== null && s.tydro.supplyCount !== undefined) tydroSupplyOps = this.formatCount(s.tydro.supplyCount) + '×';
+      if (s.tydro.withdrawCount !== null && s.tydro.withdrawCount !== undefined) tydroWithdrawOps = this.formatCount(s.tydro.withdrawCount) + '×';
+      if (s.tydro.borrowCount !== null && s.tydro.borrowCount !== undefined) tydroBorrowOps = this.formatCount(s.tydro.borrowCount) + '×';
+      if (s.tydro.repayCount !== null && s.tydro.repayCount !== undefined) tydroRepayOps = this.formatCount(s.tydro.repayCount) + '×';
+      if (s.tydro.liquidationCount !== null && s.tydro.liquidationCount !== undefined) tydroLiquidations = this.formatCount(s.tydro.liquidationCount) + '×';
+    }
+
+    let inkBalance = '—';
+    let inkBridged = '—';
+    let inkTxCount = '—';
+    let inkBlock = '—';
+    if (s.ink) {
+      inkBalance = this.formatEth(s.ink.balanceWei || '0');
+      inkTxCount = this.formatCount(s.ink.txCount || '0');
+      inkBlock = '#' + this.formatCount(s.ink.blockNumber || '0');
+      if (s.ink.bridgeAmountWei !== null && s.ink.bridgeAmountWei !== undefined) inkBridged = this.formatEth(s.ink.bridgeAmountWei);
+    }
+
+    const markLayer = (source, left, top, width, height, light) => ({
+      position: 'absolute',
+      left: left,
+      top: top,
+      width: width,
+      height: height,
+      backgroundImage: 'url("' + (source || TRANSPARENT_PIXEL) + '")',
+      backgroundSize: 'contain',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      filter: light ? 'brightness(0) invert(1)' : 'brightness(0)',
+      opacity: light ? 0.3 : 0.34,
+      transform: light ? 'translateY(-1px)' : 'translateY(1px)'
+    });
+    const ticketMark = (source, dark) => ({
+      position: 'absolute',
+      inset: '0',
+      backgroundImage: 'url("' + (source || TRANSPARENT_PIXEL) + '")',
+      backgroundSize: 'contain',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      filter: dark ? 'brightness(0)' : 'brightness(0) invert(1)',
+      opacity: dark ? 0.86 : 0.94
+    });
+    const symbolMark = (source, geometry) => ({
+      position: 'absolute',
+      width: geometry.width,
+      height: geometry.height,
+      left: geometry.left,
+      top: geometry.top,
+      backgroundImage: 'url("' + (source || TRANSPARENT_PIXEL) + '")',
+      backgroundSize: '100% 100%',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      opacity: 0.9
+    });
+
+    const issuedDate = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date()).toUpperCase();
+    const holderAddress = s.target
+      ? (s.walletHidden ? this.privateAddressLabel() : s.target)
+      : (addressValid ? s.addr : 'ENTER ADDRESS TO ISSUE PASS');
+    let sourceLabel = 'PENDING';
+    if (s.phase === 'syncing') sourceLabel = 'SYNCING';
+    if (s.profileReady) sourceLabel = sourceCount + '/3 LIVE';
+    let stubStatus = 'OPEN';
+    if (s.phase === 'engraving') stubStatus = 'ENGRAVE';
+    if (s.phase === 'waiting') stubStatus = 'SYNC';
+    if (s.phase === 'scanning') stubStatus = 'SCAN';
+    if (s.phase === 'awaitingTear') stubStatus = 'TEAR';
+    if (s.phase === 'tearing') stubStatus = 'VOID';
+    if (s.phase === 'covering') stubStatus = 'CLEARED';
+    if (s.phase === 'revealing' || s.phase === 'landing' || s.phase === 'done') stubStatus = 'READY';
+
+    let hint = 'Enter any public Ink/EVM address. No wallet connection or signature is needed.';
+    if (s.phase === 'syncing') hint = 'Reading live public data. No transaction or wallet approval is requested.';
+    if (s.phase === 'engraving') hint = 'The public profile is being engraved onto the card.';
+    if (s.phase === 'waiting') hint = 'Engraving complete. Finalizing public data.';
+    if (s.phase === 'scanning') hint = 'Scanning the passenger stub barcode.';
+    if (s.phase === 'awaitingTear') hint = 'Barcode cleared. Hold the purple stub and pull it diagonally to the right.';
+    if (s.phase === 'tearing') hint = 'Barcode cleared. Passenger stub detached.';
+    if (s.phase === 'covering') hint = 'Passenger stub detached. Opening the journey manifest.';
+    if (s.phase === 'landing') hint = 'Your cleared boarding pass is returning with its destination stub.';
+    if (s.phase === 'revealing') hint = 'Preparing the total onchain journey summary.';
+    if (s.phase === 'done') hint = 'Public address profile · this card does not prove wallet ownership.';
+
+    const stageClass = 'ticket-stage solo-stage' + (summaryVisible ? ' summary-stage' : '');
+    const ticketCaptureClass = 'ticket-capture solo-capture' +
+      (s.phase === 'covering' ? ' is-summary-reveal' : '') +
+      (s.phase === 'landing' ? ' is-final-landing' : '');
+    const tearVisualActive = s.phase === 'tearing';
+    const mainPassClass = 'main-pass' +
+      (s.phase === 'scanning' ? ' is-scanning' : '') +
+      (s.phase === 'awaitingTear' ? ' is-awaiting-tear' : '') +
+      (tearVisualActive ? ' is-tearing' : '') +
+      (summaryVisible ? ' is-final-summary' : '');
+
+    return {
+      intro: (this.props.showIntro ?? true) && s.intro,
+      idle: s.phase === 'idle',
+      marking: s.phase !== 'idle',
+      engraving: s.phase === 'engraving',
+      done: s.phase === 'done',
+      waiting: s.phase === 'waiting',
+      scanning: s.phase === 'scanning',
+      awaitingTear: s.phase === 'awaitingTear',
+      tearing: s.phase === 'tearing',
+      covering: s.phase === 'covering',
+      landing: s.phase === 'landing',
+      transitionActive: s.phase === 'covering',
+      summaryVisible: summaryVisible,
+      summaryHidden: !summaryVisible,
+      laserAddress: s.phase === 'engraving',
+      staticAddress: s.phase !== 'engraving',
+      showRearPasses: false,
+      profileReady: Boolean(s.profileReady),
+      hasTarget: Boolean(s.target),
+      chars: chars,
+      addr: s.addr || '',
+      err: s.err,
+      serial: summaryVisible
+        ? (s.walletHidden ? 'INK-PRIVATE' : 'INK-' + ((s.target || '').replace(/[^a-zA-Z0-9]/g, '').slice(-8) || 'PLATE01').toUpperCase())
+        : 'INK-—————',
+      passTypeLabel: summaryVisible ? 'INK / TOTAL JOURNEY SUMMARY' : 'INK / ONCHAIN JOURNEY RECORD',
+      stageClass: stageClass,
+      ticketCaptureClass: ticketCaptureClass,
+      mainPassClass: mainPassClass,
+      stubClass: 'main-stub' + (s.phase === 'awaitingTear' ? ' is-interactive' : ''),
+      tearGuideActive: s.phase === 'awaitingTear',
+      stubTabIndex: s.phase === 'awaitingTear' ? 0 : -1,
+      stubAriaDisabled: s.phase !== 'awaitingTear',
+      stubAriaLabel: s.phase === 'awaitingTear' ? 'Hold and pull diagonally right to detach the purple passenger stub. Press Enter as a keyboard alternative.' : 'INK destination stub',
+      holderRowClass: 'holder-row' + (s.phase === 'engraving' ? ' is-engraving' : ''),
+      laserStyle: {
+        left: 'calc(' + Math.min(100, pct) + '% + .5ch)',
+        transitionDuration: Math.max(48, this.props.engraveSpeed ?? 56) + 'ms'
+      },
+      statusLabel: statusLabel,
+      progressLabel: progressLabel,
+      liveLabel: liveLabel,
+      liveDot: liveDot,
+      primaryLabel: busy ? 'Checking in…' : 'Issue pass',
+      primaryDisabled: busy || !addressValid,
+      inputDisabled: busy,
+      primaryCursor: busy || !addressValid ? 'not-allowed' : 'pointer',
+      primaryBackground: busy || !addressValid ? '#767982' : accent,
+      primaryOpacity: busy || !addressValid ? 0.68 : 1,
+      actionsDisabled: Boolean(s.capturing || s.sharing),
+      shareDisabled: Boolean(s.capturing || s.sharing || !s.shareImageReady),
+      walletHidden: Boolean(s.walletHidden),
+      privacyToggleClass: 'action-button privacy-toggle' + (s.walletHidden ? ' is-active' : ''),
+      privacyLabel: s.walletHidden ? 'Wallet hidden' : 'Hide wallet',
+      nadoPrimary: nadoPrimary,
+      nadoSecondary: nadoSecondary,
+      tydroPrimary: tydroPrimary,
+      tydroSecondary: tydroSecondary,
+      inkPrimary: inkPrimary,
+      inkSecondary: inkSecondary,
+      nadoVolume: nadoVolume,
+      nadoPnl: nadoPnl,
+      nadoDeposits: nadoDeposits,
+      nadoWithdrawals: nadoWithdrawals,
+      nadoPoints: nadoPoints,
+      tydroSupplied: tydroSupplied,
+      tydroCollateral: tydroCollateral,
+      tydroDebt: tydroDebt,
+      tydroHealth: tydroHealth,
+      tydroAssets: tydroAssets,
+      tydroSupplyOps: tydroSupplyOps,
+      tydroWithdrawOps: tydroWithdrawOps,
+      tydroBorrowOps: tydroBorrowOps,
+      tydroRepayOps: tydroRepayOps,
+      tydroLiquidations: tydroLiquidations,
+      inkBalance: inkBalance,
+      inkBridged: inkBridged,
+      inkTxCount: inkTxCount,
+      inkBlock: inkBlock,
+      holderAddress: holderAddress,
+      issuedDate: issuedDate,
+      sourceLabel: sourceLabel,
+      stubStatus: stubStatus,
+      liveDotStyle: { background: liveDot, boxShadow: '0 0 9px ' + liveDot },
+      inkMarkWhiteStyle: ticketMark(s.inkMark, false),
+      nadoMarkWhiteStyle: ticketMark(s.nadoMark, false),
+      tydroMarkDarkStyle: ticketMark(s.tydroMark, true),
+      tydroMarkWhiteStyle: ticketMark(s.tydroMark, false),
+      nadoSymbolDarkStyle: symbolMark(s.nadoMarkDark, { width:'433.82%', height:'108.82%', left:'-2.94%', top:'-4.41%' }),
+      inkSymbolDarkStyle: symbolMark(s.inkMarkDark, { width:'287.78%', height:'107.24%', left:'-3.62%', top:'-3.62%' }),
+      tydroSymbolDarkStyle: symbolMark(s.tydroMarkDark, { width:'375.64%', height:'125%', left:'-7.05%', top:'-12.18%' }),
+      inkMarkDarkStyle: markLayer(s.inkMark, '-14%', '-14%', '128%', '128%', false),
+      inkMarkLightStyle: markLayer(s.inkMark, '-14%', '-14%', '128%', '128%', true),
+      nadoMarkDarkStyle: markLayer(s.nadoMark, '-7%', '-7%', '114%', '114%', false),
+      nadoMarkLightStyle: markLayer(s.nadoMark, '-7%', '-7%', '114%', '114%', true),
+      hint: hint,
+      cardRef: this.cardRef,
+      stubRef: this.stubRef,
+      onAddressInput: this.handleAddressInput,
+      onAddressKey: this.handleAddressKey,
+      onSubmitAddress: this.buildFromAddress,
+      onTearPointerDown: this.handleTearPointerDown,
+      onTearPointerMove: this.handleTearPointerMove,
+      onTearPointerUp: this.handleTearPointerUp,
+      onTearPointerCancel: this.handleTearPointerCancel,
+      onTearStubKey: this.handleTearKey,
+      onCapture: this.capture,
+      onShare: this.share,
+      onNewAddress: this.startNewAddress,
+      onToggleWallet: this.toggleWalletHidden,
+      captureLabel: s.capturing ? 'Copying…' : (s.copied ? 'Copied' : 'Copy'),
+      shareLabel: s.sharing ? 'Sharing…' : (s.shareImageReady ? 'Share on X' : 'Preparing…')
+    };
+  }
+}
+</script>
+</body>
+</html>

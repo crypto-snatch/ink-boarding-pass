@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: ink-boarding-pass
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm ci || npm install
+    startCommand: node server.js
+    healthCheckPath: /health
