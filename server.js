@@ -18,14 +18,24 @@ const RPC_METHODS = new Set([
 ]);
 
 app.disable('x-powered-by');
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
 app.use(express.json({ limit: '120kb' }));
 
 // --- tiny per-IP rate limit (protects upstreams from abuse) ---
 const hits = new Map();
 app.use('/api/', (req, res, next) => {
   const now = Date.now();
-  const key = req.headers['x-forwarded-for']
-    ? String(req.headers['x-forwarded-for']).split(',')[0].trim()
+  // Behind Render's proxy the trustworthy client IP is the LAST entry
+  // (client-supplied X-Forwarded-For values are prepended, so first is spoofable).
+  const fwd = req.headers['x-forwarded-for'];
+  const key = fwd
+    ? String(fwd).split(',').pop().trim()
     : req.socket.remoteAddress;
   let entry = hits.get(key);
   if (!entry || now - entry.start > 10000) {
