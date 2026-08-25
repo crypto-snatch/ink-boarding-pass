@@ -1,4 +1,4 @@
-// Ink Boarding Pass — static host + same-origin API proxy.
+// Onchain Boarding Pass — static host + same-origin API proxy.
 // Proxies public NADO / Tydro / Ink endpoints so the browser never hits CORS.
 const express = require('express');
 const path = require('path');
@@ -304,4 +304,4 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }));
 
-app.listen(PORT, () => console.log('Ink Boarding Pass listening on :' + PORT));
+app.listen(PORT, () => console.log('Onchain Boarding Pass listening on :' + PORT));

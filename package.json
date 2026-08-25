@@ -1,8 +1,8 @@
 {
-  "name": "ink-boarding-pass",
+  "name": "onchain-boarding-pass",
   "version": "1.0.0",
   "private": true,
-  "description": "Live Ink ecosystem boarding pass built from public NADO, Tydro, and Ink onchain data.",
+  "description": "Issue your own onchain boarding pass — live INK and RISEx passes from public onchain data.",
   "engines": { "node": ">=18" },
   "scripts": { "start": "node server.js" },
   "dependencies": { "express": "^4.19.2" }

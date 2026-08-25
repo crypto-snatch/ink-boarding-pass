@@ -1,9 +1,10 @@
-# Ink Boarding Pass
+# Onchain Boarding Pass
 
-Live Ink ecosystem "boarding pass" — enter a wallet address and get an airline-ticket-style
-card built from public NADO, Tydro, and Ink onchain data. No wallet connection, read-only.
+Issue your own onchain "boarding pass" — enter a wallet address and get an airline-ticket-style
+card built from public data. Live routes: INK (NADO, Tydro, Ink chain) and RISEx (Rise chain);
+more projects are concept passes for now. No wallet connection, read-only.
 
-- **Live**: https://ink-boarding-pass.onrender.com
+- **Live**: https://onchain-boarding-pass.onrender.com
 - Deep link: `/?wallet=0x...`
 
 ## Architecture
@@ -13,5 +14,6 @@ card built from public NADO, Tydro, and Ink onchain data. No wallet connection, 
   - `POST /api/rpc` → Ink RPC (whitelisted read-only methods)
   - `POST /api/nado/archive`, `/api/nado/rewards`, `GET /api/nado/symbols` (5-min cache)
   - `GET /api/explorer` → Ink explorer `getLogs` only
+  - `GET /api/risex/profile?address=` → RISEx public profile aggregation (api.rise.trade, 30s cache)
   - per-IP rate limit, body caps, upstream timeouts, security headers
 - Deploy: Render web service (`render.yaml`), Node ≥18, `node server.js`, health check `/health`.

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ink-boarding-pass
+    name: onchain-boarding-pass
     runtime: node
     plan: starter
     region: oregon
