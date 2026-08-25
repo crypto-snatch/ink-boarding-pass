@@ -11,6 +11,7 @@ const NADO_ARCHIVE_URL = 'https://archive.prod.nado.xyz/v1';
 const NADO_REWARDS_URL = 'https://archive.prod.nado.xyz/rewards/v1';
 const NADO_SYMBOLS_URL = 'https://gateway.prod.nado.xyz/v1/query?type=symbols';
 const INK_EXPLORER_API = 'https://explorer.inkonchain.com/api';
+const RISEX_API_URL = 'https://api.rise.trade';
 
 const RPC_METHODS = new Set([
   'eth_chainId', 'eth_blockNumber', 'eth_getBalance',
@@ -23,6 +24,21 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
+
+// The editable design file is sometimes opened from the legacy local preview
+// on :8000. Let that local-only page reuse this server's real RISEx proxy.
+app.use('/api/risex/profile', (req, res, next) => {
+  const origin = String(req.headers.origin || '');
+  if (/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i.test(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+  }
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    return res.sendStatus(204);
+  }
   next();
 });
 app.use(express.json({ limit: '120kb' }));
@@ -66,6 +82,151 @@ async function forward(res, url, init, timeoutMs) {
     clearTimeout(timer);
   }
 }
+
+async function fetchJson(url, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs || 25000);
+  try {
+    const upstream = await fetch(url, {
+      headers: { Accept: 'application/json' },
+      signal: controller.signal
+    });
+    const text = await upstream.text();
+    let data = null;
+    try { data = text ? JSON.parse(text) : null; } catch (error) {
+      throw new Error('RISEx returned invalid JSON.');
+    }
+    if (!upstream.ok) {
+      const message = data && data.error && data.error.message;
+      throw new Error(message || ('RISEx HTTP ' + upstream.status));
+    }
+    return data && data.data !== undefined ? data.data : data;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function fetchRisexTransfers(address) {
+  const items = [];
+  let complete = false;
+  for (let page = 1; page <= 25; page += 1) {
+    const query = new URLSearchParams({
+      account: address,
+      page: String(page),
+      limit: '1000',
+      sorted_by: '-time'
+    });
+    const data = await fetchJson(RISEX_API_URL + '/v1/account/transfer-history?' + query, 26000);
+    const batch = data && Array.isArray(data.items) ? data.items : [];
+    items.push.apply(items, batch);
+    if (!data || !data.has_next_page) {
+      complete = true;
+      break;
+    }
+  }
+  if (!complete) throw new Error('RISEx transfer history is too large to summarize safely.');
+  return items;
+}
+
+function risexCabin(rank) {
+  if (!Number.isFinite(rank) || rank <= 0) return { code: 'OPEN', name: 'NEW TRAVELER' };
+  if (rank <= 100) return { code: 'F', name: 'FIRST CLASS' };
+  if (rank <= 500) return { code: 'J', name: 'BUSINESS' };
+  if (rank <= 2500) return { code: 'W', name: 'PREMIUM ECONOMY' };
+  if (rank <= 10000) return { code: 'Y+', name: 'ECONOMY PLUS' };
+  return { code: 'Y', name: 'ECONOMY' };
+}
+
+function sumDecimalRows(rows) {
+  const unit = 1000000000000000000n;
+  let total = 0n;
+  for (const item of rows) {
+    const match = String(item && item.amount !== undefined ? item.amount : '0').trim().match(/^([+-]?)(\d+)(?:\.(\d*))?$/);
+    if (!match) continue;
+    const fraction = (match[3] || '').slice(0, 18).padEnd(18, '0');
+    const value = BigInt(match[2]) * unit + BigInt(fraction || '0');
+    total += match[1] === '-' ? -value : value;
+  }
+  const negative = total < 0n;
+  if (negative) total = -total;
+  const whole = total / unit;
+  const fraction = (total % unit).toString().padStart(18, '0').replace(/0+$/, '');
+  return (negative ? '-' : '') + whole.toString() + (fraction ? '.' + fraction : '');
+}
+
+const risexProfileCache = new Map();
+app.get('/api/risex/profile', async (req, res) => {
+  const address = String(req.query.address || '').trim().toLowerCase();
+  if (!/^0x[0-9a-f]{40}$/.test(address) || /^0x0{40}$/.test(address)) {
+    return res.status(400).json({ error: 'Enter a valid EVM wallet address.' });
+  }
+
+  const cached = risexProfileCache.get(address);
+  if (cached && Date.now() - cached.at < 30000) {
+    res.setHeader('Cache-Control', 'private, max-age=15');
+    return res.json(cached.value);
+  }
+
+  const queryAddress = encodeURIComponent(address);
+  const reads = await Promise.allSettled([
+    fetchRisexTransfers(address),
+    fetchJson(RISEX_API_URL + '/v1/stats/user-trading?address=' + queryAddress, 22000),
+    fetchJson(RISEX_API_URL + '/v1/portfolio/details?account=' + queryAddress, 22000),
+    fetchJson(RISEX_API_URL + '/v1/portfolio/header?account=' + queryAddress, 22000),
+    fetchJson(RISEX_API_URL + '/v1/portfolio/stats?account=' + queryAddress + '&period=all', 22000)
+  ]);
+
+  if (reads.every(item => item.status === 'rejected')) {
+    return res.status(502).json({ error: 'RISEx public data is temporarily unavailable.' });
+  }
+
+  const transfers = reads[0].status === 'fulfilled' ? reads[0].value : [];
+  const trading = reads[1].status === 'fulfilled' ? reads[1].value : null;
+  const portfolio = reads[2].status === 'fulfilled' ? reads[2].value : null;
+  const header = reads[3].status === 'fulfilled' ? reads[3].value : null;
+  const performance = reads[4].status === 'fulfilled' ? reads[4].value : null;
+  const depositRows = transfers.filter(item => item && item.type === 'DEPOSIT');
+  const withdrawalRows = transfers.filter(item => item && item.type === 'WITHDRAW');
+  const latestPnl = portfolio && portfolio.summary && portfolio.summary.realized_pnl !== undefined
+    ? portfolio.summary.realized_pnl
+    : null;
+  const allTime = header && header.all_time ? header.all_time : null;
+  const rank = Number(allTime && allTime.volume_rank || 0);
+  const cabin = risexCabin(rank);
+  const failedSources = ['transfers', 'trading', 'pnl', 'rank', 'performance']
+    .filter((name, index) => reads[index].status === 'rejected');
+  const value = {
+    project: 'risex',
+    address,
+    network: { name: 'Rise Mainnet', chainId: 4153 },
+    volume: trading && trading.total_volume !== undefined
+      ? String(trading.total_volume)
+      : (allTime && allTime.volume !== undefined ? String(allTime.volume) : null),
+    netPnl: latestPnl === null || latestPnl === undefined ? null : String(latestPnl),
+    deposits: sumDecimalRows(depositRows),
+    withdrawals: sumDecimalRows(withdrawalRows),
+    depositCount: depositRows.length,
+    withdrawalCount: withdrawalRows.length,
+    tradeCount: trading && trading.trade_count !== undefined ? Number(trading.trade_count) : null,
+    winRate: trading && trading.win_rate !== undefined
+      ? String(trading.win_rate)
+      : (performance && performance.performance ? String(performance.performance.win_rate || '') : null),
+    rank: Number.isFinite(rank) && rank > 0 ? rank : null,
+    cabin,
+    points: null,
+    pointsStatus: 'owner-auth-required',
+    sourceCount: 5 - failedSources.length,
+    sourceTotal: 5,
+    failedSources
+  };
+  risexProfileCache.set(address, { at: Date.now(), value });
+  if (risexProfileCache.size > 1000) {
+    const oldest = risexProfileCache.keys().next().value;
+    risexProfileCache.delete(oldest);
+  }
+  res.setHeader('Cache-Control', 'private, max-age=15');
+  res.json(value);
+});
 
 const postJson = body => ({
   method: 'POST',
@@ -125,6 +286,15 @@ app.get('/api/explorer', (req, res) => {
 });
 
 app.get('/health', (req, res) => res.json({ ok: true }));
+
+// Local design source. Render/production serves only /public.
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/ink', express.static(path.join(__dirname, '..', 'ink'), {
+    setHeaders(res, filePath) {
+      if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache');
+    }
+  }));
+}
 
 app.use(express.static(path.join(__dirname, 'public'), {
   extensions: ['html'],

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ink Boarding Pass</title>
+<title>Ink Journey Pass</title>
 <meta name="description" content="A live Ink ecosystem boarding pass built from public NADO, Tydro, and Ink onchain data.">
 <link rel="icon" href="data:,">
 <script src="./support.js"></script>
@@ -14,8 +14,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
+  html { scroll-behavior:smooth; }
   html, body { margin: 0; padding: 0; background: #16171a; }
   a { color: #6C2BF5; text-decoration: none; }
   a:hover { color: #8b5cff; }
@@ -257,20 +258,57 @@
     0%, 100% { opacity: .45; box-shadow: 0 0 0 0 rgba(121,255,177,0); }
     50% { opacity: 1; box-shadow: 0 0 0 5px rgba(121,255,177,.08); }
   }
+  @keyframes projectDeckReveal {
+    0% { opacity:0; transform:translate3d(-86px,0,0); }
+    100% { opacity:1; transform:translate3d(0,0,0); }
+  }
+  @keyframes landingType {
+    from { width:0; }
+    to { width:22ch; }
+  }
+  @keyframes landingCursor {
+    0%,44% { opacity:1; }
+    45%,100% { opacity:0; }
+  }
+  @keyframes landingMetalSheen {
+    0% { transform:translate3d(-42%,0,0) skewX(-12deg); opacity:.08; }
+    48% { opacity:.36; }
+    100% { transform:translate3d(42%,0,0) skewX(-12deg); opacity:.1; }
+  }
+  @keyframes landingHint {
+    0%,100% { transform:translateY(0); }
+    50% { transform:translateY(5px); }
+  }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   * { box-sizing: border-box; }
   button, input { font: inherit; }
   button:focus-visible, input:focus-visible { outline: 2px solid #a989ff; outline-offset: 3px; }
-  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   .journey-page {
     position: relative;
     min-height: 100vh;
     min-height: 100dvh;
-    overflow-x: hidden;
+    overflow-x: clip;
+    --project-accent:#8b5cff; --project-paper:#f5f2ea; --project-ink:#17151b;
+    --project-stub:#6c2bf5; --project-stub-ink:#fff; --project-glow:rgba(108,43,245,.24);
+    --project-pattern:repeating-linear-gradient(0deg,rgba(20,17,35,.022) 0 1px,transparent 1px 5px);
     color: #f7f5ef;
     font-family: 'Manrope', system-ui, sans-serif;
     background:
       radial-gradient(900px 520px at 50% 44%, rgba(108,43,245,.16), transparent 67%),
       radial-gradient(620px 420px at 82% 78%, rgba(192,255,105,.055), transparent 70%),
+      #070709;
+  }
+  .journey-page.theme-risex { --project-accent:#04df83; --project-paper:#04df83; --project-ink:#06140f; --project-stub:#07120f; --project-stub-ink:#edfff8; --project-glow:rgba(4,223,131,.24); --project-pattern:repeating-linear-gradient(133deg,transparent 0 34px,rgba(0,0,0,.12) 35px 37px); }
+  .journey-page.theme-arcus { --project-accent:#dff1cf; --project-paper:#264b2d; --project-ink:#f5f0e7; --project-stub:#f2eee5; --project-stub-ink:#204629; --project-glow:rgba(76,152,84,.24); --project-pattern:radial-gradient(circle at 28% 48%,rgba(255,255,255,.14) 0 2px,transparent 3px),linear-gradient(112deg,transparent 48%,rgba(255,255,255,.07) 49% 51%,transparent 52%); }
+  .journey-page.theme-variational { --project-accent:#67aaff; --project-paper:#050a16; --project-ink:#edf5ff; --project-stub:#559df3; --project-stub-ink:#031022; --project-glow:rgba(82,155,244,.26); --project-pattern:radial-gradient(500px 250px at 18% 115%,rgba(82,155,244,.42),transparent 67%),linear-gradient(90deg,transparent 0 72%,rgba(82,155,244,.12) 72% 73%,transparent 73%); }
+  .journey-page.theme-perpl { --project-accent:#9d8cff; --project-paper:#705cf6; --project-ink:#fff; --project-stub:#f7f5ef; --project-stub-ink:#563fdb; --project-glow:rgba(112,92,246,.3); --project-pattern:linear-gradient(90deg,rgba(255,255,255,.12) 0 13%,transparent 13% 58%,rgba(255,255,255,.09) 58% 70%,transparent 70%); }
+  .journey-page.theme-superluminal { --project-accent:#e7ff8b; --project-paper:#e7ff8b; --project-ink:#071522; --project-stub:#071522; --project-stub-ink:#e7ff8b; --project-glow:rgba(209,255,83,.22); --project-pattern:repeating-conic-gradient(from 0deg at 22% 54%,rgba(7,21,34,.11) 0deg 2deg,transparent 2deg 13deg); }
+  .journey-page.theme-txflow { --project-accent:#75fa68; --project-paper:#75fa68; --project-ink:#071408; --project-stub:#071408; --project-stub-ink:#75fa68; --project-glow:rgba(117,250,104,.22); --project-pattern:linear-gradient(90deg,rgba(0,0,0,.09) 1px,transparent 1px),linear-gradient(rgba(0,0,0,.09) 1px,transparent 1px); }
+  .journey-page.is-project-preview,
+  .journey-page.is-risex-live {
+    background:
+      radial-gradient(900px 520px at 50% 44%,var(--project-glow),transparent 67%),
+      radial-gradient(560px 380px at 86% 78%,var(--project-glow),transparent 72%),
       #070709;
   }
   .journey-page::before {
@@ -285,9 +323,118 @@
     background-size: 42px 42px;
     mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), transparent 88%);
   }
+  .landing-sequence {
+    position:relative; z-index:20; height:180vh; height:180svh; min-height:1180px; background:#070709;
+    --landing-copy-opacity:1; --landing-copy-y:0px; --landing-copy-blur:0px;
+    --landing-enter-opacity:1; --landing-portal-opacity:0; --landing-portal-scale:.04;
+    --landing-route-opacity:0; --landing-route-scale:.96; --landing-flight-x:-170px;
+  }
+  .landing-cover {
+    position:sticky; z-index:20; top:0; isolation:isolate; height:100vh; height:100svh; min-height:100vh; min-height:100svh; overflow:hidden;
+    display:grid; place-items:center; padding:96px 24px 84px; color:#191b20;
+    background:
+      radial-gradient(600px 430px at 11% 18%,rgba(255,255,255,.86),transparent 67%),
+      radial-gradient(720px 520px at 86% 82%,rgba(255,248,232,.62),transparent 69%),
+      linear-gradient(124deg,#9ea2aa 0%,#e5e7e8 16%,#b2b5bc 31%,#f1eee8 49%,#acafb6 68%,#e2ddd3 85%,#a9adb5 100%);
+    box-shadow:0 32px 80px rgba(0,0,0,.58);
+  }
+  .landing-cover::before {
+    content:''; position:absolute; z-index:-1; inset:0; pointer-events:none; opacity:.28;
+    background:
+      repeating-linear-gradient(0deg,rgba(255,255,255,.22) 0 1px,rgba(36,39,45,.07) 1px 2px,transparent 2px 5px),
+      linear-gradient(112deg,rgba(255,255,255,.34),transparent 34%,rgba(255,255,255,.12) 65%,transparent);
+    mix-blend-mode:soft-light;
+  }
+  .landing-cover::after {
+    content:''; position:absolute; z-index:-1; left:-45%; top:-18%; width:190%; height:136%; pointer-events:none;
+    background:linear-gradient(102deg,transparent 34%,rgba(255,255,255,.62) 47%,rgba(255,255,255,.12) 55%,transparent 67%);
+    filter:blur(26px); animation:landingMetalSheen 8s ease-in-out infinite alternate;
+  }
+  .landing-transition-portal {
+    position:absolute; z-index:1; left:50%; top:50%; width:28vmax; height:28vmax; border-radius:50%; pointer-events:none;
+    opacity:var(--landing-portal-opacity); transform:translate(-50%,-50%) scale(var(--landing-portal-scale));
+    background:
+      radial-gradient(circle at 50% 48%,rgba(108,43,245,.32),transparent 35%),
+      radial-gradient(circle at 50% 50%,#111019 0 48%,#070709 72%);
+    box-shadow:0 0 0 1px rgba(137,98,255,.5),0 0 90px 30px rgba(108,43,245,.32),inset 0 0 70px rgba(108,43,245,.12);
+    will-change:transform,opacity;
+  }
+  .landing-transition-portal::before {
+    content:''; position:absolute; inset:0; border-radius:inherit; opacity:.23;
+    background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+    background-size:24px 24px; mask-image:radial-gradient(circle,#000 24%,transparent 72%);
+  }
+  .landing-transition-portal::after {
+    content:''; position:absolute; left:50%; top:50%; width:58%; height:1px; transform:translate(-50%,-50%);
+    background:linear-gradient(90deg,transparent,rgba(180,151,255,.76),transparent); box-shadow:0 0 22px rgba(108,43,245,.62);
+  }
+  .landing-transition-route {
+    position:absolute; z-index:4; left:50%; top:50%; width:min(520px,76vw); transform:translate(-50%,-50%) scale(var(--landing-route-scale));
+    display:flex; flex-direction:column; align-items:center; gap:14px; color:#f5f2ea; text-align:center;
+    opacity:var(--landing-route-opacity); pointer-events:none; will-change:transform,opacity;
+  }
+  .landing-transition-route strong { font:650 clamp(24px,3vw,36px)/1 'Manrope',sans-serif; letter-spacing:-.04em; }
+  .landing-transition-route small { font:700 9px/1 'IBM Plex Mono',monospace; letter-spacing:.2em; text-transform:uppercase; color:rgba(245,242,234,.58); }
+  .landing-transition-track { position:relative; display:block; width:100%; height:34px; }
+  .landing-transition-track::before {
+    content:''; position:absolute; left:0; right:0; top:50%; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.38) 15% 85%,transparent);
+  }
+  .landing-transition-track::after {
+    content:''; position:absolute; inset:50% 8% auto; height:5px; transform:translateY(-50%);
+    background:radial-gradient(circle,currentColor 0 2px,transparent 2.5px) left center/25% 5px repeat-x; color:#8b5cff;
+  }
+  .landing-transition-plane {
+    position:absolute; z-index:2; left:50%; top:50%; display:grid; place-items:center; width:30px; height:30px;
+    color:#fff; background:#6c2bf5; border:1px solid rgba(255,255,255,.65); border-radius:50%;
+    box-shadow:0 0 28px rgba(108,43,245,.72); font:500 15px/1 system-ui,sans-serif;
+    transform:translate(calc(-50% + var(--landing-flight-x)),-50%) rotate(8deg); will-change:transform;
+  }
+  .landing-copy {
+    position:relative; z-index:3; width:min(920px,100%); text-align:center;
+    opacity:var(--landing-copy-opacity); transform:translate3d(0,var(--landing-copy-y),0); filter:blur(var(--landing-copy-blur));
+    will-change:transform,opacity,filter;
+  }
+  .landing-title { margin:0; }
+  .landing-kicker {
+    display:flex; align-items:center; justify-content:center; gap:12px; margin:0 0 27px;
+    font:750 13px/1 'IBM Plex Mono',monospace; letter-spacing:.18em; text-transform:uppercase; color:rgba(20,22,27,.68);
+  }
+  .landing-kicker i { font-style:normal; font-size:19px; transform:rotate(-7deg); }
+  .landing-headline {
+    display:block; font:650 clamp(47px,7.7vw,92px)/.92 'Manrope',sans-serif; letter-spacing:-.065em;
+    text-shadow:0 1px rgba(255,255,255,.72),0 -1px rgba(20,22,27,.18);
+  }
+  .landing-type-row {
+    display:flex; align-items:center; justify-content:center; min-height:1.4em; margin-top:24px;
+    font:650 clamp(20px,2.65vw,31px)/1.25 'IBM Plex Mono',monospace; letter-spacing:-.035em;
+  }
+  .landing-typed {
+    display:inline-block; width:0; max-width:100%; overflow:hidden; white-space:nowrap;
+    animation:landingType 1.85s .45s steps(22,end) forwards;
+  }
+  .landing-cursor {
+    width:2px; height:1.06em; margin-left:5px; flex:0 0 2px; background:#6c2bf5;
+    box-shadow:0 0 12px rgba(108,43,245,.42); animation:landingCursor .78s step-end infinite;
+  }
+  .landing-note {
+    margin:27px 0 0; font:650 9px/1.4 'IBM Plex Mono',monospace; letter-spacing:.2em;
+    color:rgba(20,22,27,.5); text-transform:uppercase;
+  }
+  .landing-enter {
+    position:absolute; z-index:5; left:50%; bottom:clamp(26px,5vh,48px); transform:translateX(-50%);
+    display:inline-flex; flex-direction:column; align-items:center; gap:9px; min-width:170px; padding:12px 18px;
+    color:rgba(20,22,27,.68); font:750 9px/1 'IBM Plex Mono',monospace; letter-spacing:.17em; text-transform:uppercase;
+    opacity:var(--landing-enter-opacity); transition:color .2s ease; will-change:opacity;
+  }
+  .landing-enter i { font:500 18px/1 'Manrope',sans-serif; animation:landingHint 1.6s ease-in-out infinite; }
+  .landing-enter:hover { color:#6c2bf5; }
+  .landing-enter:focus-visible { outline:2px solid #6c2bf5; outline-offset:2px; border-radius:999px; }
   .journey-shell {
     position: relative;
     z-index: 1;
+    min-height: 100vh;
+    min-height: 100svh;
     width: min(1080px, calc(100% - 32px));
     margin: 0 auto;
     padding: 42px 0 46px;
@@ -311,15 +458,209 @@
   .journey-kicker { font:600 10px/1 'IBM Plex Mono',monospace; letter-spacing:.19em; color:#b79cff; text-transform:uppercase; }
   .journey-title-lockup { display:flex; align-items:center; justify-content:space-between; gap:32px; }
   .journey-title {
-    margin:0; font:600 clamp(36px,4.7vw,54px)/1 'Manrope',sans-serif;
-    letter-spacing:-.045em; color:#f4f1e9;
+    flex:1 1 auto; min-width:0; max-width:780px; margin:0;
+    font:600 clamp(36px,4.7vw,54px)/1 'Manrope',sans-serif;
+    letter-spacing:-.045em; color:#f4f1e9; text-wrap:balance;
   }
-  .journey-title span { color:#8b5cff; }
+  .journey-page.is-project-preview .journey-title,
+  .journey-page.is-risex-live .journey-title { font-size:clamp(34px,4.25vw,50px); line-height:1.04; }
+  .journey-title .hero-accent { color:#8b5cff; }
+  .journey-page.is-project-preview .journey-title .hero-accent,
+  .journey-page.is-risex-live .journey-title .hero-accent { color:var(--project-accent); }
   .journey-ink-logo { position:relative; flex:none; width:104px; height:39px; overflow:visible; opacity:.94; }
+  .journey-ink-logo.is-project-logo { width:54px; height:54px; overflow:hidden; border:1px solid rgba(255,255,255,.22); border-radius:15px; box-shadow:0 16px 34px -18px var(--project-glow); }
+  .journey-project-logo { display:block; width:100%; height:100%; }
+  .project-logo-fill { display:block; width:100%; height:100%; }
+  .journey-route-note { margin:0; color:rgba(247,245,239,.62); font:600 11px/1.5 'IBM Plex Mono',monospace; letter-spacing:.06em; }
   .journey-sub {
     max-width:285px; margin:0 0 4px; font:500 12px/1.65 'IBM Plex Mono',monospace;
     color:rgba(244,241,233,.53); text-align:right;
   }
+  .project-deck {
+    position:fixed; z-index:8; left:0; top:calc(50% - 220px); width:292px; height:500px;
+    transform:none; pointer-events:none;
+  }
+  .project-fan {
+    position:absolute; inset:0; pointer-events:none;
+    animation:projectDeckReveal 850ms 2.45s backwards cubic-bezier(.18,.78,.2,1);
+  }
+  .project-mini {
+    --paper:#f1eee6; --ticket-ink:#1c1c20; --stub:#6c2bf5; --stub-ink:#fff; --brand:#6c2bf5; --pattern:none;
+    position:absolute; left:0; top:50%; width:264px; height:140px; margin-top:-70px;
+    display:grid; grid-template-columns:minmax(0,1fr) 68px; padding:0;
+    overflow:hidden; border:1px solid rgba(255,255,255,.38); border-radius:16px;
+    color:var(--ticket-ink); background:var(--paper); box-shadow:0 20px 38px -21px rgba(0,0,0,.86);
+    transform-origin:0 50%; text-rendering:optimizeLegibility; font-synthesis:none;
+    transform:translate(var(--rest-x),var(--rest-y)) rotate(var(--rest-r));
+    transition:transform 560ms cubic-bezier(.18,.88,.18,1),box-shadow .24s ease,border-color .24s ease;
+    appearance:none; text-align:left; font:inherit; pointer-events:auto; cursor:pointer;
+  }
+  .project-mini:disabled { cursor:not-allowed; filter:none; opacity:.94; }
+  .project-mini.is-coming-soon {
+    cursor:not-allowed;
+    border-color:rgba(255,255,255,.24);
+  }
+  .project-mini.is-coming-soon .mini-body,
+  .project-mini.is-coming-soon .mini-stub {
+    filter:blur(3px) saturate(.62) brightness(.66);
+    opacity:.38;
+  }
+  .project-mini.is-coming-soon::after {
+    z-index:4; opacity:1;
+    background:linear-gradient(110deg,rgba(5,5,8,.42),rgba(5,5,8,.24) 48%,rgba(5,5,8,.48));
+    backdrop-filter:blur(1.8px) saturate(.72);
+  }
+  .project-mini::before {
+    content:''; position:absolute; inset:0 68px 0 0; pointer-events:none; opacity:.18;
+    background:var(--pattern);
+  }
+  .project-mini::after {
+    content:''; position:absolute; inset:0; pointer-events:none; opacity:.06;
+    background:linear-gradient(128deg,rgba(255,255,255,.46),transparent 30%,transparent 72%,rgba(255,255,255,.18));
+  }
+  .project-mini:focus-visible { outline:2px solid var(--brand); outline-offset:4px; }
+  .project-deck:hover .project-mini,
+  .project-deck:focus-within .project-mini {
+    transform:translate(var(--fan-x),var(--fan-y)) rotate(var(--fan-r));
+    box-shadow:0 28px 48px -22px rgba(0,0,0,.9);
+  }
+  .project-deck:hover .deck-slot-1,.project-deck:focus-within .deck-slot-1 { transition-delay:0ms; }
+  .project-deck:hover .deck-slot-2,.project-deck:focus-within .deck-slot-2 { transition-delay:28ms; }
+  .project-deck:hover .deck-slot-3,.project-deck:focus-within .deck-slot-3 { transition-delay:56ms; }
+  .project-deck:hover .deck-slot-4,.project-deck:focus-within .deck-slot-4 { transition-delay:84ms; }
+  .project-deck:hover .deck-slot-5,.project-deck:focus-within .deck-slot-5 { transition-delay:112ms; }
+  .project-deck:hover .deck-slot-6,.project-deck:focus-within .deck-slot-6 { transition-delay:140ms; }
+  .project-mini:hover,
+  .project-mini:focus-visible { z-index:20; border-color:rgba(255,255,255,.68); }
+  .project-deck:hover .project-mini:hover,
+  .project-deck:focus-within .project-mini:focus-visible {
+    transform:translate(calc(var(--fan-x) + 52px),var(--fan-y)) rotate(0deg);
+    box-shadow:0 34px 58px -22px rgba(0,0,0,.94),0 0 0 1px color-mix(in srgb,var(--brand) 54%,transparent);
+  }
+  .deck-ink { --paper:#6c2bf5; --ticket-ink:#fff; --stub:#f5f2ea; --stub-ink:#5420c7; --brand:#bca7ff; --pattern:radial-gradient(circle at 22% 52%,rgba(255,255,255,.22) 0 2px,transparent 3px),linear-gradient(122deg,transparent 52%,rgba(255,255,255,.1) 53% 55%,transparent 56%); }
+  .deck-risex { --paper:#04df83; --ticket-ink:#06140f; --stub:#07120f; --stub-ink:#edfff8; --brand:#04df83; --pattern:repeating-linear-gradient(133deg,transparent 0 25px,rgba(0,0,0,.13) 26px 27px); }
+  .deck-arcus { --paper:#264b2d; --ticket-ink:#f5f0e7; --stub:#f2eee5; --stub-ink:#204629; --brand:#f2eee5; --pattern:radial-gradient(circle at 22% 54%,rgba(255,255,255,.17) 0 2px,transparent 3px),linear-gradient(112deg,transparent 48%,rgba(255,255,255,.08) 49% 51%,transparent 52%); }
+  .deck-variational { --paper:#050a16; --ticket-ink:#edf5ff; --stub:#559df3; --stub-ink:#031022; --brand:#67aaff; --pattern:radial-gradient(140px 82px at 22% 120%,rgba(82,155,244,.38),transparent 66%),linear-gradient(90deg,transparent 0 68%,rgba(82,155,244,.12) 68% 70%,transparent 70%); }
+  .deck-perpl { --paper:#705cf6; --ticket-ink:#fff; --stub:#f7f5ef; --stub-ink:#563fdb; --brand:#fff; --pattern:linear-gradient(90deg,rgba(255,255,255,.13) 0 15%,transparent 15% 58%,rgba(255,255,255,.09) 58% 72%,transparent 72%); }
+  .deck-superluminal { --paper:#e7ff8b; --ticket-ink:#071522; --stub:#071522; --stub-ink:#e7ff8b; --brand:#071522; --pattern:repeating-conic-gradient(from 0deg at 24% 54%,rgba(7,21,34,.13) 0deg 3deg,transparent 3deg 16deg); }
+  .deck-txflow { --paper:#75fa68; --ticket-ink:#071408; --stub:#071408; --stub-ink:#75fa68; --brand:#071408; --pattern:linear-gradient(90deg,rgba(0,0,0,.1) 1px,transparent 1px),linear-gradient(rgba(0,0,0,.1) 1px,transparent 1px); }
+  .deck-slot-1 { --rest-x:-84px; --rest-y:-84px; --rest-r:-2.5deg; --fan-x:-16px; --fan-y:-178px; --fan-r:-4.5deg; z-index:6; }
+  .deck-slot-2 { --rest-x:-82px; --rest-y:-51px; --rest-r:-1.5deg; --fan-x:-8px; --fan-y:-107px; --fan-r:-2.7deg; z-index:5; }
+  .deck-slot-3 { --rest-x:-80px; --rest-y:-17px; --rest-r:-.5deg; --fan-x:0px; --fan-y:-36px; --fan-r:-.8deg; z-index:4; }
+  .deck-slot-4 { --rest-x:-80px; --rest-y:17px; --rest-r:.5deg; --fan-x:0px; --fan-y:36px; --fan-r:.8deg; z-index:3; }
+  .deck-slot-5 { --rest-x:-82px; --rest-y:51px; --rest-r:1.5deg; --fan-x:-8px; --fan-y:107px; --fan-r:2.7deg; z-index:2; }
+  .deck-slot-6 { --rest-x:-84px; --rest-y:84px; --rest-r:2.5deg; --fan-x:-16px; --fan-y:178px; --fan-r:4.5deg; z-index:1; }
+  .deck-txflow::before { background-size:12px 12px; }
+  .mini-body { position:relative; z-index:1; display:flex; flex-direction:column; min-width:0; padding:15px 14px 13px 18px; }
+  .mini-top { display:flex; align-items:center; justify-content:space-between; gap:7px; font:800 9px/1 'Manrope',sans-serif; letter-spacing:.07em; text-transform:uppercase; opacity:.96; }
+  .mini-state { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+  .mini-state::before { content:''; width:4px; height:4px; border-radius:50%; background:currentColor; box-shadow:0 0 7px currentColor; }
+  .mini-state { color:var(--brand); opacity:.96; }
+  .mini-brand-line { display:flex; align-items:center; gap:10px; min-width:0; margin-top:12px; }
+  .mini-logo { flex:none; width:34px; height:34px; overflow:hidden; border:1px solid rgba(255,255,255,.32); border-radius:9px; box-shadow:0 6px 13px -8px rgba(0,0,0,.62); }
+  .mini-logo img { display:block; width:100%; height:100%; object-fit:cover; }
+  .deck-risex .mini-logo { border:0; border-radius:7px; background:#04df83; box-shadow:none; }
+  .deck-risex .mini-logo img { width:calc(100% + 2px); height:calc(100% + 2px); margin:-1px; object-fit:cover; }
+  .mini-code { min-width:0; font:850 26px/.9 'Barlow Condensed',sans-serif; letter-spacing:.025em; white-space:nowrap; }
+  .deck-variational .mini-code { font-size:20px; letter-spacing:0; }
+  .deck-superluminal .mini-code { font-size:18px; letter-spacing:0; }
+  .mini-route { display:flex; align-items:center; gap:7px; margin-top:auto; font:800 9.2px/1 'Manrope',sans-serif; letter-spacing:.065em; text-transform:uppercase; opacity:.96; }
+  .mini-route i { flex:1; min-width:12px; height:1px; background:currentColor; opacity:.34; }
+  .mini-stub { position:relative; z-index:1; display:flex; flex-direction:column; justify-content:space-between; padding:15px 9px 13px; color:var(--stub-ink); background:var(--stub); border-left:1px dashed rgba(255,255,255,.78); }
+  .mini-stub::before,.mini-stub::after { content:''; position:absolute; left:-6px; width:11px; height:11px; border-radius:50%; background:#070709; }
+  .mini-stub::before { top:-6px; } .mini-stub::after { bottom:-6px; }
+  .mini-stub small { font:800 7.8px/1.1 'Manrope',sans-serif; letter-spacing:.07em; text-transform:uppercase; opacity:.96; }
+  .mini-stub b { font:850 19px/.9 'Barlow Condensed',sans-serif; letter-spacing:.05em; }
+  .mini-bars { width:100%; height:22px; opacity:1; background:repeating-linear-gradient(90deg,currentColor 0 1px,transparent 1px 3px,currentColor 3px 5px,transparent 5px 7px); }
+  .mini-coming-soon {
+    position:absolute; z-index:8; left:42%; top:50%; transform:translate(-50%,-50%);
+    display:inline-flex; align-items:center; justify-content:center; gap:6px; min-width:112px; padding:8px 11px;
+    color:#fff; background:rgba(8,8,12,.88); border:1px solid rgba(255,255,255,.46); border-radius:999px;
+    box-shadow:0 13px 30px -14px rgba(0,0,0,.96),inset 0 1px rgba(255,255,255,.08);
+    font:850 8.4px/1 'Manrope',sans-serif; letter-spacing:.13em; text-transform:uppercase; white-space:nowrap;
+    pointer-events:none; backdrop-filter:blur(7px);
+  }
+  .mini-coming-soon::before {
+    content:''; width:5px; height:5px; flex:0 0 5px; border-radius:50%;
+    background:var(--brand); box-shadow:0 0 9px var(--brand);
+  }
+  .deck-handle {
+    position:absolute; z-index:12; left:191px; top:50%; display:flex; align-items:center; gap:8px;
+    padding:8px 9px; color:#c5b1ff; background:rgba(12,11,17,.86); border:1px solid rgba(169,137,255,.34); border-radius:999px;
+    font:800 8.7px/1 'Manrope',sans-serif; letter-spacing:.09em; text-transform:uppercase;
+    transform:translateY(-50%) rotate(-90deg); transform-origin:left top;
+    transition:opacity .22s ease,transform .32s ease; pointer-events:auto; white-space:nowrap;
+  }
+  .deck-handle b { color:#fff; font-weight:700; }
+  .project-deck:hover .deck-handle,
+  .project-deck:focus-within .deck-handle { opacity:0; transform:translate(-10px,-50%) rotate(-90deg); }
+  .deck-caption {
+    position:absolute; z-index:10; left:18px; bottom:-34px; margin:0; color:rgba(255,255,255,.58);
+    font:700 8px/1 'IBM Plex Mono',monospace; letter-spacing:.12em; text-transform:uppercase;
+    opacity:0; transform:translateX(-10px); transition:opacity .28s .16s ease,transform .36s .16s ease; pointer-events:none;
+  }
+  .deck-caption b { color:#a987ff; }
+  .project-deck:hover .deck-caption,
+  .project-deck:focus-within .deck-caption { opacity:1; transform:translateX(0); }
+  .project-preview-stage { width:min(900px,100%); margin:46px auto 0; animation:previewBoarding 780ms backwards cubic-bezier(.18,.85,.2,1); }
+  .journey-page.is-project-preview .ticket-stage,
+  .journey-page.is-project-preview .address-panel { display:none; }
+  .exchange-pass {
+    position:relative; min-height:372px; display:grid; grid-template-columns:minmax(0,1fr) 178px;
+    overflow:hidden; color:var(--project-ink); background:var(--project-paper); border:1px solid rgba(255,255,255,.48); border-radius:24px;
+    box-shadow:0 42px 84px -34px rgba(0,0,0,.94),0 24px 76px -48px var(--project-glow);
+  }
+  .exchange-pass::before { content:''; position:absolute; inset:0 178px 0 0; pointer-events:none; opacity:.66; background:var(--project-pattern); }
+  .exchange-pass::after { content:''; position:absolute; inset:0; pointer-events:none; opacity:.2; background:linear-gradient(120deg,rgba(255,255,255,.52),transparent 28%,transparent 72%,rgba(255,255,255,.17)); }
+  .exchange-body { position:relative; z-index:1; min-width:0; padding:29px 31px 26px; }
+  .exchange-topline { display:flex; align-items:center; justify-content:space-between; gap:20px; font:750 9px/1 'IBM Plex Mono',monospace; letter-spacing:.16em; text-transform:uppercase; }
+  .exchange-topline span:last-child { display:inline-flex; align-items:center; gap:7px; opacity:.68; }
+  .exchange-topline i { width:6px; height:6px; border-radius:50%; background:var(--project-accent); box-shadow:0 0 10px var(--project-accent); }
+  .exchange-route { display:grid; grid-template-columns:auto 1fr minmax(230px,auto); align-items:center; gap:22px; margin-top:34px; }
+  .exchange-route small,.exchange-holder small,.exchange-metric small,.exchange-stub small { display:block; font:750 7px/1.2 'IBM Plex Mono',monospace; letter-spacing:.13em; text-transform:uppercase; opacity:.62; }
+  .exchange-route b { display:block; margin-top:7px; font:800 37px/.9 'Barlow Condensed',sans-serif; letter-spacing:.02em; }
+  .exchange-flight { position:relative; height:1px; background:currentColor; opacity:.38; }
+  .exchange-flight::before,.exchange-flight::after { content:''; position:absolute; top:50%; width:6px; height:6px; border-radius:50%; background:currentColor; transform:translateY(-50%); }
+  .exchange-flight::before { left:0; } .exchange-flight::after { right:0; }
+  .exchange-flight span { position:absolute; left:50%; top:50%; padding:0 7px; background:var(--project-paper); transform:translate(-50%,-52%); }
+  .exchange-destination { display:flex; align-items:center; justify-content:flex-end; gap:13px; min-width:0; text-align:right; }
+  .exchange-logo { flex:none; width:48px; height:48px; overflow:hidden; border:1px solid rgba(255,255,255,.22); border-radius:13px; box-shadow:0 12px 24px -14px rgba(0,0,0,.72); }
+  .exchange-destination b { max-width:186px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .exchange-holder { display:grid; grid-template-columns:1fr auto; gap:28px; margin-top:31px; padding:15px 0; border-top:1px solid currentColor; border-bottom:1px solid currentColor; }
+  .exchange-holder b { display:block; margin-top:7px; font:750 11px/1 'IBM Plex Mono',monospace; letter-spacing:.04em; }
+  .exchange-holder > div:last-child { text-align:right; }
+  .exchange-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-top:24px; }
+  .exchange-metric { min-width:0; }
+  .exchange-metric b { display:block; margin-top:7px; font:800 18px/1 'Barlow Condensed',sans-serif; letter-spacing:.05em; }
+  .exchange-stub { position:relative; z-index:2; display:flex; flex-direction:column; min-width:0; padding:26px 22px 21px; color:var(--project-stub-ink); background:var(--project-stub); border-left:1px dashed rgba(255,255,255,.68); }
+  .exchange-stub::before,.exchange-stub::after { content:''; position:absolute; left:-10px; width:19px; height:19px; border-radius:50%; background:#070709; }
+  .exchange-stub::before { top:-10px; } .exchange-stub::after { bottom:-10px; }
+  .exchange-stub-logo { width:54px; height:54px; overflow:hidden; border:1px solid rgba(255,255,255,.2); border-radius:14px; }
+  .exchange-stub > small { margin-top:24px; }
+  .exchange-stub > b { display:block; margin-top:8px; font:800 clamp(25px,3vw,36px)/.86 'Barlow Condensed',sans-serif; overflow-wrap:anywhere; }
+  .exchange-stub-meta { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:22px; }
+  .exchange-stub-meta b { display:block; margin-top:5px; font:750 9px/1 'IBM Plex Mono',monospace; }
+  .exchange-stub-bottom { margin-top:auto; }
+  .exchange-barcode { width:100%; height:34px; opacity:.92; background:repeating-linear-gradient(90deg,currentColor 0 1px,transparent 1px 3px,currentColor 3px 6px,transparent 6px 8px); }
+  .exchange-serial { margin-top:9px; font:700 6px/1 'IBM Plex Mono',monospace; letter-spacing:.16em; text-align:right; text-transform:uppercase; opacity:.68; }
+  .project-preview-actions { display:flex; align-items:center; justify-content:space-between; gap:20px; margin:25px 4px 0; }
+  .back-to-ink { min-height:44px; padding:0 17px; border:1px solid rgba(255,255,255,.2); border-radius:999px; color:#f7f5ef; background:rgba(12,12,16,.74); cursor:pointer; font:750 10px/1 'IBM Plex Mono',monospace; letter-spacing:.1em; text-transform:uppercase; transition:transform .2s ease,border-color .2s ease,background .2s ease; }
+  .back-to-ink:hover { transform:translateX(-3px); border-color:var(--project-accent); background:rgba(20,20,25,.9); }
+  .project-preview-actions p { margin:0; color:rgba(247,245,239,.6); font:600 10px/1.55 'IBM Plex Mono',monospace; letter-spacing:.04em; text-align:right; }
+  .project-transition-shell { position:fixed; z-index:90; inset:0; pointer-events:all; }
+  .project-transition { position:absolute; inset:0; display:grid; place-items:center; overflow:hidden; color:var(--transition-ink,#fff); background:var(--transition-color,#6c2bf5); animation:projectCurtain 1650ms both cubic-bezier(.7,0,.2,1); }
+  .project-transition::before { content:''; position:absolute; inset:-22%; opacity:.22; background:repeating-linear-gradient(118deg,transparent 0 54px,currentColor 55px 56px,transparent 57px 110px); animation:runwaySweep 1400ms both ease-in-out; }
+  .project-transition::after { content:'✈'; position:absolute; left:11%; top:50%; font-size:24px; filter:drop-shadow(0 0 13px currentColor); animation:transitionFlight 1200ms 100ms both cubic-bezier(.16,.74,.25,1); }
+  .project-transition-lockup { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; animation:transitionLockup 1420ms both cubic-bezier(.18,.78,.2,1); }
+  .project-transition-logo { width:90px; height:90px; overflow:hidden; border:1px solid rgba(255,255,255,.28); border-radius:24px; box-shadow:0 28px 54px -30px rgba(0,0,0,.8); }
+  .project-transition-lockup > span:not(.project-transition-logo) { margin-top:25px; font:750 10px/1 'IBM Plex Mono',monospace; letter-spacing:.22em; text-transform:uppercase; opacity:.72; }
+  .project-transition-lockup > b { margin-top:9px; font:800 clamp(52px,8vw,94px)/.9 'Barlow Condensed',sans-serif; letter-spacing:-.01em; }
+  .project-transition-lockup > small { margin-top:14px; font:650 11px/1.5 'IBM Plex Mono',monospace; letter-spacing:.05em; }
+  @keyframes previewBoarding { 0% { opacity:0; transform:translate3d(0,38px,0); } 100% { opacity:1; transform:translate3d(0,0,0); } }
+  @keyframes projectCurtain { 0% { clip-path:polygon(0 0,0 0,0 100%,0 100%); } 35%,64% { clip-path:polygon(0 0,100% 0,100% 100%,0 100%); } 100% { clip-path:polygon(100% 0,100% 0,100% 100%,100% 100%); } }
+  @keyframes transitionLockup { 0%,15% { opacity:0; transform:translate3d(-60px,0,0) scale(.94); } 36%,64% { opacity:1; transform:translate3d(0,0,0) scale(1); } 84%,100% { opacity:0; transform:translate3d(48px,0,0) scale(1.02); } }
+  @keyframes runwaySweep { from { transform:translate3d(-12%,0,0); } to { transform:translate3d(12%,0,0); } }
+  @keyframes transitionFlight { 0%,18% { opacity:0; transform:translate3d(-20vw,34px,0); } 45%,65% { opacity:1; transform:translate3d(40vw,-18px,0); } 100% { opacity:0; transform:translate3d(84vw,-54px,0); } }
   .ticket-stage {
     position:relative; width:min(900px,100%); height:460px; margin:0 auto;
     animation:riseIn 850ms 1.9s both cubic-bezier(.2,.75,.2,1);
@@ -520,6 +861,83 @@
   .wipe-lockup { position:absolute; z-index:2; left:50%; top:50%; display:flex; flex-direction:column; align-items:center; gap:13px; animation:wipeLockup 2.25s ease both; }
   .wipe-ink-logo { position:relative; width:142px; height:52px; overflow:visible; }
   .wipe-lockup span { color:#fff; font:800 10px/1 'Manrope',sans-serif; letter-spacing:.24em; text-transform:uppercase; text-shadow:0 0 18px rgba(255,255,255,.55); }
+  .risex-main-pass {
+    color:#06140f; background:#04df83; border-color:rgba(206,255,238,.86);
+    box-shadow:0 36px 76px -30px rgba(0,0,0,.96),0 30px 72px -48px rgba(4,223,131,.66);
+  }
+  .risex-main-pass::before {
+    opacity:.68;
+    background:
+      radial-gradient(420px 210px at 14% -10%,rgba(255,255,255,.28),transparent 70%),
+      repeating-linear-gradient(133deg,transparent 0 34px,rgba(0,30,22,.11) 35px 37px);
+  }
+  .risex-main-pass .pass-body { padding:25px 31px 24px; }
+  .risex-main-pass .pass-live { color:rgba(3,37,27,.72); }
+  .risex-main-pass .pass-live i { box-shadow:0 0 10px rgba(2,35,25,.5); }
+  .risex-route {
+    display:grid; grid-template-columns:minmax(126px,auto) minmax(100px,1fr) minmax(202px,auto);
+    align-items:center; gap:20px; margin-top:28px;
+  }
+  .risex-route-point { min-width:0; }
+  .risex-route-point small,
+  .risex-holder .field-label,
+  .risex-metric small {
+    display:block; font:750 8.5px/1.15 'IBM Plex Mono',monospace;
+    letter-spacing:.11em; color:rgba(4,40,29,.66); text-transform:uppercase;
+  }
+  .risex-route-point b { display:block; margin-top:7px; font:850 34px/.88 'Barlow Condensed',sans-serif; letter-spacing:.01em; white-space:nowrap; }
+  .risex-route-point.destination { display:flex; align-items:center; justify-content:flex-end; gap:12px; text-align:right; }
+  .risex-route-point.destination .exchange-logo { width:44px; height:44px; border-color:rgba(4,40,29,.18); box-shadow:0 12px 24px -16px rgba(0,0,0,.72); }
+  .risex-route-line { position:relative; height:2px; background:#073d2d; opacity:.62; }
+  .risex-route-line::before,.risex-route-line::after { content:''; position:absolute; top:50%; width:7px; height:7px; border-radius:50%; background:#073d2d; transform:translateY(-50%); }
+  .risex-route-line::before { left:0; }
+  .risex-route-line::after { right:0; }
+  .risex-route-line span { position:absolute; left:50%; bottom:10px; width:max-content; transform:translateX(-50%); font:750 7.5px/1 'IBM Plex Mono',monospace; letter-spacing:.09em; text-transform:uppercase; }
+  .risex-holder { margin-top:24px; padding:15px 0; border-top-color:rgba(4,40,29,.26); border-bottom:1px solid rgba(4,40,29,.26); }
+  .risex-holder .holder-address,
+  .risex-holder strong { color:#06261c; text-shadow:0 1px 0 rgba(255,255,255,.3),0 -1px 1px rgba(0,31,22,.22); }
+  .risex-holder .field-label { color:rgba(4,40,29,.66); }
+  .risex-main-pass .manifest-locked { border-top-color:rgba(4,40,29,.25); }
+  .risex-main-pass .manifest-locked span { color:rgba(4,40,29,.65); }
+  .risex-summary-grid {
+    display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); margin-top:20px; padding-top:18px;
+    border-top:1px solid rgba(4,40,29,.26);
+  }
+  .risex-metric { position:relative; min-width:0; padding:0 12px; }
+  .risex-metric:first-child { padding-left:0; }
+  .risex-metric:last-child { padding-right:0; }
+  .risex-metric:not(:first-child)::before { content:''; position:absolute; left:0; top:0; bottom:0; width:1px; background:rgba(4,40,29,.2); }
+  .risex-metric b { display:block; margin-top:8px; font:800 16px/1 'Manrope',sans-serif; letter-spacing:-.035em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .risex-cabin-chip { display:inline-flex; align-items:center; gap:7px; margin-left:auto; padding:7px 10px; color:#05291e; background:rgba(255,255,255,.14); border:1px solid rgba(4,40,29,.42); border-radius:999px; box-shadow:0 5px 14px -10px rgba(0,28,20,.8); font:850 9px/1 'IBM Plex Mono',monospace; letter-spacing:.09em; text-transform:uppercase; }
+  .risex-cabin-chip::before { content:'✦'; font-size:7px; }
+  .risex-stub { color:#edfff8; background:linear-gradient(155deg,#081c16 0%,#06140f 58%,#020906 100%); }
+  .risex-stub .stub-logo { width:58px; height:58px; overflow:hidden; border:1px solid rgba(4,223,131,.32); border-radius:16px; box-shadow:0 16px 30px -18px rgba(4,223,131,.9); }
+  .risex-stub .stub-label { color:rgba(237,255,248,.7); }
+  .risex-stub .stub-code { color:#04df83; }
+  .risex-stub .stub-meta { grid-template-columns:1fr; gap:9px; }
+  .risex-stub .stub-meta div { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .risex-stub .stub-meta b { color:#edfff8; text-align:right; }
+  .risex-stub .stub-meta .risex-class-meta { align-items:center; margin-top:2px; padding:8px 9px; border:1px solid rgba(4,223,131,.5); border-radius:9px; background:rgba(4,223,131,.1); box-shadow:inset 0 0 18px rgba(4,223,131,.045); }
+  .risex-stub .risex-class-meta small { color:#8affd7; opacity:1; }
+  .risex-stub .risex-class-meta b { color:#04df83; font-size:13px; font-weight:850; letter-spacing:.025em; }
+  .risex-stub .barcode i { background:#04df83; }
+  .risex-stub .tear-guide { border-color:rgba(4,223,131,.4); }
+  .risex-main-pass.is-awaiting-tear .main-stub.is-armed .tear-guide { color:#06140f; background:#04df83; border-color:#d9fff2; box-shadow:0 0 0 4px rgba(4,223,131,.16),0 0 28px rgba(4,223,131,.7); }
+  .risex-main-pass.is-awaiting-tear .main-stub { box-shadow:inset 12px 0 30px rgba(4,223,131,.08),0 0 30px rgba(4,223,131,.28); }
+  .risex-main-pass.is-torn-final .pass-body::after { background:radial-gradient(circle at 0 7px,#04df83 0 6px,transparent 6.5px) 0 0/10px 14px repeat-y; }
+  .ticket-capture.risex-capture.is-final-landing::before { background:radial-gradient(ellipse at 58% 48%,rgba(4,223,131,.42),rgba(4,223,131,.16) 38%,transparent 72%); }
+  .issuance-wipe.risex-wipe { background:linear-gradient(112deg,#02110c 0%,#04bd70 35%,#04df83 54%,#032a1e 100%); }
+  .issuance-wipe.risex-wipe::after { box-shadow:0 0 18px #fff,0 0 46px #83ffda; }
+  .wipe-project-logo { position:relative; width:86px; height:86px; overflow:hidden; border:1px solid rgba(255,255,255,.3); border-radius:22px; box-shadow:0 24px 48px -28px #000; }
+  .journey-page.is-risex-live .checkin-topline span:first-child,
+  .journey-page.is-risex-live .status-strip b { color:#6fffcf; text-shadow:0 0 16px rgba(4,223,131,.25); }
+  .journey-page.is-risex-live .issue-button { background:rgba(4,223,131,.12); border-color:#3df1b6; color:#effff9; }
+  .journey-page.is-risex-live .issue-button:disabled { background:rgba(4,223,131,.06); border-color:rgba(61,241,182,.5); }
+  .journey-page.is-risex-live .action-button.primary { color:#06140f; background:#04df83; }
+  .journey-page.is-risex-live .privacy-toggle.is-active { background:rgba(4,223,131,.15); border-color:#04df83; }
+  .journey-page.is-risex-live .privacy-toggle.is-active .privacy-switch { background:#04df83; }
+  .journey-page.is-risex-live .site-credit a { color:#72e7c0; }
+  .journey-page.is-risex-live .site-credit a::before { color:#04df83; }
   .address-panel {
     position:relative; width:min(900px,100%); margin:26px auto 0; padding:0 3%;
   }
@@ -583,23 +1001,84 @@
   .site-credit a:hover { color:#c3afff; opacity:1; transform:translateY(-1px); }
   .site-credit a:focus-visible { outline:2px solid #a989ff; outline-offset:3px; border-radius:7px; }
   @media (max-width: 760px) {
-    /* iOS memory guard: full-size intro rings (1800px + blur) exhaust WebKit
-       layer memory on retina phones and crash the page. Cap size, drop blur,
-       and halve the ring count on small screens. */
+    /* iOS memory guard: oversized blurred layers exhaust WebKit layer memory on
+       retina phones and trigger Safari's "problem repeatedly occurred" reload loop. */
     .intro-ring { width:560px !important; height:560px !important; margin:-280px 0 0 -280px !important; filter:none !important; box-shadow:0 0 8px rgba(214,222,232,.4), inset 0 0 8px rgba(214,222,232,.3) !important; }
     .intro-ring:nth-of-type(n+6) { display:none !important; }
+    .landing-cover::after { left:-20%; top:-8%; width:140%; height:116%; filter:blur(12px); }
+    .landing-sequence { height:170vh; height:170svh; min-height:1080px; --landing-flight-x:-115px; }
+    .landing-cover { padding:88px 18px 78px; }
+    .landing-kicker { margin-bottom:22px; gap:9px; font-size:11px; letter-spacing:.15em; }
+    .landing-kicker i { font-size:17px; }
+    .landing-headline { font-size:clamp(38px,13vw,58px); line-height:.94; letter-spacing:-.06em; }
+    .landing-type-row { margin-top:19px; font-size:clamp(15px,4.8vw,21px); letter-spacing:-.05em; }
+    .landing-note { margin-top:23px; font-size:7px; letter-spacing:.15em; }
+    .landing-enter { bottom:23px; font-size:8px; }
     .journey-shell { display:flex; flex-direction:column; width:min(560px,calc(100% - 20px)); padding:26px 0 30px; }
     .journey-header { order:1; }
-    .ticket-stage { order:2; }
-    .address-panel { order:3; margin:30px auto 0; padding:0 2%; }
+    .project-deck { order:2; }
+    .project-preview-stage { order:3; }
+    .ticket-stage { order:3; }
+    .address-panel { order:4; margin:30px auto 0; padding:0 2%; }
     .journey-header { grid-template-columns:1fr; gap:12px; margin-bottom:26px; }
-    .journey-title-lockup { gap:12px; }
-    .journey-title { font-size:34px; line-height:1.04; }
+    .journey-title-lockup { align-items:flex-start; gap:12px; }
+    .journey-title { font-size:clamp(29px,8.8vw,34px); line-height:1.04; }
     .journey-ink-logo { width:76px; height:29px; }
+    .journey-ink-logo.is-project-logo { width:44px; height:44px; border-radius:12px; }
+    .journey-route-note { margin-top:-4px; font-size:9px; }
     .journey-sub { max-width:none; text-align:left; font-size:10px; }
+    .project-deck { position:relative; left:auto; top:auto; width:100%; height:116px; margin:-7px 0 18px; transform:none; pointer-events:auto; }
+    .project-fan { position:relative; inset:auto; display:flex; gap:9px; width:100%; height:116px; padding:5px 3px 13px; overflow-x:auto; overflow-y:hidden; pointer-events:auto; animation:none; scroll-snap-type:x proximity; scrollbar-width:none; mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%); }
+    .project-fan::-webkit-scrollbar { display:none; }
+    .project-mini,.project-deck:hover .project-mini,.project-deck:focus-within .project-mini { position:relative; left:auto; top:auto; flex:0 0 184px; width:184px; height:98px; margin:0; grid-template-columns:minmax(0,1fr) 50px; transform:none; scroll-snap-align:start; border-radius:13px; }
+    .project-deck:hover .project-mini:hover,.project-deck:focus-within .project-mini:focus-visible { transform:none; }
+    .mini-body { padding:12px 10px 10px 13px; }
+    .mini-top { font-size:7px; letter-spacing:.09em; }
+    .mini-brand-line { gap:6px; margin-top:10px; }
+    .mini-logo { width:23px; height:23px; border-radius:6px; }
+    .mini-code { margin-top:0; font-size:19px; }
+    .deck-variational .mini-code { font-size:14px; }
+    .deck-superluminal .mini-code { font-size:12.5px; }
+    .mini-route { font-size:6.8px; gap:5px; }
+    .mini-stub { padding:11px 7px 9px; }
+    .mini-stub small { font-size:6.3px; }
+    .mini-stub b { font-size:14px; }
+    .mini-bars { height:15px; }
+    .mini-coming-soon { left:41%; min-width:96px; padding:7px 9px; gap:5px; font-size:7px; }
+    .mini-coming-soon::before { width:4px; height:4px; flex-basis:4px; }
+    .deck-handle,.deck-caption { display:none; }
+    .project-preview-stage { width:100%; margin:10px auto 0; }
+    .exchange-pass { min-height:594px; grid-template-columns:1fr; border-radius:20px; }
+    .exchange-pass::before { inset:0 0 132px 0; }
+    .exchange-body { padding:22px 19px 21px; }
+    .exchange-topline { gap:9px; font-size:6.5px; }
+    .exchange-route { grid-template-columns:auto 1fr minmax(132px,auto); gap:10px; margin-top:28px; }
+    .exchange-route b { font-size:26px; }
+    .exchange-logo { width:37px; height:37px; border-radius:10px; }
+    .exchange-destination { gap:8px; }
+    .exchange-destination b { max-width:112px; font-size:22px; }
+    .exchange-holder { grid-template-columns:1fr; gap:13px; margin-top:25px; }
+    .exchange-holder > div:last-child { text-align:left; }
+    .exchange-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px 12px; }
+    .exchange-stub { min-height:132px; padding:18px 18px 16px; border-left:0; border-top:1px dashed rgba(255,255,255,.68); display:grid; grid-template-columns:48px 1fr 92px; align-items:center; gap:13px; }
+    .exchange-stub::before,.exchange-stub::after { top:-10px; left:auto; }
+    .exchange-stub::before { left:-10px; } .exchange-stub::after { right:-10px; bottom:auto; }
+    .exchange-stub-logo { width:46px; height:46px; border-radius:12px; }
+    .exchange-stub > small { position:absolute; left:79px; top:23px; margin:0; }
+    .exchange-stub > b { margin:16px 0 0; font-size:25px; }
+    .exchange-stub-meta { display:none; }
+    .exchange-stub-bottom { margin:0; }
+    .exchange-barcode { height:32px; }
+    .project-preview-actions { align-items:flex-start; flex-direction:column; gap:13px; margin:18px 2px 0; }
+    .project-preview-actions p { text-align:left; font-size:8.5px; }
+    .project-transition-logo { width:72px; height:72px; border-radius:19px; }
+    .project-transition-lockup b { font-size:54px; }
+    .project-transition-lockup small { max-width:280px; padding:0 16px; font-size:9px; }
     .ticket-stage { height:890px; margin:6px auto 0; }
     .ticket-stage.solo-stage { height:510px; }
     .ticket-stage.solo-stage.summary-stage { height:700px; }
+    .ticket-stage.solo-stage.risex-stage { height:580px; }
+    .ticket-stage.solo-stage.risex-stage.summary-stage { height:724px; }
     .ticket-stage.solo-stage.summary-stage.torn-stage { height:570px; }
     .rear-slot { top:6px; width:88%; height:276px; }
     .rear-slot-nado { left:3%; }
@@ -659,18 +1138,48 @@
     .action-panel .status-strip { grid-column:1/-1; min-width:0; }
     .action-button { width:100%; min-width:0; height:46px; padding:0 7px; font-size:12px; }
     .site-credit { margin:-8px auto 0; padding-bottom:24px; font-size:10px; }
+    .solo-stage .risex-main-pass { min-height:540px; }
+    .solo-stage .risex-main-pass.is-final-summary { min-height:690px; }
+    .risex-main-pass .pass-body { padding:22px 19px 21px; }
+    .risex-route { grid-template-columns:minmax(76px,auto) minmax(38px,1fr) minmax(128px,auto); gap:8px; margin-top:25px; }
+    .risex-route-point b { font-size:25px; }
+    .risex-route-point.destination { gap:7px; }
+    .risex-route-point.destination .exchange-logo { width:34px; height:34px; border-radius:10px; }
+    .risex-route-line span { display:none; }
+    .risex-holder { margin-top:22px; }
+    .risex-summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:0; margin-top:18px; padding-top:8px; }
+    .risex-metric { min-height:64px; padding:12px 10px; }
+    .risex-metric:nth-child(odd) { padding-left:0; }
+    .risex-metric:nth-child(even) { padding-right:0; }
+    .risex-metric:nth-child(odd)::before { display:none; }
+    .risex-metric:nth-child(n+3) { border-top:1px solid rgba(4,40,29,.18); }
+    .risex-metric:last-child { grid-column:1/-1; padding-left:0; padding-right:0; }
+    .risex-metric b { font-size:15px; }
+    .risex-stub .stub-logo { width:48px; height:48px; border-radius:13px; }
+    .risex-stub .stub-meta { min-width:112px; margin:0; }
+    .risex-stub .stub-bottom { min-width:76px; }
   }
   @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior:auto; }
+    .landing-sequence { height:100vh; height:100svh; min-height:0; }
+    .landing-cover { position:relative; }
+    .landing-transition-portal,.landing-transition-route { display:none; }
+    .landing-copy { opacity:1; transform:none; filter:none; }
+    .landing-enter { opacity:1; }
     .ticket-stage, .main-pass, .rear-pass, .scan-beam::after,
     .engraving-laser, .barcode-reader, .barcode-stamp, .tear-edge,
-    .scan-tracer, .issuance-wipe::before, .issuance-wipe::after, .wipe-lockup { animation:none !important; }
+    .scan-tracer, .issuance-wipe::before, .issuance-wipe::after, .wipe-lockup, .project-fan,
+    .landing-cover::after, .landing-cursor, .landing-enter i { animation:none !important; }
+    .landing-typed { width:22ch; animation:none !important; }
     .ticket-capture.is-final-landing::before, .ticket-capture.is-final-landing .main-pass::after { display:none !important; }
+    .project-transition,.project-transition * { animation:none !important; }
   }
   .ticket-capture.capture-export {
     position:relative !important; inset:auto !important; width:1000px !important; height:535px !important;
     overflow:hidden; border-radius:28px; transform:none !important; transform-style:flat !important; animation:none !important;
     background:radial-gradient(700px 330px at 50% 55%,rgba(108,43,245,.18),transparent 72%),#09090c;
   }
+  .ticket-capture.capture-export.risex-capture { background:radial-gradient(700px 330px at 50% 55%,rgba(4,223,131,.18),transparent 72%),#07100d; }
   .ticket-capture.capture-export * { animation:none !important; transition:none !important; }
   .ticket-capture.capture-export .rear-pass,
   .ticket-capture.capture-export .main-pass { box-shadow:none !important; }
@@ -721,17 +1230,137 @@
   .ticket-capture.capture-export .barcode-reader,
   .ticket-capture.capture-export .barcode-stamp { display:none !important; }
   .ticket-capture.capture-export .total-summary { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .ticket-capture.capture-export .risex-main-pass { left:3% !important; top:70px !important; width:94% !important; min-height:395px !important; grid-template-columns:minmax(0,1fr) 174px !important; }
+  .ticket-capture.capture-export .risex-main-pass .pass-body { padding:25px 31px 24px; }
+  .ticket-capture.capture-export .risex-route { grid-template-columns:minmax(126px,auto) minmax(100px,1fr) minmax(202px,auto); gap:20px; margin-top:28px; }
+  .ticket-capture.capture-export .risex-route-point b { font-size:34px; }
+  .ticket-capture.capture-export .risex-holder { grid-template-columns:minmax(0,1fr) auto; }
+  .ticket-capture.capture-export .risex-summary-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:0; }
+  .ticket-capture.capture-export .risex-metric { min-height:0; padding:0 12px; border-top:0; }
+  .ticket-capture.capture-export .risex-metric:first-child { padding-left:0; }
+  .ticket-capture.capture-export .risex-metric:last-child { padding-right:0; }
+  .ticket-capture.capture-export .risex-metric:not(:first-child)::before { display:block; }
+  .ticket-capture.capture-export .risex-stub { display:flex !important; }
 </style>
 </helmet>
 
-<div class="journey-page">
-  <main class="journey-shell">
+<div class="{{ journeyPageClass }}">
+  <sc-if value="{{ showLanding }}" hint-placeholder-val="{{ true }}">
+    <div class="landing-sequence">
+      <section class="landing-cover" aria-label="Welcome to the onchain boarding pass desk">
+        <div class="landing-transition-portal" aria-hidden="true"></div>
+        <div class="landing-transition-route" aria-hidden="true">
+          <strong>NOW BOARDING</strong>
+          <span class="landing-transition-track"><b class="landing-transition-plane">✈︎</b></span>
+          <small>Departures · Gate open</small>
+        </div>
+        <div class="landing-copy">
+          <p class="landing-kicker"><i>✈︎</i><span>Welcome aboard</span></p>
+          <h1 class="landing-title" aria-label="Issue your own onchain boarding pass.">
+            <span class="landing-headline" aria-hidden="true">ISSUE YOUR OWN</span>
+            <span class="landing-type-row" aria-hidden="true"><span class="landing-typed">ONCHAIN BOARDING PASS.</span><span class="landing-cursor"></span></span>
+          </h1>
+          <p class="landing-note">Your wallet · Your route · Your story</p>
+        </div>
+        <a class="landing-enter" href="#departures"><span>View departures</span><i>↓</i></a>
+      </section>
+    </div>
+  </sc-if>
+
+  <main class="journey-shell" id="departures">
     <header class="journey-header">
       <div class="journey-title-lockup">
-        <h1 class="journey-title">Your <span>INK</span> onchain journey.</h1>
-        <div class="journey-ink-logo"><div style="{{ inkMarkWhiteStyle }}"></div></div>
+        <h1 class="journey-title"><span class="hero-lead">{{ heroLead }}</span><span class="hero-accent">{{ heroAccent }}</span><span class="hero-tail">{{ heroTail }}</span></h1>
+        <div class="{{ journeyLogoClass }}">
+          <sc-if value="{{ inkProjectActive }}" hint-placeholder-val="{{ true }}"><div style="{{ inkMarkWhiteStyle }}"></div></sc-if>
+          <sc-if value="{{ projectBrandActive }}" hint-placeholder-val="{{ false }}"><span class="journey-project-logo" style="{{ activeProjectLogoStyle }}" role="img" aria-label="{{ activeProjectLogoAlt }}"></span></sc-if>
+        </div>
       </div>
+      <sc-if value="{{ projectBrandActive }}" hint-placeholder-val="{{ false }}"><p class="journey-route-note">{{ activeProjectTagline }}</p></sc-if>
     </header>
+
+    <nav class="project-deck" aria-label="Choose another boarding pass">
+      <div class="project-fan">
+        <sc-if value="{{ showDeckInk }}" hint-placeholder-val="{{ false }}">
+        <button type="button" class="{{ deckInkClass }}" data-project="ink" onClick="{{ onProjectSelect }}" disabled="{{ projectDeckDisabled }}" aria-label="Return to the live INK boarding pass">
+          <span class="mini-body"><span class="mini-top"><span>Home route</span><span class="mini-state">Live</span></span><span class="mini-brand-line"><span class="mini-logo"><span class="project-logo-fill" style="{{ inkDeckLogoStyle }}"></span></span><b class="mini-code">INK</b></span><span class="mini-route">Ecosystem<i></i>INK</span></span>
+          <span class="mini-stub"><small>Gate 57073</small><b>INK</b><i class="mini-bars"></i></span>
+        </button>
+        </sc-if>
+        <sc-if value="{{ showDeckRisex }}" hint-placeholder-val="{{ true }}">
+        <button type="button" class="{{ deckRisexClass }}" data-project="risex" onClick="{{ onProjectSelect }}" disabled="{{ projectDeckDisabled }}" aria-label="Open the live RISEx fully onchain boarding pass">
+          <span class="mini-body"><span class="mini-top"><span>Onchain CLOB</span><span class="mini-state">Live</span></span><span class="mini-brand-line"><span class="mini-logo"><img src="uploads/projects/RISEx.png" alt="" /></span><b class="mini-code">RISEx</b></span><span class="mini-route">Orderbook<i></i>RISEx</span></span>
+          <span class="mini-stub"><small>Gate 01</small><b>RSX</b><i class="mini-bars"></i></span>
+        </button>
+        </sc-if>
+        <sc-if value="{{ showDeckArcus }}" hint-placeholder-val="{{ true }}">
+        <button type="button" class="{{ deckArcusClass }}" data-project="arcus" onClick="{{ onProjectSelect }}" disabled="{{ comingSoonDeckDisabled }}" aria-label="Arcus boarding pass, coming soon">
+          <span class="mini-body"><span class="mini-top"><span>Exchange route</span><span class="mini-state">Concept</span></span><span class="mini-brand-line"><span class="mini-logo"><img src="uploads/projects/Arcus.png" alt="" /></span><b class="mini-code">Arcus</b></span><span class="mini-route">Wallet<i></i>Arcus</span></span>
+          <span class="mini-stub"><small>Gate 02</small><b>ARC</b><i class="mini-bars"></i></span>
+          <span class="mini-coming-soon" aria-hidden="true">Coming soon</span>
+        </button>
+        </sc-if>
+        <sc-if value="{{ showDeckVariational }}" hint-placeholder-val="{{ true }}">
+        <button type="button" class="{{ deckVariationalClass }}" data-project="variational" onClick="{{ onProjectSelect }}" disabled="{{ comingSoonDeckDisabled }}" aria-label="Variational boarding pass, coming soon">
+          <span class="mini-body"><span class="mini-top"><span>Exchange route</span><span class="mini-state">Concept</span></span><span class="mini-brand-line"><span class="mini-logo"><img src="uploads/projects/Variational.jpg" alt="" /></span><b class="mini-code">Variational</b></span><span class="mini-route">Wallet<i></i>Variational</span></span>
+          <span class="mini-stub"><small>Gate 03</small><b>VAR</b><i class="mini-bars"></i></span>
+          <span class="mini-coming-soon" aria-hidden="true">Coming soon</span>
+        </button>
+        </sc-if>
+        <sc-if value="{{ showDeckPerpl }}" hint-placeholder-val="{{ true }}">
+        <button type="button" class="{{ deckPerplClass }}" data-project="perpl" onClick="{{ onProjectSelect }}" disabled="{{ comingSoonDeckDisabled }}" aria-label="Perpl boarding pass, coming soon">
+          <span class="mini-body"><span class="mini-top"><span>Exchange route</span><span class="mini-state">Concept</span></span><span class="mini-brand-line"><span class="mini-logo"><img src="uploads/projects/Perpl.jpg" alt="" /></span><b class="mini-code">Perpl</b></span><span class="mini-route">Wallet<i></i>Perpl</span></span>
+          <span class="mini-stub"><small>Gate 04</small><b>PPL</b><i class="mini-bars"></i></span>
+          <span class="mini-coming-soon" aria-hidden="true">Coming soon</span>
+        </button>
+        </sc-if>
+        <sc-if value="{{ showDeckSuperluminal }}" hint-placeholder-val="{{ true }}">
+        <button type="button" class="{{ deckSuperluminalClass }}" data-project="superluminal" onClick="{{ onProjectSelect }}" disabled="{{ comingSoonDeckDisabled }}" aria-label="Superluminal boarding pass, coming soon">
+          <span class="mini-body"><span class="mini-top"><span>Exchange route</span><span class="mini-state">Concept</span></span><span class="mini-brand-line"><span class="mini-logo"><img src="uploads/projects/Supreluminal.png" alt="" /></span><b class="mini-code">Superluminal</b></span><span class="mini-route">Wallet<i></i>Superluminal</span></span>
+          <span class="mini-stub"><small>Gate 05</small><b>SLM</b><i class="mini-bars"></i></span>
+          <span class="mini-coming-soon" aria-hidden="true">Coming soon</span>
+        </button>
+        </sc-if>
+        <sc-if value="{{ showDeckTxflow }}" hint-placeholder-val="{{ true }}">
+        <button type="button" class="{{ deckTxflowClass }}" data-project="txflow" onClick="{{ onProjectSelect }}" disabled="{{ comingSoonDeckDisabled }}" aria-label="TxFlow boarding pass, coming soon">
+          <span class="mini-body"><span class="mini-top"><span>Exchange route</span><span class="mini-state">Concept</span></span><span class="mini-brand-line"><span class="mini-logo"><img src="uploads/projects/TxFlow.jpg" alt="" /></span><b class="mini-code">TxFlow</b></span><span class="mini-route">Signal<i></i>TxFlow</span></span>
+          <span class="mini-stub"><small>Gate 06</small><b>TXF</b><i class="mini-bars"></i></span>
+          <span class="mini-coming-soon" aria-hidden="true">Coming soon</span>
+        </button>
+        </sc-if>
+      </div>
+      <div class="deck-handle">Pass deck <b>06</b></div>
+      <p class="deck-caption"><b>2 live routes</b> · more departures coming soon</p>
+    </nav>
+
+    <sc-if value="{{ conceptProjectActive }}" hint-placeholder-val="{{ false }}">
+      <section class="project-preview-stage">
+        <article class="exchange-pass">
+          <section class="exchange-body">
+            <div class="exchange-topline"><span>Onchain exchange / concept pass</span><span><i></i>Route preview</span></div>
+            <div class="exchange-route">
+              <div><small>Departure</small><b>WALLET</b></div>
+              <div class="exchange-flight"><span>✦</span></div>
+              <div class="exchange-destination"><span class="exchange-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></span><div><small>Destination</small><b>{{ activeProjectName }}</b></div></div>
+            </div>
+            <div class="exchange-holder"><div><small>Passenger / public wallet</small><b>ENTER ADDRESS TO BEGIN</b></div><div><small>Boarding</small><b>COMING NEXT</b></div></div>
+            <div class="exchange-metrics">
+              <div class="exchange-metric"><small>Volume</small><b>—</b></div>
+              <div class="exchange-metric"><small>Net PnL</small><b>—</b></div>
+              <div class="exchange-metric"><small>Trades</small><b>—</b></div>
+              <div class="exchange-metric"><small>Journey rank</small><b>—</b></div>
+            </div>
+          </section>
+          <aside class="exchange-stub">
+            <span class="exchange-stub-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></span>
+            <small>Destination</small><b>{{ activeProjectName }}</b>
+            <div class="exchange-stub-meta"><div><small>Gate</small><b>{{ activeProjectGate }}</b></div><div><small>Class</small><b>ONCHAIN</b></div></div>
+            <div class="exchange-stub-bottom"><div class="exchange-barcode"></div><div class="exchange-serial">CONCEPT · {{ activeProjectCode }}</div></div>
+          </aside>
+        </article>
+        <div class="project-preview-actions"><button class="back-to-ink" type="button" onClick="{{ onReturnToInk }}">← Back to INK journey</button><p>{{ activeProjectTagline }}<br/>Concept route · live data adapter comes next.</p></div>
+      </section>
+    </sc-if>
 
     <section class="{{ stageClass }}">
       <div ref="{{ cardRef }}" class="{{ ticketCaptureClass }}">
@@ -771,6 +1400,7 @@
         </div>
         </sc-if>
 
+        <sc-if value="{{ inkProjectActive }}" hint-placeholder-val="{{ true }}">
         <article class="{{ mainPassClass }}">
           <section class="pass-body">
             <div class="pass-topline">
@@ -870,20 +1500,88 @@
           <sc-if value="{{ scanning }}" hint-placeholder-val="{{ false }}"><div class="ticket-scan-path"><i class="scan-tracer"></i></div></sc-if>
           <sc-if value="{{ tearing }}" hint-placeholder-val="{{ false }}"><div class="tear-edge"></div></sc-if>
         </article>
+        </sc-if>
+
+        <sc-if value="{{ risexProjectActive }}" hint-placeholder-val="{{ false }}">
+        <article class="{{ risexPassClass }}">
+          <section class="pass-body">
+            <div class="pass-topline">
+              <div class="pass-type">{{ passTypeLabel }}</div>
+              <div style="display:flex;align-items:center;gap:9px"><span class="risex-cabin-chip" title="Cabin tiers by volume venue rank: First Class 1–100 · Business 101–500 · Premium Economy 501–2,500 · Economy Plus 2,501–10,000 · Economy">{{ risexCabin }}</span><div class="pass-live"><i style="{{ liveDotStyle }}"></i>{{ liveLabel }}</div></div>
+            </div>
+
+            <div class="risex-route">
+              <div class="risex-route-point"><small>Order origin</small><b>WALLET</b></div>
+              <div class="risex-route-line"><span>match + settle onchain</span></div>
+              <div class="risex-route-point destination"><span class="exchange-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></span><div><small>Fully onchain CLOB</small><b>RISEx</b></div></div>
+            </div>
+
+            <div class="{{ risexHolderRowClass }}">
+              <div>
+                <span class="field-label">Trader / public wallet</span>
+                <div class="holder-address-shell">
+                  <sc-if value="{{ laserAddress }}" hint-placeholder-val="{{ false }}">
+                    <span class="laser-address">
+                      <sc-for list="{{ chars }}" as="glyph" hint-placeholder-count="42"><span style="{{ glyph.style }}">{{ glyph.c }}</span></sc-for>
+                      <i class="engraving-laser" style="{{ laserStyle }}"></i>
+                    </span>
+                  </sc-if>
+                  <sc-if value="{{ staticAddress }}" hint-placeholder-val="{{ true }}"><span class="holder-address">{{ holderAddress }}</span></sc-if>
+                </div>
+              </div>
+              <div><span class="field-label">Volume rank</span><strong>{{ risexRank }}</strong></div>
+            </div>
+
+            <sc-if value="{{ summaryHidden }}" hint-placeholder-val="{{ true }}">
+              <div class="manifest-locked"><b>ONCHAIN FLIGHT MANIFEST</b><span>Public trading history unlocks after barcode clearance</span></div>
+            </sc-if>
+
+            <sc-if value="{{ summaryVisible }}" hint-placeholder-val="{{ false }}">
+              <div class="risex-summary-grid">
+                <div class="risex-metric"><small>Volume</small><b>{{ risexVolume }}</b></div>
+                <div class="risex-metric"><small>Realized PnL</small><b>{{ risexNetPnl }}</b></div>
+                <div class="risex-metric"><small>Deposited</small><b>{{ risexDeposits }}</b></div>
+                <div class="risex-metric"><small>Withdrawn</small><b>{{ risexWithdrawals }}</b></div>
+                <div class="risex-metric"><small>Fills</small><b>{{ risexTrades }}</b></div>
+              </div>
+            </sc-if>
+          </section>
+
+          <aside ref="{{ stubRef }}" class="{{ risexStubClass }}" onPointerDown="{{ onTearPointerDown }}" onPointerMove="{{ onTearPointerMove }}" onPointerUp="{{ onTearPointerUp }}" onPointerCancel="{{ onTearPointerCancel }}" onLostPointerCapture="{{ onTearPointerCancel }}" onKeyDown="{{ onTearStubKey }}" role="button" tabindex="{{ stubTabIndex }}" aria-disabled="{{ stubAriaDisabled }}" aria-label="{{ stubAriaLabel }}">
+            <div>
+              <div class="stub-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></div>
+              <div class="stub-label">Fully onchain</div>
+              <div class="stub-code">RISEx</div>
+              <div class="stub-meta">
+                <div><small>Chain</small><b>RISE 4153</b></div>
+                <div><small>Rank</small><b>{{ risexRank }}</b></div>
+                <div class="risex-class-meta"><small>Class</small><b>{{ risexCabin }}</b></div>
+              </div>
+            </div>
+            <div class="stub-bottom">
+              <div class="barcode-wrap"><div class="barcode"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="barcode-stamp">Cleared</span></div>
+              <div class="stub-serial">{{ serial }}</div>
+            </div>
+            <sc-if value="{{ tearGuideActive }}" hint-placeholder-val="{{ false }}"><div class="tear-guide"><span class="drag-copy">Hold + drag</span><span class="release-copy">Release to detach</span><b>↘</b></div></sc-if>
+          </aside>
+          <sc-if value="{{ scanning }}" hint-placeholder-val="{{ false }}"><div class="ticket-scan-path"><i class="scan-tracer"></i></div></sc-if>
+          <sc-if value="{{ tearing }}" hint-placeholder-val="{{ false }}"><div class="tear-edge"></div></sc-if>
+        </article>
+        </sc-if>
       </div>
     </section>
 
     <sc-if value="{{ transitionActive }}" hint-placeholder-val="{{ false }}">
-      <div class="issuance-wipe"><div class="wipe-lockup"><div class="wipe-ink-logo"><div style="{{ inkMarkWhiteStyle }}"></div></div><span>Journey cleared</span></div></div>
+      <div class="{{ issuanceWipeClass }}"><div class="wipe-lockup"><sc-if value="{{ inkProjectActive }}" hint-placeholder-val="{{ true }}"><div class="wipe-ink-logo"><div style="{{ inkMarkWhiteStyle }}"></div></div></sc-if><sc-if value="{{ risexProjectActive }}" hint-placeholder-val="{{ false }}"><div class="wipe-project-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></div></sc-if><span>{{ wipeLabel }}</span></div></div>
     </sc-if>
 
     <section class="address-panel">
       <sc-if value="{{ idle }}" hint-placeholder-val="{{ true }}">
         <div class="checkin-ticket">
-          <div class="checkin-topline"><span>Online check-in</span><span>INK · GATE 57073</span></div>
+          <div class="checkin-topline"><span>{{ checkinLabel }}</span><span>{{ checkinGate }}</span></div>
           <div class="address-form">
             <div class="address-input-wrap">
-              <label>Passenger / public wallet</label>
+              <label>{{ addressFieldLabel }}</label>
               <input class="address-input" type="text" value="{{ addr }}" onChange="{{ onAddressInput }}" onKeyDown="{{ onAddressKey }}" disabled="{{ inputDisabled }}" maxlength="42" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0x0000000000000000000000000000000000000000" />
             </div>
             <button class="issue-button" onClick="{{ onSubmitAddress }}" disabled="{{ primaryDisabled }}">{{ primaryLabel }}</button>
@@ -906,11 +1604,24 @@
     </section>
   </main>
 
+  <sc-if value="{{ projectTransitionActive }}" hint-placeholder-val="{{ false }}">
+    <div class="project-transition-shell" aria-live="polite" aria-label="Switching project boarding pass">
+      <div class="project-transition" style="{{ projectTransitionStyle }}">
+        <div class="project-transition-lockup">
+          <span class="project-transition-logo"><span class="project-logo-fill" style="{{ transitionProjectLogoStyle }}"></span></span>
+          <span>Now boarding</span>
+          <b>{{ transitionProjectName }}</b>
+          <small>{{ transitionProjectTagline }}</small>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
   <footer class="site-credit">
     <a href="https://x.com/0x_snatch" target="_blank" rel="noopener noreferrer" aria-label="Visit 0x_snatch on X">Crafted by @0x_snatch</a>
   </footer>
 
-  <sc-if value="{{ intro }}" hint-placeholder-val="{{ true }}">
+  <sc-if value="{{ intro }}" hint-placeholder-val="{{ false }}">
     <div class="intro-overlay" style="position:fixed;inset:0;z-index:60;pointer-events:none;background:#030304;animation:holeFade 950ms 1800ms cubic-bezier(.4,0,.6,1) forwards">
       <div style="position:absolute;inset:0;animation:stackSpin 2600ms linear forwards">
       <div class="intro-ring" style="position:absolute;left:50%;top:50%;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;border:1px solid rgba(228,233,240,0.8);box-shadow:0 0 10px rgba(214,222,232,0.48),inset 0 0 10px rgba(214,222,232,0.36);filter:blur(0px);animation:ringIn 2200ms 0ms cubic-bezier(.66,0,.34,1) forwards"></div>
@@ -987,6 +1698,10 @@ const INK_RPC_URL = '/api/rpc';
 const NADO_ARCHIVE_URL = '/api/nado/archive';
 const NADO_REWARDS_URL = '/api/nado/rewards';
 const NADO_SYMBOLS_URL = '/api/nado/symbols';
+const LOCAL_RISEX_PROXY_ORIGIN = /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname) && window.location.port !== '10000'
+  ? window.location.protocol + '//' + window.location.hostname + ':10000'
+  : '';
+const RISEX_PROFILE_URL = LOCAL_RISEX_PROXY_ORIGIN + '/api/risex/profile';
 const TYDRO_ADDRESSES_PROVIDER = '0x4172E6aAEC070ACB31aaCE343A58c93E4C70f44D';
 const TYDRO_POOL_START_BLOCK = 19954047;
 const INK_EXPLORER_API = '/api/explorer';
@@ -1001,6 +1716,43 @@ const TYDRO_EVENT_QUERIES = {
   liquidation: { topic0: '0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286', walletTopic: 3 }
 };
 const TRANSPARENT_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+const PROJECT_PASSES = Object.freeze({
+  ink: {
+    name: 'INK', code: 'INK', gate: '57073', logo: '', color: '#6C2BF5', ink: '#FFFFFF',
+    hero: { lead: 'Your ', accent: 'INK', tail: ' onchain journey.' },
+    tagline: 'Return to your live INK ecosystem journey.'
+  },
+  risex: {
+    name: 'RISEx', code: 'RSX', gate: '01', logo: 'uploads/projects/RISEx.png', color: '#04DF83', ink: '#06140F',
+    hero: { lead: '', accent: 'RISEx', tail: '. The fully onchain journey, unified.' },
+    tagline: 'Every order matched and settled through a fully onchain orderbook.'
+  },
+  arcus: {
+    name: 'Arcus', code: 'ARC', gate: '02', logo: 'uploads/projects/Arcus.png', color: '#264B2D', ink: '#F5F0E7',
+    hero: { lead: '', accent: 'Arcus', tail: '. A 24/7 journey through markets that never sleep.' },
+    tagline: 'Stock tokens and cross-margined perps around the clock on Robinhood Chain.'
+  },
+  variational: {
+    name: 'Variational', code: 'VAR', gate: '03', logo: 'uploads/projects/Variational.jpg', color: '#559DF3', ink: '#031022',
+    hero: { lead: '', accent: 'Variational', tail: '. One journey across every market.' },
+    tagline: 'Peer-to-peer derivatives infrastructure spanning hundreds of perp markets.'
+  },
+  perpl: {
+    name: 'Perpl', code: 'PPL', gate: '04', logo: 'uploads/projects/Perpl.jpg', color: '#705CF6', ink: '#FFFFFF',
+    hero: { lead: '', accent: 'Perpl', tail: '. A direct journey into fully onchain perps.' },
+    tagline: 'A fully onchain CLOB for perpetual futures, built on Monad.'
+  },
+  superluminal: {
+    name: 'Superluminal', code: 'SLM', gate: '05', logo: 'uploads/projects/Supreluminal.png', color: '#E7FF8B', ink: '#071522',
+    hero: { lead: '', accent: 'Superluminal', tail: '. A fairer journey beyond the speed race.' },
+    tagline: 'Fogo-native perps matched through a Dual Flow Batch Auction orderbook.'
+  },
+  txflow: {
+    name: 'TxFlow', code: 'TXF', gate: '06', logo: 'uploads/projects/TxFlow.jpg', color: '#75FA68', ink: '#071408',
+    hero: { lead: '', accent: 'TxFlow', tail: '. Keep the onchain journey in full flow.' },
+    tagline: 'Perpetual markets on a purpose-built L1 with fully onchain order books.'
+  }
+});
 
 class Component extends DCLogic {
   state = {
@@ -1009,13 +1761,15 @@ class Component extends DCLogic {
     shown: 0,
     target: '',
     err: '',
-    intro: true,
+    intro: false,
+    showLanding: true,
     profileReady: false,
     engraveDone: false,
     nado: null,
     tydro: null,
     tydroHistoryStatus: 'idle',
     ink: null,
+    risex: null,
     sourceErrors: [],
     capturing: false,
     copied: false,
@@ -1023,6 +1777,8 @@ class Component extends DCLogic {
     shareStatus: '',
     walletHidden: false,
     shareImageReady: false,
+    activeProject: 'ink',
+    projectTransition: '',
     inkMark: TRANSPARENT_PIXEL,
     nadoMark: TRANSPARENT_PIXEL,
     tydroMark: TRANSPARENT_PIXEL,
@@ -1060,6 +1816,9 @@ class Component extends DCLogic {
   tearDragRotation = 0;
   tearDragThreshold = 78;
   tearReturnTimer = null;
+  projectSwapTimer = null;
+  projectTransitionTimer = null;
+  landingScrollFrame = null;
 
   clamp = (v, m) => Math.max(-m, Math.min(m, v));
 
@@ -1192,6 +1951,7 @@ class Component extends DCLogic {
       tydro: null,
       tydroHistoryStatus: 'idle',
       ink: null,
+      risex: null,
       sourceErrors: [],
       capturing: false,
       copied: false,
@@ -1251,20 +2011,67 @@ class Component extends DCLogic {
     this.historyController = null;
   }
 
+  updateLandingProgress = () => {
+    this.landingScrollFrame = null;
+    const sequence = document.querySelector('.landing-sequence');
+    if (!sequence) return;
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+    const rect = sequence.getBoundingClientRect();
+    const scrollSpan = Math.max(1, sequence.offsetHeight - window.innerHeight);
+    const progress = Math.max(0, Math.min(1, -rect.top / scrollSpan));
+    const clamp01 = value => Math.max(0, Math.min(1, value));
+    const copyPhase = clamp01((progress - .015) / .13);
+    const copyOpacity = 1 - copyPhase;
+    const portalOpacity = clamp01((progress - .07) / .13);
+    const portalScale = .03 + Math.pow(progress, 1.08) * 6.6;
+    const enterOpacity = 1 - clamp01(progress / .12);
+    let routeOpacity = 0;
+    if (progress > .28 && progress < .48) routeOpacity = (progress - .28) / .2;
+    else if (progress >= .48 && progress <= .8) routeOpacity = 1;
+    else if (progress > .8 && progress < .97) routeOpacity = (.97 - progress) / .17;
+    const flightPhase = clamp01((progress - .28) / .62);
+    const travel = Math.min(170, window.innerWidth * .31);
+    const flightX = -travel + travel * 2 * flightPhase;
+    sequence.style.setProperty('--landing-copy-opacity', copyOpacity.toFixed(3));
+    sequence.style.setProperty('--landing-copy-y', (-42 * copyPhase).toFixed(2) + 'px');
+    sequence.style.setProperty('--landing-copy-blur', (7 * copyPhase).toFixed(2) + 'px');
+    sequence.style.setProperty('--landing-enter-opacity', enterOpacity.toFixed(3));
+    sequence.style.setProperty('--landing-portal-opacity', portalOpacity.toFixed(3));
+    sequence.style.setProperty('--landing-portal-scale', portalScale.toFixed(3));
+    sequence.style.setProperty('--landing-route-opacity', routeOpacity.toFixed(3));
+    sequence.style.setProperty('--landing-route-scale', (.95 + routeOpacity * .05).toFixed(3));
+    sequence.style.setProperty('--landing-flight-x', flightX.toFixed(2) + 'px');
+  };
+
+  queueLandingProgress = () => {
+    if (this.landingScrollFrame !== null) return;
+    this.landingScrollFrame = window.requestAnimationFrame(this.updateLandingProgress);
+  };
+
   componentDidMount() {
     this.mountedFlag = true;
     // DC hot reload can carry old component state. Never carry a completed profile.
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const queryWallet = new URLSearchParams(window.location.search).get('wallet') || '';
+    const query = new URLSearchParams(window.location.search);
+    const queryWallet = query.get('wallet') || '';
+    const queryProject = String(query.get('project') || '').toLowerCase();
+    const initialProject = PROJECT_PASSES[queryProject] ? queryProject : 'ink';
     const initialWallet = this.isAddress(queryWallet) ? queryWallet : '';
     this.setState(Object.assign({
       addr: initialWallet,
       phase: 'idle',
       err: '',
+      activeProject: initialProject,
+      projectTransition: '',
+      showLanding: !initialWallet,
       intro: reduceMotion ? false : this.state.intro
     }, this.emptyProfileState()), () => {
-      if (initialWallet && this.mountedFlag) this.buildFromAddress();
+      this.queueLandingProgress();
+      if (initialWallet && this.mountedFlag && (initialProject === 'ink' || initialProject === 'risex')) this.buildFromAddress();
     });
+    window.addEventListener('scroll', this.queueLandingProgress, { passive: true });
+    window.addEventListener('resize', this.queueLandingProgress);
 
     this.introTimer = setTimeout(() => {
       if (this.mountedFlag) this.setState({ intro: false });
@@ -1275,10 +2082,16 @@ class Component extends DCLogic {
 
   componentWillUnmount() {
     this.mountedFlag = false;
+    window.removeEventListener('scroll', this.queueLandingProgress);
+    window.removeEventListener('resize', this.queueLandingProgress);
+    if (this.landingScrollFrame !== null) window.cancelAnimationFrame(this.landingScrollFrame);
+    this.landingScrollFrame = null;
     this.cancelProfile();
     clearTimeout(this.introTimer);
     clearTimeout(this.copyTimer);
     clearTimeout(this.shareTimer);
+    clearTimeout(this.projectSwapTimer);
+    clearTimeout(this.projectTransitionTimer);
   }
 
   handleAddressInput = event => {
@@ -1293,7 +2106,9 @@ class Component extends DCLogic {
   };
 
   buildFromAddress = async () => {
-    if (this.state.phase !== 'idle') return;
+    if (this.state.phase !== 'idle' || this.state.projectTransition) return;
+    const projectId = PROJECT_PASSES[this.state.activeProject] ? this.state.activeProject : 'ink';
+    if (projectId !== 'ink' && projectId !== 'risex') return;
     let address;
     try {
       address = this.cleanAddress(this.state.addr);
@@ -1314,7 +2129,8 @@ class Component extends DCLogic {
       err: ''
     }), () => reduceMotion ? this.maybeAdvanceIssuance(seq) : this.beginEngraving(seq));
     try {
-      await this.loadProfile(address, seq);
+      if (projectId === 'risex') await this.loadRisexProfile(address, seq);
+      else await this.loadProfile(address, seq);
     } catch (error) {
       if (!this.mountedFlag || seq !== this.requestSeq) return;
       clearInterval(this.tick);
@@ -1327,7 +2143,7 @@ class Component extends DCLogic {
   };
 
   startNewAddress = () => {
-    if (this.state.capturing || this.state.sharing) return;
+    if (this.state.capturing || this.state.sharing || this.state.projectTransition) return;
     this.cancelProfile();
     try {
       const url = new URL(window.location.href);
@@ -1344,7 +2160,7 @@ class Component extends DCLogic {
   };
 
   toggleWalletHidden = () => {
-    if (this.state.phase !== 'done' || this.state.capturing || this.state.sharing) return;
+    if (this.state.phase !== 'done' || this.state.capturing || this.state.sharing || this.state.projectTransition) return;
     this.shareBlob = null;
     this.shareBlobSeq = 0;
     this.setState(previous => ({
@@ -1365,6 +2181,64 @@ class Component extends DCLogic {
       this.prepareShareBlob(this.requestSeq);
     });
   };
+
+  switchProject = projectId => {
+    const nextId = String(projectId || '').toLowerCase();
+    const next = PROJECT_PASSES[nextId];
+    const phaseAllowsSwitch = this.state.phase === 'idle' || this.state.phase === 'done';
+    const liveProject = nextId === 'ink' || nextId === 'risex';
+    if (!next || !liveProject || !phaseAllowsSwitch || this.state.capturing || this.state.sharing || this.state.projectTransition) return;
+    if ((this.state.activeProject || 'ink') === nextId) return;
+
+    clearTimeout(this.projectSwapTimer);
+    clearTimeout(this.projectTransitionTimer);
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const revealProject = () => {
+      if (!this.mountedFlag) return;
+      const preservedAddress = this.state.addr;
+      this.cancelProfile();
+      this.setState(Object.assign({}, this.emptyProfileState(), {
+        activeProject: nextId,
+        addr: preservedAddress,
+        phase: 'idle',
+        err: ''
+      }));
+      try {
+        const url = new URL(window.location.href);
+        if (nextId === 'ink') url.searchParams.delete('project');
+        else url.searchParams.set('project', nextId);
+        url.searchParams.delete('wallet');
+        window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+      } catch (error) {
+        console.warn('Could not update the project route.', error);
+      }
+      try {
+        const departures = document.getElementById('departures');
+        if (departures) departures.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+        else window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+      } catch (error) { window.scrollTo(0, 0); }
+    };
+
+    if (reduceMotion) {
+      revealProject();
+      return;
+    }
+
+    this.setState({ projectTransition: nextId });
+    this.projectSwapTimer = setTimeout(revealProject, 585);
+    this.projectTransitionTimer = setTimeout(() => {
+      if (this.mountedFlag) this.setState({ projectTransition: '' });
+    }, 1660);
+  };
+
+  handleProjectSelect = event => {
+    const projectId = event && event.currentTarget && event.currentTarget.dataset
+      ? event.currentTarget.dataset.project
+      : '';
+    this.switchProject(projectId);
+  };
+
+  returnToInk = () => this.switchProject('ink');
 
   requestJson = async (url, init, signal, timeoutMs) => {
     const controller = new AbortController();
@@ -1977,6 +2851,51 @@ class Component extends DCLogic {
     };
   };
 
+  fetchRisex = async (address, signal) => {
+    const wallet = this.cleanAddress(address).toLowerCase();
+    const data = await this.requestJson(
+      RISEX_PROFILE_URL + '?address=' + encodeURIComponent(wallet),
+      {},
+      signal,
+      32000
+    );
+    if (!data || data.project !== 'risex' || String(data.address || '').toLowerCase() !== wallet) {
+      throw new Error('RISEx profile response is incomplete.');
+    }
+    return data;
+  };
+
+  loadRisexProfile = async (address, seq) => {
+    if (!this.mountedFlag || seq !== this.requestSeq) return;
+    const controller = new AbortController();
+    this.profileController = controller;
+    try {
+      const risex = await this.fetchRisex(address, controller.signal);
+      if (!this.mountedFlag || seq !== this.requestSeq || controller.signal.aborted) return;
+      this.profileController = null;
+      this.setState({
+        addr: address,
+        profileReady: true,
+        risex,
+        nado: null,
+        tydro: null,
+        ink: null,
+        sourceErrors: Array.isArray(risex.failedSources) ? risex.failedSources.map(name => 'RISEx ' + name) : [],
+        err: ''
+      }, () => this.maybeAdvanceIssuance(seq));
+    } catch (error) {
+      if (!this.mountedFlag || seq !== this.requestSeq || controller.signal.aborted) return;
+      this.profileController = null;
+      clearInterval(this.tick);
+      console.warn('RISEx public profile read failed', error);
+      this.setState(Object.assign({
+        phase: 'idle',
+        addr: address,
+        err: 'RISEx public data could not be read. Please try again.'
+      }, this.emptyProfileState()));
+    }
+  };
+
   loadProfile = async (address, seq) => {
     if (!this.mountedFlag || seq !== this.requestSeq) return;
     const controller = new AbortController();
@@ -2227,6 +3146,18 @@ class Component extends DCLogic {
     return Number(text);
   }
 
+  formatDecimalUsd(value, signed) {
+    if (value === null || value === undefined || value === '') return '—';
+    try {
+      const raw = this.decimalStringToX18(value).toString();
+      return signed
+        ? this.formatSignedUsd(raw, '1000000000000000000')
+        : this.formatUsd(raw, '1000000000000000000');
+    } catch (error) {
+      return '—';
+    }
+  }
+
   formatUsd(rawValue, unit) {
     const value = this.decimalFromRatio(rawValue, unit, 4);
     if (value === 0) return '$0';
@@ -2370,13 +3301,13 @@ class Component extends DCLogic {
   downloadPassBlob(blob) {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'ink-onchain-boarding-pass.png';
+    link.download = (this.state.activeProject === 'risex' ? 'risex-fully-onchain-boarding-pass.png' : 'ink-onchain-boarding-pass.png');
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   }
 
   capture = async () => {
-    if (!this.cardRef.current || !window.html2canvas || this.state.capturing || this.state.sharing || this.state.phase !== 'done') return;
+    if (!this.cardRef.current || !window.html2canvas || this.state.capturing || this.state.sharing || this.state.projectTransition || this.state.phase !== 'done') return;
     const seq = this.requestSeq;
     const hiddenSnapshot = this.state.walletHidden;
     this.setState({ capturing: true });
@@ -2413,6 +3344,41 @@ class Component extends DCLogic {
   };
 
   buildSharePayload() {
+    if (this.state.activeProject === 'risex') {
+      const risex = this.state.risex || {};
+      const volume = this.formatDecimalUsd(risex.volume, false);
+      const pnl = this.formatDecimalUsd(risex.netPnl, true);
+      const deposits = this.formatDecimalUsd(risex.deposits, false);
+      const withdrawals = this.formatDecimalUsd(risex.withdrawals, false);
+      const fills = risex.tradeCount !== null && risex.tradeCount !== undefined ? this.formatCount(risex.tradeCount) : '—';
+      const rank = Number(risex.rank || 0) > 0 ? '#' + this.formatCount(risex.rank) : 'UNRANKED';
+      const cabin = risex.cabin && risex.cabin.name ? String(risex.cabin.name) : 'NEW TRAVELER';
+      const lines = [
+        '✈️ My @risextrade fully onchain boarding pass is cleared!',
+        '',
+        'Order from wallet. Match onchain. Settle on RISE.',
+        'Destination: the RISEx fully onchain orderbook. 🛫',
+        '',
+        '🎫 ' + (this.state.walletHidden ? 'PRIVATE WALLET' : this.shortAddress(this.state.target)),
+        '',
+        'RISEx  ' + volume + ' volume · ' + pnl + ' realized PnL · ' + fills + ' fills',
+        'FLOW  ' + deposits + ' deposited · ' + withdrawals + ' withdrawn',
+        'CABIN  ' + cabin + ' · volume rank ' + rank,
+        '',
+        'Live public data from the RISEx indexed onchain state.',
+        '',
+        'Crafted by @0x_snatch'
+      ];
+      let shareUrl = '';
+      if (!/^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) {
+        const url = new URL(window.location.origin + window.location.pathname);
+        url.searchParams.set('project', 'risex');
+        if (!this.state.walletHidden) url.searchParams.set('wallet', this.state.target);
+        shareUrl = url.toString();
+      }
+      return { text: lines.join('\n'), url: shareUrl };
+    }
+
     const nado = this.state.nado;
     const tydro = this.state.tydro;
     const ink = this.state.ink;
@@ -2446,7 +3412,7 @@ class Component extends DCLogic {
   }
 
   share = async () => {
-    if (!this.cardRef.current || !window.html2canvas || this.state.capturing || this.state.sharing || this.state.phase !== 'done') return;
+    if (!this.cardRef.current || !window.html2canvas || this.state.capturing || this.state.sharing || this.state.projectTransition || this.state.phase !== 'done') return;
     const seq = this.requestSeq;
     const hiddenSnapshot = this.state.walletHidden;
     const blob = this.getCachedPassBlob();
@@ -2462,7 +3428,7 @@ class Component extends DCLogic {
     let supportsFileShare = false;
     if (mobileLike && typeof File === 'function' && navigator.share && navigator.canShare) {
       try {
-        file = new File([blob], 'ink-onchain-boarding-pass.png', { type: 'image/png' });
+        file = new File([blob], this.state.activeProject === 'risex' ? 'risex-fully-onchain-boarding-pass.png' : 'ink-onchain-boarding-pass.png', { type: 'image/png' });
         supportsFileShare = navigator.canShare({ files: [file] });
       } catch (error) {
         file = null;
@@ -2479,7 +3445,7 @@ class Component extends DCLogic {
     try {
       if (supportsFileShare && file) {
         try {
-          const shareData = { title: 'INK Ecosystem Boarding Pass', text: payload.text, files: [file] };
+          const shareData = { title: this.state.activeProject === 'risex' ? 'RISEx Fully Onchain Boarding Pass' : 'INK Ecosystem Boarding Pass', text: payload.text, files: [file] };
           if (payload.url) shareData.url = payload.url;
           const nativeShare = navigator.share(shareData);
           await nativeShare;
@@ -2529,6 +3495,55 @@ class Component extends DCLogic {
   renderVals() {
     const s = this.state;
     const accent = this.props.accent ?? '#6C2BF5';
+    const activeProjectId = PROJECT_PASSES[s.activeProject] ? s.activeProject : 'ink';
+    const activeProject = PROJECT_PASSES[activeProjectId];
+    const transitionProjectId = PROJECT_PASSES[s.projectTransition] ? s.projectTransition : '';
+    const transitionProject = transitionProjectId ? PROJECT_PASSES[transitionProjectId] : null;
+    const inkProjectActive = activeProjectId === 'ink';
+    const risexProjectActive = activeProjectId === 'risex';
+    const projectBrandActive = !inkProjectActive;
+    const conceptProjectActive = !inkProjectActive && !risexProjectActive;
+    const projectPreviewActive = conceptProjectActive;
+    const activeProjectLogo = inkProjectActive ? (s.inkMark || TRANSPARENT_PIXEL) : activeProject.logo;
+    const transitionProjectLogo = transitionProject
+      ? (transitionProjectId === 'ink' ? (s.inkMark || TRANSPARENT_PIXEL) : transitionProject.logo)
+      : TRANSPARENT_PIXEL;
+    const projectLogoStyle = (source, contain, crop) => ({
+      display: 'block',
+      width: '100%',
+      height: '100%',
+      backgroundImage: 'url("' + (source || TRANSPARENT_PIXEL) + '")',
+      backgroundSize: contain ? '86% auto' : (crop ? '102% 102%' : 'cover'),
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundColor: contain ? '#6C2BF5' : 'transparent'
+    });
+    const phaseAllowsProjectSwitch = s.phase === 'idle' || s.phase === 'done';
+    const projectDeckDisabled = !phaseAllowsProjectSwitch || Boolean(s.capturing || s.sharing || transitionProject);
+    const journeyPageClass = 'journey-page' +
+      (projectBrandActive ? ' theme-' + activeProjectId : '') +
+      (conceptProjectActive ? ' is-project-preview' : '') +
+      (risexProjectActive ? ' is-risex-live' : '');
+    const projectDeckOrder = ['ink', 'risex', 'arcus', 'variational', 'perpl', 'superluminal', 'txflow'];
+    const visibleDeckProjects = projectDeckOrder.filter(id => id !== activeProjectId);
+    const deckClassFor = id => 'project-mini deck-' + id + ' deck-slot-' + (visibleDeckProjects.indexOf(id) + 1) +
+      ((id === 'ink' || id === 'risex') ? ' is-live-route' : ' is-coming-soon');
+    const inkDeckLogoStyle = {
+      display: 'block',
+      width: '100%',
+      height: '100%',
+      backgroundImage: 'url("' + (s.inkMark || TRANSPARENT_PIXEL) + '")',
+      backgroundSize: '288% 108%',
+      backgroundPosition: 'left center',
+      backgroundRepeat: 'no-repeat'
+    };
+    const defaultHero = inkProjectActive
+      ? { lead: 'Your ', accent: 'INK', tail: ' onchain journey.' }
+      : { lead: '', accent: activeProject.name, tail: '.' };
+    const projectHero = activeProject.hero || defaultHero;
+    const heroLead = projectHero.lead ?? defaultHero.lead;
+    const heroAccent = projectHero.accent ?? defaultHero.accent;
+    const heroTail = projectHero.tail ?? defaultHero.tail;
     const base = {
       position: 'relative',
       display: 'inline-block',
@@ -2564,37 +3579,42 @@ class Component extends DCLogic {
     });
     const pct = s.target ? Math.round((s.shown / s.target.length) * 100) : 0;
     const sourceErrors = Array.isArray(s.sourceErrors) ? s.sourceErrors : [];
-    const sourceCount = 3 - sourceErrors.length;
+    const sourceTotal = risexProjectActive
+      ? Math.max(1, Number(s.risex && s.risex.sourceTotal || 5))
+      : 3;
+    const sourceCount = risexProjectActive
+      ? Math.max(0, Number(s.risex && s.risex.sourceCount || 0))
+      : Math.max(0, 3 - sourceErrors.length);
     const busy = s.phase !== 'idle' && s.phase !== 'done';
     const addressValid = this.isAddress(s.addr);
     const summaryVisible = s.phase === 'covering' || s.phase === 'landing' || s.phase === 'done';
 
     let statusLabel = 'Ready for check-in';
-    let progressLabel = 'Enter a public Ink / EVM address';
+    let progressLabel = risexProjectActive ? 'Enter a public Rise / EVM address' : 'Enter a public Ink / EVM address';
     let liveLabel = 'Public data';
-    let liveDot = accent;
+    let liveDot = risexProjectActive ? activeProject.color : accent;
     if (s.phase === 'syncing') {
       statusLabel = 'Reading ecosystem';
-      progressLabel = 'NADO archive · Tydro contracts · Ink RPC';
+      progressLabel = risexProjectActive ? 'RISEx public trading index' : 'NADO archive · Tydro contracts · Ink RPC';
       liveLabel = 'Syncing';
     } else if (s.phase === 'engraving') {
       statusLabel = 'Laser engraving wallet';
       progressLabel = pct + '% · identity imprint in progress';
-      liveLabel = s.profileReady ? sourceCount + '/3 live' : 'Reading sources';
-      liveDot = accent;
+      liveLabel = s.profileReady ? sourceCount + '/' + sourceTotal + ' live' : 'Reading sources';
+      liveDot = risexProjectActive ? activeProject.color : accent;
     } else if (s.phase === 'waiting') {
       statusLabel = 'Engraving complete';
-      progressLabel = 'Finalizing live ecosystem data';
+      progressLabel = risexProjectActive ? 'Finalizing fully onchain trading data' : 'Finalizing live ecosystem data';
       liveLabel = 'Gate clearance';
-      liveDot = accent;
+      liveDot = risexProjectActive ? activeProject.color : accent;
     } else if (s.phase === 'scanning') {
       statusLabel = 'Reading barcode';
-      progressLabel = 'Red-line verification · gate 57073';
+      progressLabel = risexProjectActive ? 'Red-line verification · Rise 4153' : 'Red-line verification · gate 57073';
       liveLabel = 'Scanning';
       liveDot = '#ff1745';
     } else if (s.phase === 'awaitingTear') {
       statusLabel = 'Barcode cleared';
-      progressLabel = 'Hold the purple stub and pull diagonally right';
+      progressLabel = risexProjectActive ? 'Hold the RISEx stub and pull diagonally right' : 'Hold the purple stub and pull diagonally right';
       liveLabel = 'Ready to tear';
       liveDot = '#79ffb1';
     } else if (s.phase === 'tearing') {
@@ -2610,20 +3630,22 @@ class Component extends DCLogic {
     } else if (s.phase === 'landing') {
       statusLabel = 'Journey manifest cleared';
       progressLabel = 'Returning your complete boarding pass';
-      liveLabel = sourceErrors.length ? 'Partial live' : '3/3 live';
+      liveLabel = sourceErrors.length ? 'Partial live' : sourceCount + '/' + sourceTotal + ' live';
       liveDot = sourceErrors.length ? '#a36c17' : '#267a4c';
     } else if (s.phase === 'revealing') {
       statusLabel = 'Journey manifest cleared';
       progressLabel = 'Preparing total onchain summary';
-      liveLabel = sourceErrors.length ? 'Partial live' : '3/3 live';
+      liveLabel = sourceErrors.length ? 'Partial live' : sourceCount + '/' + sourceTotal + ' live';
       liveDot = sourceErrors.length ? '#a36c17' : '#267a4c';
     } else if (s.phase === 'done') {
-      statusLabel = 'Total journey summary';
-      progressLabel = sourceErrors.length ? sourceCount + '/3 sources · ' + sourceErrors.join(', ') + ' unavailable' : '3 live sources · boarding pass ready';
+      statusLabel = risexProjectActive ? 'Fully onchain flight summary' : 'Total journey summary';
+      progressLabel = sourceErrors.length
+        ? sourceCount + '/' + sourceTotal + ' sources · some public fields unavailable'
+        : sourceCount + ' live sources · boarding pass ready';
       liveLabel = sourceErrors.length ? 'Partial live' : 'Live data';
       liveDot = sourceErrors.length ? '#a36c17' : '#267a4c';
-      if (!sourceErrors.length && s.tydroHistoryStatus === 'loading') progressLabel = '3 live sources · Tydro journey is still loading';
-      if (!sourceErrors.length && s.tydroHistoryStatus === 'unavailable') progressLabel = '3 live sources · current Tydro data ready';
+      if (!risexProjectActive && !sourceErrors.length && s.tydroHistoryStatus === 'loading') progressLabel = '3 live sources · Tydro journey is still loading';
+      if (!risexProjectActive && !sourceErrors.length && s.tydroHistoryStatus === 'unavailable') progressLabel = '3 live sources · current Tydro data ready';
       if (s.shareStatus) {
         statusLabel = 'X boarding message ready';
         progressLabel = s.shareStatus;
@@ -2718,6 +3740,23 @@ class Component extends DCLogic {
       if (s.ink.bridgeAmountWei !== null && s.ink.bridgeAmountWei !== undefined) inkBridged = this.formatEth(s.ink.bridgeAmountWei);
     }
 
+    let risexVolume = '—';
+    let risexNetPnl = '—';
+    let risexDeposits = '—';
+    let risexWithdrawals = '—';
+    let risexTrades = '—';
+    let risexRank = 'UNRANKED';
+    let risexCabin = 'NEW TRAVELER';
+    if (s.risex) {
+      risexVolume = this.formatDecimalUsd(s.risex.volume, false);
+      risexNetPnl = this.formatDecimalUsd(s.risex.netPnl, true);
+      risexDeposits = this.formatDecimalUsd(s.risex.deposits, false);
+      risexWithdrawals = this.formatDecimalUsd(s.risex.withdrawals, false);
+      if (s.risex.tradeCount !== null && s.risex.tradeCount !== undefined) risexTrades = this.formatCount(s.risex.tradeCount);
+      if (Number(s.risex.rank || 0) > 0) risexRank = '#' + this.formatCount(s.risex.rank);
+      if (s.risex.cabin && s.risex.cabin.name) risexCabin = String(s.risex.cabin.name);
+    }
+
     const markLayer = (source, left, top, width, height, light) => ({
       position: 'absolute',
       left: left,
@@ -2761,7 +3800,7 @@ class Component extends DCLogic {
       : (addressValid ? s.addr : 'ENTER ADDRESS TO ISSUE PASS');
     let sourceLabel = 'PENDING';
     if (s.phase === 'syncing') sourceLabel = 'SYNCING';
-    if (s.profileReady) sourceLabel = sourceCount + '/3 LIVE';
+    if (s.profileReady) sourceLabel = sourceCount + '/' + sourceTotal + ' LIVE';
     let stubStatus = 'OPEN';
     if (s.phase === 'engraving') stubStatus = 'ENGRAVE';
     if (s.phase === 'waiting') stubStatus = 'SYNC';
@@ -2771,20 +3810,25 @@ class Component extends DCLogic {
     if (s.phase === 'covering') stubStatus = 'CLEARED';
     if (s.phase === 'revealing' || s.phase === 'landing' || s.phase === 'done') stubStatus = 'READY';
 
-    let hint = 'Enter any public Ink/EVM address. No wallet connection or signature is needed.';
+    let hint = risexProjectActive
+      ? 'Enter any public Rise/EVM address. Public RISEx trading data only; no wallet connection or signature.'
+      : 'Enter any public Ink/EVM address. No wallet connection or signature is needed.';
     if (s.phase === 'syncing') hint = 'Reading live public data. No transaction or wallet approval is requested.';
     if (s.phase === 'engraving') hint = 'The public profile is being engraved onto the card.';
     if (s.phase === 'waiting') hint = 'Engraving complete. Finalizing public data.';
     if (s.phase === 'scanning') hint = 'Scanning the passenger stub barcode.';
-    if (s.phase === 'awaitingTear') hint = 'Barcode cleared. Hold the purple stub and pull it diagonally to the right.';
+    if (s.phase === 'awaitingTear') hint = risexProjectActive
+      ? 'Barcode cleared. Hold the RISEx stub and pull it diagonally to the right.'
+      : 'Barcode cleared. Hold the purple stub and pull it diagonally to the right.';
     if (s.phase === 'tearing') hint = 'Barcode cleared. Passenger stub detached.';
     if (s.phase === 'covering') hint = 'Passenger stub detached. Opening the journey manifest.';
     if (s.phase === 'landing') hint = 'Your cleared boarding pass is returning with its destination stub.';
     if (s.phase === 'revealing') hint = 'Preparing the total onchain journey summary.';
     if (s.phase === 'done') hint = 'Public address profile · this card does not prove wallet ownership.';
 
-    const stageClass = 'ticket-stage solo-stage' + (summaryVisible ? ' summary-stage' : '');
+    const stageClass = 'ticket-stage solo-stage' + (risexProjectActive ? ' risex-stage' : '') + (summaryVisible ? ' summary-stage' : '');
     const ticketCaptureClass = 'ticket-capture solo-capture' +
+      (risexProjectActive ? ' risex-capture' : '') +
       (s.phase === 'covering' ? ' is-summary-reveal' : '') +
       (s.phase === 'landing' ? ' is-final-landing' : '');
     const tearVisualActive = s.phase === 'tearing';
@@ -2793,8 +3837,58 @@ class Component extends DCLogic {
       (s.phase === 'awaitingTear' ? ' is-awaiting-tear' : '') +
       (tearVisualActive ? ' is-tearing' : '') +
       (summaryVisible ? ' is-final-summary' : '');
+    const risexPassClass = mainPassClass + ' risex-main-pass';
+    const stubClass = 'main-stub' + (s.phase === 'awaitingTear' ? ' is-interactive' : '');
+    const passPrefix = risexProjectActive ? 'RSX' : 'INK';
+    const serial = summaryVisible
+      ? (s.walletHidden ? passPrefix + '-PRIVATE' : passPrefix + '-' + ((s.target || '').replace(/[^a-zA-Z0-9]/g, '').slice(-8) || 'PLATE01').toUpperCase())
+      : passPrefix + '-—————';
 
     return {
+      journeyPageClass: journeyPageClass,
+      heroLead: heroLead,
+      heroAccent: heroAccent,
+      heroTail: heroTail,
+      journeyLogoClass: 'journey-ink-logo' + (projectBrandActive ? ' is-project-logo' : ''),
+      inkProjectActive: inkProjectActive,
+      risexProjectActive: risexProjectActive,
+      projectBrandActive: projectBrandActive,
+      conceptProjectActive: conceptProjectActive,
+      projectPreviewActive: projectPreviewActive,
+      activeProjectName: activeProject.name,
+      activeProjectCode: activeProject.code,
+      activeProjectGate: activeProject.gate,
+      activeProjectLogo: activeProjectLogo,
+      activeProjectLogoStyle: projectLogoStyle(activeProjectLogo, false, risexProjectActive),
+      activeProjectLogoAlt: activeProject.name + ' logo',
+      activeProjectTagline: activeProject.tagline,
+      projectDeckDisabled: projectDeckDisabled,
+      comingSoonDeckDisabled: true,
+      showDeckInk: activeProjectId !== 'ink',
+      showDeckRisex: activeProjectId !== 'risex',
+      showDeckArcus: activeProjectId !== 'arcus',
+      showDeckVariational: activeProjectId !== 'variational',
+      showDeckPerpl: activeProjectId !== 'perpl',
+      showDeckSuperluminal: activeProjectId !== 'superluminal',
+      showDeckTxflow: activeProjectId !== 'txflow',
+      deckInkClass: deckClassFor('ink'),
+      deckRisexClass: deckClassFor('risex'),
+      deckArcusClass: deckClassFor('arcus'),
+      deckVariationalClass: deckClassFor('variational'),
+      deckPerplClass: deckClassFor('perpl'),
+      deckSuperluminalClass: deckClassFor('superluminal'),
+      deckTxflowClass: deckClassFor('txflow'),
+      inkDeckLogoStyle: inkDeckLogoStyle,
+      projectTransitionActive: Boolean(transitionProject),
+      projectTransitionStyle: {
+        background: transitionProject ? transitionProject.color : accent,
+        color: transitionProject ? transitionProject.ink : '#FFFFFF'
+      },
+      transitionProjectName: transitionProject ? transitionProject.name : '',
+      transitionProjectLogo: transitionProjectLogo,
+      transitionProjectLogoStyle: projectLogoStyle(transitionProjectLogo, transitionProjectId === 'ink', transitionProjectId === 'risex'),
+      transitionProjectTagline: transitionProject ? transitionProject.tagline : '',
+      showLanding: Boolean(s.showLanding),
       intro: (this.props.showIntro ?? true) && s.intro,
       idle: s.phase === 'idle',
       marking: s.phase !== 'idle',
@@ -2817,19 +3911,24 @@ class Component extends DCLogic {
       chars: chars,
       addr: s.addr || '',
       err: s.err,
-      serial: summaryVisible
-        ? (s.walletHidden ? 'INK-PRIVATE' : 'INK-' + ((s.target || '').replace(/[^a-zA-Z0-9]/g, '').slice(-8) || 'PLATE01').toUpperCase())
-        : 'INK-—————',
-      passTypeLabel: summaryVisible ? 'INK / TOTAL JOURNEY SUMMARY' : 'INK / ONCHAIN JOURNEY RECORD',
+      serial: serial,
+      passTypeLabel: risexProjectActive
+        ? (summaryVisible ? 'RISEx / FULLY ONCHAIN FLIGHT SUMMARY' : 'RISEx / FULLY ONCHAIN ORDERBOOK')
+        : (summaryVisible ? 'INK / TOTAL JOURNEY SUMMARY' : 'INK / ONCHAIN JOURNEY RECORD'),
       stageClass: stageClass,
       ticketCaptureClass: ticketCaptureClass,
       mainPassClass: mainPassClass,
-      stubClass: 'main-stub' + (s.phase === 'awaitingTear' ? ' is-interactive' : ''),
+      risexPassClass: risexPassClass,
+      stubClass: stubClass,
+      risexStubClass: stubClass + ' risex-stub',
       tearGuideActive: s.phase === 'awaitingTear',
       stubTabIndex: s.phase === 'awaitingTear' ? 0 : -1,
       stubAriaDisabled: s.phase !== 'awaitingTear',
-      stubAriaLabel: s.phase === 'awaitingTear' ? 'Hold and pull diagonally right to detach the purple passenger stub. Press Enter as a keyboard alternative.' : 'INK destination stub',
+      stubAriaLabel: s.phase === 'awaitingTear'
+        ? 'Hold and pull diagonally right to detach the ' + (risexProjectActive ? 'RISEx' : 'purple') + ' passenger stub. Press Enter as a keyboard alternative.'
+        : (risexProjectActive ? 'RISEx fully onchain destination stub' : 'INK destination stub'),
       holderRowClass: 'holder-row' + (s.phase === 'engraving' ? ' is-engraving' : ''),
+      risexHolderRowClass: 'holder-row risex-holder' + (s.phase === 'engraving' ? ' is-engraving' : ''),
       laserStyle: {
         left: 'calc(' + Math.min(100, pct) + '% + .5ch)',
         transitionDuration: Math.max(48, this.props.engraveSpeed ?? 56) + 'ms'
@@ -2838,17 +3937,22 @@ class Component extends DCLogic {
       progressLabel: progressLabel,
       liveLabel: liveLabel,
       liveDot: liveDot,
-      primaryLabel: busy ? 'Checking in…' : 'Issue pass',
-      primaryDisabled: busy || !addressValid,
-      inputDisabled: busy,
+      primaryLabel: busy ? 'Checking in…' : (risexProjectActive ? 'Issue RISEx pass' : 'Issue pass'),
+      primaryDisabled: busy || Boolean(transitionProject) || !addressValid,
+      inputDisabled: busy || Boolean(transitionProject),
       primaryCursor: busy || !addressValid ? 'not-allowed' : 'pointer',
       primaryBackground: busy || !addressValid ? '#767982' : accent,
       primaryOpacity: busy || !addressValid ? 0.68 : 1,
-      actionsDisabled: Boolean(s.capturing || s.sharing),
-      shareDisabled: Boolean(s.capturing || s.sharing || !s.shareImageReady),
+      actionsDisabled: Boolean(s.capturing || s.sharing || transitionProject),
+      shareDisabled: Boolean(s.capturing || s.sharing || transitionProject || !s.shareImageReady),
       walletHidden: Boolean(s.walletHidden),
       privacyToggleClass: 'action-button privacy-toggle' + (s.walletHidden ? ' is-active' : ''),
       privacyLabel: s.walletHidden ? 'Wallet hidden' : 'Hide wallet',
+      checkinLabel: risexProjectActive ? 'Fully onchain check-in' : 'Online check-in',
+      checkinGate: risexProjectActive ? 'RISEx · RISE 4153' : 'INK · GATE 57073',
+      addressFieldLabel: risexProjectActive ? 'Trader / public wallet' : 'Passenger / public wallet',
+      issuanceWipeClass: 'issuance-wipe' + (risexProjectActive ? ' risex-wipe' : ''),
+      wipeLabel: risexProjectActive ? 'Orderbook route cleared' : 'Journey cleared',
       nadoPrimary: nadoPrimary,
       nadoSecondary: nadoSecondary,
       tydroPrimary: tydroPrimary,
@@ -2874,6 +3978,13 @@ class Component extends DCLogic {
       inkBridged: inkBridged,
       inkTxCount: inkTxCount,
       inkBlock: inkBlock,
+      risexVolume: risexVolume,
+      risexNetPnl: risexNetPnl,
+      risexDeposits: risexDeposits,
+      risexWithdrawals: risexWithdrawals,
+      risexTrades: risexTrades,
+      risexRank: risexRank,
+      risexCabin: risexCabin,
       holderAddress: holderAddress,
       issuedDate: issuedDate,
       sourceLabel: sourceLabel,
@@ -2905,6 +4016,8 @@ class Component extends DCLogic {
       onShare: this.share,
       onNewAddress: this.startNewAddress,
       onToggleWallet: this.toggleWalletHidden,
+      onProjectSelect: this.handleProjectSelect,
+      onReturnToInk: this.returnToInk,
       captureLabel: s.capturing ? 'Copying…' : (s.copied ? 'Copied' : 'Copy'),
       shareLabel: s.sharing ? 'Sharing…' : (s.shareImageReady ? 'Share on X' : 'Preparing…')
     };
