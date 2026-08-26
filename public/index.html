@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Onchain Boarding Pass</title>
-<meta name="description" content="Issue your own onchain boarding pass. Live passes for INK (NADO, Tydro) and RISEx, built only from public onchain and venue data.">
+<meta name="description" content="Issue your own onchain boarding pass. Live passes for INK, RISEx, and Perpl, built only from public onchain and venue data.">
 <link rel="icon" href="data:,">
 <script src="./support.js"></script>
 </head>
@@ -301,11 +301,12 @@
   .journey-page.theme-risex { --project-accent:#04df83; --project-paper:#04df83; --project-ink:#06140f; --project-stub:#07120f; --project-stub-ink:#edfff8; --project-glow:rgba(4,223,131,.24); --project-pattern:repeating-linear-gradient(133deg,transparent 0 34px,rgba(0,0,0,.12) 35px 37px); }
   .journey-page.theme-arcus { --project-accent:#dff1cf; --project-paper:#264b2d; --project-ink:#f5f0e7; --project-stub:#f2eee5; --project-stub-ink:#204629; --project-glow:rgba(76,152,84,.24); --project-pattern:radial-gradient(circle at 28% 48%,rgba(255,255,255,.14) 0 2px,transparent 3px),linear-gradient(112deg,transparent 48%,rgba(255,255,255,.07) 49% 51%,transparent 52%); }
   .journey-page.theme-variational { --project-accent:#67aaff; --project-paper:#050a16; --project-ink:#edf5ff; --project-stub:#559df3; --project-stub-ink:#031022; --project-glow:rgba(82,155,244,.26); --project-pattern:radial-gradient(500px 250px at 18% 115%,rgba(82,155,244,.42),transparent 67%),linear-gradient(90deg,transparent 0 72%,rgba(82,155,244,.12) 72% 73%,transparent 73%); }
-  .journey-page.theme-perpl { --project-accent:#9d8cff; --project-paper:#705cf6; --project-ink:#fff; --project-stub:#f7f5ef; --project-stub-ink:#563fdb; --project-glow:rgba(112,92,246,.3); --project-pattern:linear-gradient(90deg,rgba(255,255,255,.12) 0 13%,transparent 13% 58%,rgba(255,255,255,.09) 58% 70%,transparent 70%); }
+  .journey-page.theme-perpl { --project-accent:#a2a4ff; --project-paper:#6f5cff; --project-ink:#fff; --project-stub:#f1f1f1; --project-stub-ink:#211c30; --project-glow:rgba(111,92,255,.32); --project-pattern:linear-gradient(90deg,rgba(255,255,255,.12) 0 13%,transparent 13% 58%,rgba(255,255,255,.09) 58% 70%,transparent 70%); }
   .journey-page.theme-superluminal { --project-accent:#e7ff8b; --project-paper:#e7ff8b; --project-ink:#071522; --project-stub:#071522; --project-stub-ink:#e7ff8b; --project-glow:rgba(209,255,83,.22); --project-pattern:repeating-conic-gradient(from 0deg at 22% 54%,rgba(7,21,34,.11) 0deg 2deg,transparent 2deg 13deg); }
   .journey-page.theme-txflow { --project-accent:#75fa68; --project-paper:#75fa68; --project-ink:#071408; --project-stub:#071408; --project-stub-ink:#75fa68; --project-glow:rgba(117,250,104,.22); --project-pattern:linear-gradient(90deg,rgba(0,0,0,.09) 1px,transparent 1px),linear-gradient(rgba(0,0,0,.09) 1px,transparent 1px); }
   .journey-page.is-project-preview,
-  .journey-page.is-risex-live {
+  .journey-page.is-risex-live,
+  .journey-page.is-perpl-live {
     background:
       radial-gradient(900px 520px at 50% 44%,var(--project-glow),transparent 67%),
       radial-gradient(560px 380px at 86% 78%,var(--project-glow),transparent 72%),
@@ -463,10 +464,12 @@
     letter-spacing:-.045em; color:#f4f1e9; text-wrap:balance;
   }
   .journey-page.is-project-preview .journey-title,
-  .journey-page.is-risex-live .journey-title { font-size:clamp(34px,4.25vw,50px); line-height:1.04; }
+  .journey-page.is-risex-live .journey-title,
+  .journey-page.is-perpl-live .journey-title { font-size:clamp(34px,4.25vw,50px); line-height:1.04; }
   .journey-title .hero-accent { color:#8b5cff; }
   .journey-page.is-project-preview .journey-title .hero-accent,
-  .journey-page.is-risex-live .journey-title .hero-accent { color:var(--project-accent); }
+  .journey-page.is-risex-live .journey-title .hero-accent,
+  .journey-page.is-perpl-live .journey-title .hero-accent { color:var(--project-accent); }
   .journey-ink-logo { position:relative; flex:none; width:104px; height:39px; overflow:visible; opacity:.94; }
   .journey-ink-logo.is-project-logo { width:54px; height:54px; overflow:hidden; border:1px solid rgba(255,255,255,.22); border-radius:15px; box-shadow:0 16px 34px -18px var(--project-glow); }
   .journey-project-logo { display:block; width:100%; height:100%; }
@@ -541,7 +544,7 @@
   .deck-risex { --paper:#04df83; --ticket-ink:#06140f; --stub:#07120f; --stub-ink:#edfff8; --brand:#04df83; --pattern:repeating-linear-gradient(133deg,transparent 0 25px,rgba(0,0,0,.13) 26px 27px); }
   .deck-arcus { --paper:#264b2d; --ticket-ink:#f5f0e7; --stub:#f2eee5; --stub-ink:#204629; --brand:#f2eee5; --pattern:radial-gradient(circle at 22% 54%,rgba(255,255,255,.17) 0 2px,transparent 3px),linear-gradient(112deg,transparent 48%,rgba(255,255,255,.08) 49% 51%,transparent 52%); }
   .deck-variational { --paper:#050a16; --ticket-ink:#edf5ff; --stub:#559df3; --stub-ink:#031022; --brand:#67aaff; --pattern:radial-gradient(140px 82px at 22% 120%,rgba(82,155,244,.38),transparent 66%),linear-gradient(90deg,transparent 0 68%,rgba(82,155,244,.12) 68% 70%,transparent 70%); }
-  .deck-perpl { --paper:#705cf6; --ticket-ink:#fff; --stub:#f7f5ef; --stub-ink:#563fdb; --brand:#fff; --pattern:linear-gradient(90deg,rgba(255,255,255,.13) 0 15%,transparent 15% 58%,rgba(255,255,255,.09) 58% 72%,transparent 72%); }
+  .deck-perpl { --paper:#6f5cff; --ticket-ink:#fff; --stub:#f1f1f1; --stub-ink:#211c30; --brand:#fff; --pattern:linear-gradient(90deg,rgba(255,255,255,.13) 0 15%,transparent 15% 58%,rgba(255,255,255,.09) 58% 72%,transparent 72%); }
   .deck-superluminal { --paper:#e7ff8b; --ticket-ink:#071522; --stub:#071522; --stub-ink:#e7ff8b; --brand:#071522; --pattern:repeating-conic-gradient(from 0deg at 24% 54%,rgba(7,21,34,.13) 0deg 3deg,transparent 3deg 16deg); }
   .deck-txflow { --paper:#75fa68; --ticket-ink:#071408; --stub:#071408; --stub-ink:#75fa68; --brand:#071408; --pattern:linear-gradient(90deg,rgba(0,0,0,.1) 1px,transparent 1px),linear-gradient(rgba(0,0,0,.1) 1px,transparent 1px); }
   .deck-slot-1 { --rest-x:-84px; --rest-y:-84px; --rest-r:-2.5deg; --fan-x:-16px; --fan-y:-178px; --fan-r:-4.5deg; z-index:6; }
@@ -938,6 +941,54 @@
   .journey-page.is-risex-live .privacy-toggle.is-active .privacy-switch { background:#04df83; }
   .journey-page.is-risex-live .site-credit a { color:#72e7c0; }
   .journey-page.is-risex-live .site-credit a::before { color:#04df83; }
+  .perpl-main-pass {
+    color:#fff; background:linear-gradient(118deg,#5140d2 0%,#6f5cff 48%,#a2a4ff 100%); border-color:rgba(232,232,255,.92);
+    box-shadow:0 36px 76px -30px rgba(0,0,0,.96),0 30px 72px -46px rgba(111,92,255,.8);
+  }
+  .perpl-main-pass::before {
+    opacity:.72; background:radial-gradient(440px 220px at 12% -12%,rgba(255,255,255,.28),transparent 70%),linear-gradient(90deg,rgba(255,255,255,.08) 0 13%,transparent 13% 58%,rgba(255,255,255,.07) 58% 70%,transparent 70%);
+  }
+  .perpl-main-pass .pass-live,
+  .perpl-main-pass .risex-route-point small,
+  .perpl-main-pass .risex-holder .field-label,
+  .perpl-main-pass .risex-metric small { color:rgba(255,255,255,.72); }
+  .perpl-main-pass .risex-route-line { background:#fff; opacity:.68; }
+  .perpl-main-pass .risex-route-line::before,
+  .perpl-main-pass .risex-route-line::after { background:#fff; }
+  .perpl-main-pass .risex-holder { border-color:rgba(255,255,255,.27); }
+  .perpl-main-pass .risex-holder .holder-address,
+  .perpl-main-pass .risex-holder strong { color:#fff; text-shadow:0 1px 0 rgba(0,0,0,.24),0 0 16px rgba(255,255,255,.08); }
+  .perpl-main-pass .manifest-locked,
+  .perpl-main-pass .risex-summary-grid { border-color:rgba(255,255,255,.26); }
+  .perpl-main-pass .manifest-locked span { color:rgba(255,255,255,.68); }
+  .perpl-main-pass .risex-metric:not(:first-child)::before { background:rgba(255,255,255,.21); }
+  .perpl-main-pass .risex-cabin-chip { color:#fff; background:rgba(14,8,59,.18); border-color:rgba(255,255,255,.45); box-shadow:0 8px 22px -14px rgba(18,7,76,.9); }
+  .perpl-stub { color:#211c30; background:linear-gradient(155deg,#fff 0%,#f1f1f1 58%,#e4e3ef 100%); }
+  .perpl-stub .stub-logo { border-color:rgba(111,92,255,.3); background:#6f5cff; box-shadow:0 16px 30px -18px rgba(55,32,181,.7); }
+  .perpl-stub .stub-label { color:rgba(33,28,48,.68); }
+  .perpl-stub .stub-code,
+  .perpl-stub .stub-meta b { color:#211c30; }
+  .perpl-stub .risex-class-meta { border-color:rgba(111,92,255,.42); background:rgba(111,92,255,.09); }
+  .perpl-stub .risex-class-meta small,
+  .perpl-stub .risex-class-meta b { color:#6f5cff; }
+  .perpl-stub .barcode i { background:#6f5cff; }
+  .perpl-stub .stub-serial { color:rgba(33,28,48,.68); }
+  .perpl-stub .tear-guide { color:#fff; background:#6f5cff; border-color:#d1d2ff; }
+  .perpl-main-pass.is-awaiting-tear .main-stub.is-armed .tear-guide { color:#fff; background:#6f5cff; border-color:#e5e5ff; box-shadow:0 0 0 4px rgba(111,92,255,.16),0 0 28px rgba(111,92,255,.7); }
+  .perpl-main-pass.is-awaiting-tear .main-stub { box-shadow:inset 12px 0 30px rgba(111,92,255,.08),0 0 30px rgba(111,92,255,.28); }
+  .perpl-main-pass.is-torn-final .pass-body::after { background:radial-gradient(circle at 0 7px,#6f5cff 0 6px,transparent 6.5px) 0 0/10px 14px repeat-y; }
+  .ticket-capture.perpl-capture.is-final-landing::before { background:radial-gradient(ellipse at 58% 48%,rgba(162,164,255,.5),rgba(111,92,255,.2) 38%,transparent 72%); }
+  .issuance-wipe.perpl-wipe { background:linear-gradient(112deg,#211c30 0%,#5945e6 35%,#a2a4ff 56%,#302085 100%); }
+  .issuance-wipe.perpl-wipe::after { box-shadow:0 0 18px #fff,0 0 50px #c4b9ff; }
+  .journey-page.is-perpl-live .checkin-topline span:first-child,
+  .journey-page.is-perpl-live .status-strip b { color:#a2a4ff; text-shadow:0 0 16px rgba(111,92,255,.38); }
+  .journey-page.is-perpl-live .issue-button { background:rgba(111,92,255,.16); border-color:#a2a4ff; color:#faf8ff; }
+  .journey-page.is-perpl-live .issue-button:disabled { background:rgba(111,92,255,.08); border-color:rgba(162,164,255,.52); }
+  .journey-page.is-perpl-live .action-button.primary { color:#fff; background:#6f5cff; }
+  .journey-page.is-perpl-live .privacy-toggle.is-active { background:rgba(111,92,255,.18); border-color:#a2a4ff; }
+  .journey-page.is-perpl-live .privacy-toggle.is-active .privacy-switch { background:#6f5cff; }
+  .journey-page.is-perpl-live .site-credit a { color:#a99bff; }
+  .journey-page.is-perpl-live .site-credit a::before { color:#6f5cff; }
   .address-panel {
     position:relative; width:min(900px,100%); margin:26px auto 0; padding:0 3%;
   }
@@ -1153,6 +1204,7 @@
     .risex-metric:nth-child(even) { padding-right:0; }
     .risex-metric:nth-child(odd)::before { display:none; }
     .risex-metric:nth-child(n+3) { border-top:1px solid rgba(4,40,29,.18); }
+    .perpl-main-pass .risex-metric:nth-child(n+3) { border-top-color:rgba(255,255,255,.18); }
     .risex-metric:last-child { grid-column:1/-1; padding-left:0; padding-right:0; }
     .risex-metric b { font-size:15px; }
     .risex-stub .stub-logo { width:48px; height:48px; border-radius:13px; }
@@ -1180,6 +1232,7 @@
     background:radial-gradient(700px 330px at 50% 55%,rgba(108,43,245,.18),transparent 72%),#09090c;
   }
   .ticket-capture.capture-export.risex-capture { background:radial-gradient(700px 330px at 50% 55%,rgba(4,223,131,.18),transparent 72%),#07100d; }
+  .ticket-capture.capture-export.perpl-capture { background:radial-gradient(700px 330px at 50% 55%,rgba(111,92,255,.28),transparent 72%),#0b0818; }
   .ticket-capture.capture-export * { animation:none !important; transition:none !important; }
   .ticket-capture.capture-export .rear-pass,
   .ticket-capture.capture-export .main-pass { box-shadow:none !important; }
@@ -1308,10 +1361,9 @@
         </button>
         </sc-if>
         <sc-if value="{{ showDeckPerpl }}" hint-placeholder-val="{{ true }}">
-        <button type="button" class="{{ deckPerplClass }}" data-project="perpl" onClick="{{ onProjectSelect }}" disabled="{{ comingSoonDeckDisabled }}" aria-label="Perpl boarding pass, coming soon">
-          <span class="mini-body"><span class="mini-top"><span>Exchange route</span><span class="mini-state">Concept</span></span><span class="mini-brand-line"><span class="mini-logo"><img src="uploads/projects/Perpl.jpg" alt="" /></span><b class="mini-code">Perpl</b></span><span class="mini-route">Wallet<i></i>Perpl</span></span>
-          <span class="mini-stub"><small>Gate 04</small><b>PPL</b><i class="mini-bars"></i></span>
-          <span class="mini-coming-soon" aria-hidden="true">Coming soon</span>
+        <button type="button" class="{{ deckPerplClass }}" data-project="perpl" onClick="{{ onProjectSelect }}" disabled="{{ projectDeckDisabled }}" aria-label="Open the live Perpl fully on-chain boarding pass">
+          <span class="mini-body"><span class="mini-top"><span>Monad CLOB</span><span class="mini-state">Live</span></span><span class="mini-brand-line"><span class="mini-logo"><img src="uploads/projects/Perpl.jpg" alt="" /></span><b class="mini-code">Perpl</b></span><span class="mini-route">Wallet<i></i>Perpl</span></span>
+          <span class="mini-stub"><small>Monad 143</small><b>PER</b><i class="mini-bars"></i></span>
         </button>
         </sc-if>
         <sc-if value="{{ showDeckSuperluminal }}" hint-placeholder-val="{{ true }}">
@@ -1330,7 +1382,7 @@
         </sc-if>
       </div>
       <div class="deck-handle">Pass deck <b>06</b></div>
-      <p class="deck-caption"><b>2 live routes</b> · more departures coming soon</p>
+      <p class="deck-caption"><b>3 live routes</b> · more departures coming soon</p>
     </nav>
 
     <sc-if value="{{ conceptProjectActive }}" hint-placeholder-val="{{ false }}">
@@ -1502,21 +1554,21 @@
         </article>
         </sc-if>
 
-        <sc-if value="{{ risexProjectActive }}" hint-placeholder-val="{{ false }}">
-        <article class="{{ risexPassClass }}">
+        <sc-if value="{{ venueProjectActive }}" hint-placeholder-val="{{ false }}">
+        <article class="{{ venuePassClass }}">
           <section class="pass-body">
             <div class="pass-topline">
               <div class="pass-type">{{ passTypeLabel }}</div>
-              <div style="display:flex;align-items:center;gap:9px"><span class="risex-cabin-chip" title="Cabin tiers by volume venue rank: First Class 1–100 · Business 101–500 · Premium Economy 501–2,500 · Economy Plus 2,501–10,000 · Economy">{{ risexCabin }}</span><div class="pass-live"><i style="{{ liveDotStyle }}"></i>{{ liveLabel }}</div></div>
+              <div style="display:flex;align-items:center;gap:9px"><span class="risex-cabin-chip" title="{{ cabinTitle }}">{{ venueCabin }}</span><div class="pass-live"><i style="{{ liveDotStyle }}"></i>{{ liveLabel }}</div></div>
             </div>
 
             <div class="risex-route">
-              <div class="risex-route-point"><small>Order origin</small><b>WALLET</b></div>
-              <div class="risex-route-line"><span>match + settle onchain</span></div>
-              <div class="risex-route-point destination"><span class="exchange-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></span><div><small>Fully onchain CLOB</small><b>RISEx</b></div></div>
+              <div class="risex-route-point"><small>{{ venueOriginLabel }}</small><b>{{ venueOriginCode }}</b></div>
+              <div class="risex-route-line"><span>{{ venueRouteLine }}</span></div>
+              <div class="risex-route-point destination"><span class="exchange-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></span><div><small>{{ venueDestinationLabel }}</small><b>{{ venueDestinationName }}</b></div></div>
             </div>
 
-            <div class="{{ risexHolderRowClass }}">
+            <div class="{{ venueHolderRowClass }}">
               <div>
                 <span class="field-label">Trader / public wallet</span>
                 <div class="holder-address-shell">
@@ -1529,7 +1581,7 @@
                   <sc-if value="{{ staticAddress }}" hint-placeholder-val="{{ true }}"><span class="holder-address">{{ holderAddress }}</span></sc-if>
                 </div>
               </div>
-              <div><span class="field-label">Volume rank</span><strong>{{ risexRank }}</strong></div>
+              <div><span class="field-label">Volume rank</span><strong>{{ venueRank }}</strong></div>
             </div>
 
             <sc-if value="{{ summaryHidden }}" hint-placeholder-val="{{ true }}">
@@ -1538,24 +1590,24 @@
 
             <sc-if value="{{ summaryVisible }}" hint-placeholder-val="{{ false }}">
               <div class="risex-summary-grid">
-                <div class="risex-metric"><small>Volume</small><b>{{ risexVolume }}</b></div>
-                <div class="risex-metric"><small>Realized PnL</small><b>{{ risexNetPnl }}</b></div>
-                <div class="risex-metric"><small>Deposited</small><b>{{ risexDeposits }}</b></div>
-                <div class="risex-metric"><small>Withdrawn</small><b>{{ risexWithdrawals }}</b></div>
-                <div class="risex-metric"><small>Fills</small><b>{{ risexTrades }}</b></div>
+                <div class="risex-metric"><small>{{ venueMetric1Label }}</small><b>{{ venueMetric1 }}</b></div>
+                <div class="risex-metric"><small>{{ venueMetric2Label }}</small><b>{{ venueMetric2 }}</b></div>
+                <div class="risex-metric"><small>{{ venueMetric3Label }}</small><b>{{ venueMetric3 }}</b></div>
+                <div class="risex-metric"><small>{{ venueMetric4Label }}</small><b>{{ venueMetric4 }}</b></div>
+                <div class="risex-metric"><small>{{ venueMetric5Label }}</small><b>{{ venueMetric5 }}</b></div>
               </div>
             </sc-if>
           </section>
 
-          <aside ref="{{ stubRef }}" class="{{ risexStubClass }}" onPointerDown="{{ onTearPointerDown }}" onPointerMove="{{ onTearPointerMove }}" onPointerUp="{{ onTearPointerUp }}" onPointerCancel="{{ onTearPointerCancel }}" onLostPointerCapture="{{ onTearPointerCancel }}" onKeyDown="{{ onTearStubKey }}" role="button" tabindex="{{ stubTabIndex }}" aria-disabled="{{ stubAriaDisabled }}" aria-label="{{ stubAriaLabel }}">
+          <aside ref="{{ stubRef }}" class="{{ venueStubClass }}" onPointerDown="{{ onTearPointerDown }}" onPointerMove="{{ onTearPointerMove }}" onPointerUp="{{ onTearPointerUp }}" onPointerCancel="{{ onTearPointerCancel }}" onLostPointerCapture="{{ onTearPointerCancel }}" onKeyDown="{{ onTearStubKey }}" role="button" tabindex="{{ stubTabIndex }}" aria-disabled="{{ stubAriaDisabled }}" aria-label="{{ stubAriaLabel }}">
             <div>
               <div class="stub-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></div>
-              <div class="stub-label">Fully onchain</div>
-              <div class="stub-code">RISEx</div>
+              <div class="stub-label">{{ venueStubLabel }}</div>
+              <div class="stub-code">{{ venueDestinationName }}</div>
               <div class="stub-meta">
-                <div><small>Chain</small><b>RISE 4153</b></div>
-                <div><small>Rank</small><b>{{ risexRank }}</b></div>
-                <div class="risex-class-meta"><small>Class</small><b>{{ risexCabin }}</b></div>
+                <div><small>Chain</small><b>{{ venueChain }}</b></div>
+                <div><small>Rank</small><b>{{ venueRank }}</b></div>
+                <div class="risex-class-meta"><small>Class</small><b>{{ venueCabin }}</b></div>
               </div>
             </div>
             <div class="stub-bottom">
@@ -1572,7 +1624,7 @@
     </section>
 
     <sc-if value="{{ transitionActive }}" hint-placeholder-val="{{ false }}">
-      <div class="{{ issuanceWipeClass }}"><div class="wipe-lockup"><sc-if value="{{ inkProjectActive }}" hint-placeholder-val="{{ true }}"><div class="wipe-ink-logo"><div style="{{ inkMarkWhiteStyle }}"></div></div></sc-if><sc-if value="{{ risexProjectActive }}" hint-placeholder-val="{{ false }}"><div class="wipe-project-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></div></sc-if><span>{{ wipeLabel }}</span></div></div>
+      <div class="{{ issuanceWipeClass }}"><div class="wipe-lockup"><sc-if value="{{ inkProjectActive }}" hint-placeholder-val="{{ true }}"><div class="wipe-ink-logo"><div style="{{ inkMarkWhiteStyle }}"></div></div></sc-if><sc-if value="{{ venueProjectActive }}" hint-placeholder-val="{{ false }}"><div class="wipe-project-logo"><span class="project-logo-fill" style="{{ activeProjectLogoStyle }}"></span></div></sc-if><span>{{ wipeLabel }}</span></div></div>
     </sc-if>
 
     <section class="address-panel">
@@ -1702,6 +1754,8 @@ const LOCAL_RISEX_PROXY_ORIGIN = /^(localhost|127\.0\.0\.1)$/i.test(window.locat
   ? window.location.protocol + '//' + window.location.hostname + ':10000'
   : '';
 const RISEX_PROFILE_URL = LOCAL_RISEX_PROXY_ORIGIN + '/api/risex/profile';
+const PERPL_PROFILE_URL = LOCAL_RISEX_PROXY_ORIGIN + '/api/perpl/profile';
+const LIVE_PROJECT_IDS = new Set(['ink', 'risex', 'perpl']);
 const TYDRO_ADDRESSES_PROVIDER = '0x4172E6aAEC070ACB31aaCE343A58c93E4C70f44D';
 const TYDRO_POOL_START_BLOCK = 19954047;
 const INK_EXPLORER_API = '/api/explorer';
@@ -1738,9 +1792,9 @@ const PROJECT_PASSES = Object.freeze({
     tagline: 'Peer-to-peer derivatives infrastructure spanning hundreds of perp markets.'
   },
   perpl: {
-    name: 'Perpl', code: 'PPL', gate: '04', logo: 'uploads/projects/Perpl.jpg', color: '#705CF6', ink: '#FFFFFF',
-    hero: { lead: '', accent: 'Perpl', tail: '. A direct journey into fully onchain perps.' },
-    tagline: 'A fully onchain CLOB for perpetual futures, built on Monad.'
+    name: 'Perpl', code: 'PER', gate: '143', logo: 'uploads/projects/Perpl.jpg', color: '#6F5CFF', ink: '#FFFFFF',
+    hero: { lead: 'Trade perps on ', accent: 'Perpl', tail: '.' },
+    tagline: 'Every trade matched and settled on-chain on Monad.'
   },
   superluminal: {
     name: 'Superluminal', code: 'SLM', gate: '05', logo: 'uploads/projects/Supreluminal.png', color: '#E7FF8B', ink: '#071522',
@@ -1770,6 +1824,7 @@ class Component extends DCLogic {
     tydroHistoryStatus: 'idle',
     ink: null,
     risex: null,
+    perpl: null,
     sourceErrors: [],
     capturing: false,
     copied: false,
@@ -1952,6 +2007,7 @@ class Component extends DCLogic {
       tydroHistoryStatus: 'idle',
       ink: null,
       risex: null,
+      perpl: null,
       sourceErrors: [],
       capturing: false,
       copied: false,
@@ -2068,7 +2124,7 @@ class Component extends DCLogic {
       intro: reduceMotion ? false : this.state.intro
     }, this.emptyProfileState()), () => {
       this.queueLandingProgress();
-      if (initialWallet && this.mountedFlag && (initialProject === 'ink' || initialProject === 'risex')) this.buildFromAddress();
+      if (initialWallet && this.mountedFlag && LIVE_PROJECT_IDS.has(initialProject)) this.buildFromAddress();
     });
     window.addEventListener('scroll', this.queueLandingProgress, { passive: true });
     window.addEventListener('resize', this.queueLandingProgress);
@@ -2108,7 +2164,7 @@ class Component extends DCLogic {
   buildFromAddress = async () => {
     if (this.state.phase !== 'idle' || this.state.projectTransition) return;
     const projectId = PROJECT_PASSES[this.state.activeProject] ? this.state.activeProject : 'ink';
-    if (projectId !== 'ink' && projectId !== 'risex') return;
+    if (!LIVE_PROJECT_IDS.has(projectId)) return;
     let address;
     try {
       address = this.cleanAddress(this.state.addr);
@@ -2130,6 +2186,7 @@ class Component extends DCLogic {
     }), () => reduceMotion ? this.maybeAdvanceIssuance(seq) : this.beginEngraving(seq));
     try {
       if (projectId === 'risex') await this.loadRisexProfile(address, seq);
+      else if (projectId === 'perpl') await this.loadPerplProfile(address, seq);
       else await this.loadProfile(address, seq);
     } catch (error) {
       if (!this.mountedFlag || seq !== this.requestSeq) return;
@@ -2186,7 +2243,7 @@ class Component extends DCLogic {
     const nextId = String(projectId || '').toLowerCase();
     const next = PROJECT_PASSES[nextId];
     const phaseAllowsSwitch = this.state.phase === 'idle' || this.state.phase === 'done';
-    const liveProject = nextId === 'ink' || nextId === 'risex';
+    const liveProject = LIVE_PROJECT_IDS.has(nextId);
     if (!next || !liveProject || !phaseAllowsSwitch || this.state.capturing || this.state.sharing || this.state.projectTransition) return;
     if ((this.state.activeProject || 'ink') === nextId) return;
 
@@ -2896,6 +2953,52 @@ class Component extends DCLogic {
     }
   };
 
+  fetchPerpl = async (address, signal) => {
+    const wallet = this.cleanAddress(address).toLowerCase();
+    const data = await this.requestJson(
+      PERPL_PROFILE_URL + '?address=' + encodeURIComponent(wallet),
+      {},
+      signal,
+      32000
+    );
+    if (!data || data.project !== 'perpl' || String(data.address || '').toLowerCase() !== wallet) {
+      throw new Error('Perpl profile response is incomplete.');
+    }
+    return data;
+  };
+
+  loadPerplProfile = async (address, seq) => {
+    if (!this.mountedFlag || seq !== this.requestSeq) return;
+    const controller = new AbortController();
+    this.profileController = controller;
+    try {
+      const perpl = await this.fetchPerpl(address, controller.signal);
+      if (!this.mountedFlag || seq !== this.requestSeq || controller.signal.aborted) return;
+      this.profileController = null;
+      this.setState({
+        addr: address,
+        profileReady: true,
+        perpl,
+        risex: null,
+        nado: null,
+        tydro: null,
+        ink: null,
+        sourceErrors: Array.isArray(perpl.failedSources) ? perpl.failedSources.map(name => 'Perpl ' + name) : [],
+        err: ''
+      }, () => this.maybeAdvanceIssuance(seq));
+    } catch (error) {
+      if (!this.mountedFlag || seq !== this.requestSeq || controller.signal.aborted) return;
+      this.profileController = null;
+      clearInterval(this.tick);
+      console.warn('Perpl public profile read failed', error);
+      this.setState(Object.assign({
+        phase: 'idle',
+        addr: address,
+        err: 'Perpl public data could not be read. Please try again.'
+      }, this.emptyProfileState()));
+    }
+  };
+
   loadProfile = async (address, seq) => {
     if (!this.mountedFlag || seq !== this.requestSeq) return;
     const controller = new AbortController();
@@ -3298,10 +3401,22 @@ class Component extends DCLogic {
     return task;
   };
 
+  passFilename() {
+    if (this.state.activeProject === 'risex') return 'risex-fully-onchain-boarding-pass.png';
+    if (this.state.activeProject === 'perpl') return 'perpl-fully-onchain-boarding-pass.png';
+    return 'ink-onchain-boarding-pass.png';
+  }
+
+  passShareTitle() {
+    if (this.state.activeProject === 'risex') return 'RISEx Fully Onchain Boarding Pass';
+    if (this.state.activeProject === 'perpl') return 'Perpl Fully On-Chain Boarding Pass';
+    return 'INK Ecosystem Boarding Pass';
+  }
+
   downloadPassBlob(blob) {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = (this.state.activeProject === 'risex' ? 'risex-fully-onchain-boarding-pass.png' : 'ink-onchain-boarding-pass.png');
+    link.download = this.passFilename();
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   }
@@ -3344,6 +3459,39 @@ class Component extends DCLogic {
   };
 
   buildSharePayload() {
+    if (this.state.activeProject === 'perpl') {
+      const perpl = this.state.perpl || {};
+      const volume = this.formatDecimalUsd(perpl.volume, false);
+      const pnl = this.formatDecimalUsd(perpl.netPnl, true);
+      const roiNumber = perpl.roi === null || perpl.roi === undefined ? NaN : Number(perpl.roi);
+      const roi = Number.isFinite(roiNumber) ? (roiNumber > 0 ? '+' : '') + roiNumber.toFixed(2) + '%' : '—';
+      const balance = this.formatDecimalUsd(perpl.balance, false);
+      const openMarkets = perpl.openMarkets !== null && perpl.openMarkets !== undefined ? this.formatCount(perpl.openMarkets) : '—';
+      const rank = Number(perpl.rank || 0) > 0 ? '#' + this.formatCount(perpl.rank) : 'UNRANKED';
+      const cabin = perpl.cabin && perpl.cabin.name ? String(perpl.cabin.name) : 'NEW TRADER';
+      const lines = [
+        '✈️ My @perpltrade boarding pass is cleared.',
+        '',
+        'Matched + settled on-chain on Monad. 🛫',
+        '',
+        '🎫 ' + (this.state.walletHidden ? 'PRIVATE WALLET' : this.shortAddress(this.state.target)),
+        '',
+        'ALL  ' + volume + ' vol · ' + pnl + ' P&L · ' + roi,
+        'AUSD  ' + balance + ' · ' + openMarkets + ' open markets',
+        'CABIN  ' + cabin + ' · volume ' + rank,
+        '',
+        'Crafted by @0x_snatch'
+      ];
+      let shareUrl = '';
+      if (!/^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) {
+        const url = new URL(window.location.origin + window.location.pathname);
+        url.searchParams.set('project', 'perpl');
+        if (!this.state.walletHidden) url.searchParams.set('wallet', this.state.target);
+        shareUrl = url.toString();
+      }
+      return { text: lines.join('\n'), url: shareUrl };
+    }
+
     if (this.state.activeProject === 'risex') {
       const risex = this.state.risex || {};
       const volume = this.formatDecimalUsd(risex.volume, false);
@@ -3428,7 +3576,7 @@ class Component extends DCLogic {
     let supportsFileShare = false;
     if (mobileLike && typeof File === 'function' && navigator.share && navigator.canShare) {
       try {
-        file = new File([blob], this.state.activeProject === 'risex' ? 'risex-fully-onchain-boarding-pass.png' : 'ink-onchain-boarding-pass.png', { type: 'image/png' });
+        file = new File([blob], this.passFilename(), { type: 'image/png' });
         supportsFileShare = navigator.canShare({ files: [file] });
       } catch (error) {
         file = null;
@@ -3445,7 +3593,7 @@ class Component extends DCLogic {
     try {
       if (supportsFileShare && file) {
         try {
-          const shareData = { title: this.state.activeProject === 'risex' ? 'RISEx Fully Onchain Boarding Pass' : 'INK Ecosystem Boarding Pass', text: payload.text, files: [file] };
+          const shareData = { title: this.passShareTitle(), text: payload.text, files: [file] };
           if (payload.url) shareData.url = payload.url;
           const nativeShare = navigator.share(shareData);
           await nativeShare;
@@ -3501,8 +3649,10 @@ class Component extends DCLogic {
     const transitionProject = transitionProjectId ? PROJECT_PASSES[transitionProjectId] : null;
     const inkProjectActive = activeProjectId === 'ink';
     const risexProjectActive = activeProjectId === 'risex';
+    const perplProjectActive = activeProjectId === 'perpl';
+    const venueProjectActive = risexProjectActive || perplProjectActive;
     const projectBrandActive = !inkProjectActive;
-    const conceptProjectActive = !inkProjectActive && !risexProjectActive;
+    const conceptProjectActive = !LIVE_PROJECT_IDS.has(activeProjectId);
     const projectPreviewActive = conceptProjectActive;
     const activeProjectLogo = inkProjectActive ? (s.inkMark || TRANSPARENT_PIXEL) : activeProject.logo;
     const transitionProjectLogo = transitionProject
@@ -3523,11 +3673,12 @@ class Component extends DCLogic {
     const journeyPageClass = 'journey-page' +
       (projectBrandActive ? ' theme-' + activeProjectId : '') +
       (conceptProjectActive ? ' is-project-preview' : '') +
-      (risexProjectActive ? ' is-risex-live' : '');
-    const projectDeckOrder = ['ink', 'risex', 'arcus', 'variational', 'perpl', 'superluminal', 'txflow'];
+      (risexProjectActive ? ' is-risex-live' : '') +
+      (perplProjectActive ? ' is-perpl-live' : '');
+    const projectDeckOrder = ['ink', 'risex', 'perpl', 'arcus', 'variational', 'superluminal', 'txflow'];
     const visibleDeckProjects = projectDeckOrder.filter(id => id !== activeProjectId);
     const deckClassFor = id => 'project-mini deck-' + id + ' deck-slot-' + (visibleDeckProjects.indexOf(id) + 1) +
-      ((id === 'ink' || id === 'risex') ? ' is-live-route' : ' is-coming-soon');
+      (LIVE_PROJECT_IDS.has(id) ? ' is-live-route' : ' is-coming-soon');
     const inkDeckLogoStyle = {
       display: 'block',
       width: '100%',
@@ -3579,42 +3730,43 @@ class Component extends DCLogic {
     });
     const pct = s.target ? Math.round((s.shown / s.target.length) * 100) : 0;
     const sourceErrors = Array.isArray(s.sourceErrors) ? s.sourceErrors : [];
-    const sourceTotal = risexProjectActive
-      ? Math.max(1, Number(s.risex && s.risex.sourceTotal || 5))
+    const venueProfile = perplProjectActive ? s.perpl : s.risex;
+    const sourceTotal = venueProjectActive
+      ? Math.max(1, Number(venueProfile && venueProfile.sourceTotal || (perplProjectActive ? 2 : 5)))
       : 3;
-    const sourceCount = risexProjectActive
-      ? Math.max(0, Number(s.risex && s.risex.sourceCount || 0))
+    const sourceCount = venueProjectActive
+      ? Math.max(0, Number(venueProfile && venueProfile.sourceCount || 0))
       : Math.max(0, 3 - sourceErrors.length);
     const busy = s.phase !== 'idle' && s.phase !== 'done';
     const addressValid = this.isAddress(s.addr);
     const summaryVisible = s.phase === 'covering' || s.phase === 'landing' || s.phase === 'done';
 
     let statusLabel = 'Ready for check-in';
-    let progressLabel = risexProjectActive ? 'Enter a public Rise / EVM address' : 'Enter a public Ink / EVM address';
+    let progressLabel = perplProjectActive ? 'Enter a public Monad / EVM address' : (risexProjectActive ? 'Enter a public Rise / EVM address' : 'Enter a public Ink / EVM address');
     let liveLabel = 'Public data';
-    let liveDot = risexProjectActive ? activeProject.color : accent;
+    let liveDot = venueProjectActive ? activeProject.color : accent;
     if (s.phase === 'syncing') {
       statusLabel = 'Reading ecosystem';
-      progressLabel = risexProjectActive ? 'RISEx public trading index' : 'NADO archive · Tydro contracts · Ink RPC';
+      progressLabel = perplProjectActive ? 'Perpl leaderboard · Monad exchange state' : (risexProjectActive ? 'RISEx public trading index' : 'NADO archive · Tydro contracts · Ink RPC');
       liveLabel = 'Syncing';
     } else if (s.phase === 'engraving') {
       statusLabel = 'Laser engraving wallet';
       progressLabel = pct + '% · identity imprint in progress';
       liveLabel = s.profileReady ? sourceCount + '/' + sourceTotal + ' live' : 'Reading sources';
-      liveDot = risexProjectActive ? activeProject.color : accent;
+      liveDot = venueProjectActive ? activeProject.color : accent;
     } else if (s.phase === 'waiting') {
       statusLabel = 'Engraving complete';
-      progressLabel = risexProjectActive ? 'Finalizing fully onchain trading data' : 'Finalizing live ecosystem data';
+      progressLabel = venueProjectActive ? 'Finalizing fully onchain trading data' : 'Finalizing live ecosystem data';
       liveLabel = 'Gate clearance';
-      liveDot = risexProjectActive ? activeProject.color : accent;
+      liveDot = venueProjectActive ? activeProject.color : accent;
     } else if (s.phase === 'scanning') {
       statusLabel = 'Reading barcode';
-      progressLabel = risexProjectActive ? 'Red-line verification · Rise 4153' : 'Red-line verification · gate 57073';
+      progressLabel = perplProjectActive ? 'Red-line verification · Monad 143' : (risexProjectActive ? 'Red-line verification · Rise 4153' : 'Red-line verification · gate 57073');
       liveLabel = 'Scanning';
       liveDot = '#ff1745';
     } else if (s.phase === 'awaitingTear') {
       statusLabel = 'Barcode cleared';
-      progressLabel = risexProjectActive ? 'Hold the RISEx stub and pull diagonally right' : 'Hold the purple stub and pull diagonally right';
+      progressLabel = venueProjectActive ? 'Hold the ' + activeProject.name + ' stub and pull diagonally right' : 'Hold the purple stub and pull diagonally right';
       liveLabel = 'Ready to tear';
       liveDot = '#79ffb1';
     } else if (s.phase === 'tearing') {
@@ -3638,14 +3790,14 @@ class Component extends DCLogic {
       liveLabel = sourceErrors.length ? 'Partial live' : sourceCount + '/' + sourceTotal + ' live';
       liveDot = sourceErrors.length ? '#a36c17' : '#267a4c';
     } else if (s.phase === 'done') {
-      statusLabel = risexProjectActive ? 'Fully onchain flight summary' : 'Total journey summary';
+      statusLabel = venueProjectActive ? 'Fully onchain flight summary' : 'Total journey summary';
       progressLabel = sourceErrors.length
         ? sourceCount + '/' + sourceTotal + ' sources · some public fields unavailable'
         : sourceCount + ' live sources · boarding pass ready';
       liveLabel = sourceErrors.length ? 'Partial live' : 'Live data';
       liveDot = sourceErrors.length ? '#a36c17' : '#267a4c';
-      if (!risexProjectActive && !sourceErrors.length && s.tydroHistoryStatus === 'loading') progressLabel = '3 live sources · Tydro journey is still loading';
-      if (!risexProjectActive && !sourceErrors.length && s.tydroHistoryStatus === 'unavailable') progressLabel = '3 live sources · current Tydro data ready';
+      if (inkProjectActive && !sourceErrors.length && s.tydroHistoryStatus === 'loading') progressLabel = '3 live sources · Tydro journey is still loading';
+      if (inkProjectActive && !sourceErrors.length && s.tydroHistoryStatus === 'unavailable') progressLabel = '3 live sources · current Tydro data ready';
       if (s.shareStatus) {
         statusLabel = 'X boarding message ready';
         progressLabel = s.shareStatus;
@@ -3757,6 +3909,33 @@ class Component extends DCLogic {
       if (s.risex.cabin && s.risex.cabin.name) risexCabin = String(s.risex.cabin.name);
     }
 
+    let perplVolume = '—';
+    let perplNetPnl = '—';
+    let perplRoi = '—';
+    let perplBalance = '—';
+    let perplOpenMarkets = '—';
+    let perplRank = 'UNRANKED';
+    let perplCabin = 'NEW TRADER';
+    if (s.perpl) {
+      perplVolume = this.formatDecimalUsd(s.perpl.volume, false);
+      perplNetPnl = this.formatDecimalUsd(s.perpl.netPnl, true);
+      const roiNumber = s.perpl.roi === null || s.perpl.roi === undefined ? NaN : Number(s.perpl.roi);
+      if (Number.isFinite(roiNumber)) perplRoi = (roiNumber > 0 ? '+' : '') + roiNumber.toFixed(2) + '%';
+      perplBalance = this.formatDecimalUsd(s.perpl.balance, false);
+      if (s.perpl.openMarkets !== null && s.perpl.openMarkets !== undefined) perplOpenMarkets = this.formatCount(s.perpl.openMarkets);
+      if (Number(s.perpl.rank || 0) > 0) perplRank = '#' + this.formatCount(s.perpl.rank);
+      if (s.perpl.cabin && s.perpl.cabin.name) perplCabin = String(s.perpl.cabin.name);
+    }
+
+    const venueRank = perplProjectActive ? perplRank : risexRank;
+    const venueCabin = perplProjectActive ? perplCabin : risexCabin;
+    const venueMetricLabels = perplProjectActive
+      ? ['All-time volume', 'P&L', 'P&L %', 'AUSD balance', 'Open markets']
+      : ['Volume', 'Realized PnL', 'Deposited', 'Withdrawn', 'Fills'];
+    const venueMetrics = perplProjectActive
+      ? [perplVolume, perplNetPnl, perplRoi, perplBalance, perplOpenMarkets]
+      : [risexVolume, risexNetPnl, risexDeposits, risexWithdrawals, risexTrades];
+
     const markLayer = (source, left, top, width, height, light) => ({
       position: 'absolute',
       left: left,
@@ -3810,15 +3989,17 @@ class Component extends DCLogic {
     if (s.phase === 'covering') stubStatus = 'CLEARED';
     if (s.phase === 'revealing' || s.phase === 'landing' || s.phase === 'done') stubStatus = 'READY';
 
-    let hint = risexProjectActive
-      ? 'Enter any public Rise/EVM address. Public RISEx trading data only; no wallet connection or signature.'
-      : 'Enter any public Ink/EVM address. No wallet connection or signature is needed.';
+    let hint = perplProjectActive
+      ? 'Enter any public Monad/EVM address. Public Perpl and onchain data only; no wallet connection or signature.'
+      : (risexProjectActive
+        ? 'Enter any public Rise/EVM address. Public RISEx trading data only; no wallet connection or signature.'
+        : 'Enter any public Ink/EVM address. No wallet connection or signature is needed.');
     if (s.phase === 'syncing') hint = 'Reading live public data. No transaction or wallet approval is requested.';
     if (s.phase === 'engraving') hint = 'The public profile is being engraved onto the card.';
     if (s.phase === 'waiting') hint = 'Engraving complete. Finalizing public data.';
     if (s.phase === 'scanning') hint = 'Scanning the passenger stub barcode.';
-    if (s.phase === 'awaitingTear') hint = risexProjectActive
-      ? 'Barcode cleared. Hold the RISEx stub and pull it diagonally to the right.'
+    if (s.phase === 'awaitingTear') hint = venueProjectActive
+      ? 'Barcode cleared. Hold the ' + activeProject.name + ' stub and pull it diagonally to the right.'
       : 'Barcode cleared. Hold the purple stub and pull it diagonally to the right.';
     if (s.phase === 'tearing') hint = 'Barcode cleared. Passenger stub detached.';
     if (s.phase === 'covering') hint = 'Passenger stub detached. Opening the journey manifest.';
@@ -3826,9 +4007,10 @@ class Component extends DCLogic {
     if (s.phase === 'revealing') hint = 'Preparing the total onchain journey summary.';
     if (s.phase === 'done') hint = 'Public address profile · this card does not prove wallet ownership.';
 
-    const stageClass = 'ticket-stage solo-stage' + (risexProjectActive ? ' risex-stage' : '') + (summaryVisible ? ' summary-stage' : '');
+    const stageClass = 'ticket-stage solo-stage' + (venueProjectActive ? ' risex-stage' : '') + (summaryVisible ? ' summary-stage' : '');
     const ticketCaptureClass = 'ticket-capture solo-capture' +
       (risexProjectActive ? ' risex-capture' : '') +
+      (perplProjectActive ? ' perpl-capture' : '') +
       (s.phase === 'covering' ? ' is-summary-reveal' : '') +
       (s.phase === 'landing' ? ' is-final-landing' : '');
     const tearVisualActive = s.phase === 'tearing';
@@ -3838,8 +4020,9 @@ class Component extends DCLogic {
       (tearVisualActive ? ' is-tearing' : '') +
       (summaryVisible ? ' is-final-summary' : '');
     const risexPassClass = mainPassClass + ' risex-main-pass';
+    const venuePassClass = risexPassClass + (perplProjectActive ? ' perpl-main-pass' : '');
     const stubClass = 'main-stub' + (s.phase === 'awaitingTear' ? ' is-interactive' : '');
-    const passPrefix = risexProjectActive ? 'RSX' : 'INK';
+    const passPrefix = perplProjectActive ? 'PERPL' : (risexProjectActive ? 'RSX' : 'INK');
     const serial = summaryVisible
       ? (s.walletHidden ? passPrefix + '-PRIVATE' : passPrefix + '-' + ((s.target || '').replace(/[^a-zA-Z0-9]/g, '').slice(-8) || 'PLATE01').toUpperCase())
       : passPrefix + '-—————';
@@ -3852,6 +4035,8 @@ class Component extends DCLogic {
       journeyLogoClass: 'journey-ink-logo' + (projectBrandActive ? ' is-project-logo' : ''),
       inkProjectActive: inkProjectActive,
       risexProjectActive: risexProjectActive,
+      perplProjectActive: perplProjectActive,
+      venueProjectActive: venueProjectActive,
       projectBrandActive: projectBrandActive,
       conceptProjectActive: conceptProjectActive,
       projectPreviewActive: projectPreviewActive,
@@ -3914,19 +4099,23 @@ class Component extends DCLogic {
       serial: serial,
       passTypeLabel: risexProjectActive
         ? (summaryVisible ? 'RISEx / FULLY ONCHAIN FLIGHT SUMMARY' : 'RISEx / FULLY ONCHAIN ORDERBOOK')
-        : (summaryVisible ? 'INK / TOTAL JOURNEY SUMMARY' : 'INK / ONCHAIN JOURNEY RECORD'),
+        : (perplProjectActive
+          ? (summaryVisible ? 'PERPL / MONAD FLIGHT SUMMARY' : 'PERPL / FULLY ON-CHAIN PERPS')
+          : (summaryVisible ? 'INK / TOTAL JOURNEY SUMMARY' : 'INK / ONCHAIN JOURNEY RECORD')),
       stageClass: stageClass,
       ticketCaptureClass: ticketCaptureClass,
       mainPassClass: mainPassClass,
       risexPassClass: risexPassClass,
+      venuePassClass: venuePassClass,
       stubClass: stubClass,
       risexStubClass: stubClass + ' risex-stub',
+      venueStubClass: stubClass + ' risex-stub' + (perplProjectActive ? ' perpl-stub' : ''),
       tearGuideActive: s.phase === 'awaitingTear',
       stubTabIndex: s.phase === 'awaitingTear' ? 0 : -1,
       stubAriaDisabled: s.phase !== 'awaitingTear',
       stubAriaLabel: s.phase === 'awaitingTear'
-        ? 'Hold and pull diagonally right to detach the ' + (risexProjectActive ? 'RISEx' : 'purple') + ' passenger stub. Press Enter as a keyboard alternative.'
-        : (risexProjectActive ? 'RISEx fully onchain destination stub' : 'INK destination stub'),
+        ? 'Hold and pull diagonally right to detach the ' + (venueProjectActive ? activeProject.name : 'purple') + ' passenger stub. Press Enter as a keyboard alternative.'
+        : (venueProjectActive ? activeProject.name + ' fully onchain destination stub' : 'INK destination stub'),
       holderRowClass: 'holder-row' + (s.phase === 'engraving' ? ' is-engraving' : ''),
       risexHolderRowClass: 'holder-row risex-holder' + (s.phase === 'engraving' ? ' is-engraving' : ''),
       laserStyle: {
@@ -3937,7 +4126,7 @@ class Component extends DCLogic {
       progressLabel: progressLabel,
       liveLabel: liveLabel,
       liveDot: liveDot,
-      primaryLabel: busy ? 'Checking in…' : (risexProjectActive ? 'Issue RISEx pass' : 'Issue pass'),
+      primaryLabel: busy ? 'Checking in…' : (venueProjectActive ? 'Issue ' + activeProject.name + ' pass' : 'Issue pass'),
       primaryDisabled: busy || Boolean(transitionProject) || !addressValid,
       inputDisabled: busy || Boolean(transitionProject),
       primaryCursor: busy || !addressValid ? 'not-allowed' : 'pointer',
@@ -3948,11 +4137,11 @@ class Component extends DCLogic {
       walletHidden: Boolean(s.walletHidden),
       privacyToggleClass: 'action-button privacy-toggle' + (s.walletHidden ? ' is-active' : ''),
       privacyLabel: s.walletHidden ? 'Wallet hidden' : 'Hide wallet',
-      checkinLabel: risexProjectActive ? 'Fully onchain check-in' : 'Online check-in',
-      checkinGate: risexProjectActive ? 'RISEx · RISE 4153' : 'INK · GATE 57073',
-      addressFieldLabel: risexProjectActive ? 'Trader / public wallet' : 'Passenger / public wallet',
-      issuanceWipeClass: 'issuance-wipe' + (risexProjectActive ? ' risex-wipe' : ''),
-      wipeLabel: risexProjectActive ? 'Orderbook route cleared' : 'Journey cleared',
+      checkinLabel: perplProjectActive ? 'Perpl check-in' : (risexProjectActive ? 'Fully onchain check-in' : 'Online check-in'),
+      checkinGate: perplProjectActive ? 'MONAD · 143' : (risexProjectActive ? 'RISEx · RISE 4153' : 'INK · GATE 57073'),
+      addressFieldLabel: venueProjectActive ? 'Trader / public wallet' : 'Passenger / public wallet',
+      issuanceWipeClass: 'issuance-wipe' + (risexProjectActive ? ' risex-wipe' : '') + (perplProjectActive ? ' perpl-wipe' : ''),
+      wipeLabel: perplProjectActive ? 'Perpl route cleared' : (risexProjectActive ? 'Orderbook route cleared' : 'Journey cleared'),
       nadoPrimary: nadoPrimary,
       nadoSecondary: nadoSecondary,
       tydroPrimary: tydroPrimary,
@@ -3985,6 +4174,27 @@ class Component extends DCLogic {
       risexTrades: risexTrades,
       risexRank: risexRank,
       risexCabin: risexCabin,
+      venueRank: venueRank,
+      venueCabin: venueCabin,
+      cabinTitle: perplProjectActive ? 'Onchain Boarding Pass class based on Perpl all-time volume rank' : 'Cabin tier from actual all-time volume rank',
+      venueOriginLabel: 'Order origin',
+      venueOriginCode: 'WALLET',
+      venueRouteLine: perplProjectActive ? 'match + settle on-chain' : 'match + settle onchain',
+      venueDestinationLabel: perplProjectActive ? 'CLOB-based perp DEX' : 'Fully onchain CLOB',
+      venueDestinationName: activeProject.name,
+      venueStubLabel: perplProjectActive ? 'Fully on-chain' : 'Fully onchain',
+      venueChain: perplProjectActive ? 'MONAD 143' : 'RISE 4153',
+      venueHolderRowClass: 'holder-row risex-holder' + (s.phase === 'engraving' ? ' is-engraving' : ''),
+      venueMetric1Label: venueMetricLabels[0],
+      venueMetric2Label: venueMetricLabels[1],
+      venueMetric3Label: venueMetricLabels[2],
+      venueMetric4Label: venueMetricLabels[3],
+      venueMetric5Label: venueMetricLabels[4],
+      venueMetric1: venueMetrics[0],
+      venueMetric2: venueMetrics[1],
+      venueMetric3: venueMetrics[2],
+      venueMetric4: venueMetrics[3],
+      venueMetric5: venueMetrics[4],
       holderAddress: holderAddress,
       issuedDate: issuedDate,
       sourceLabel: sourceLabel,

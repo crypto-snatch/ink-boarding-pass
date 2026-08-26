@@ -12,6 +12,10 @@ const NADO_REWARDS_URL = 'https://archive.prod.nado.xyz/rewards/v1';
 const NADO_SYMBOLS_URL = 'https://gateway.prod.nado.xyz/v1/query?type=symbols';
 const INK_EXPLORER_API = 'https://explorer.inkonchain.com/api';
 const RISEX_API_URL = 'https://api.rise.trade';
+const PERPL_LEADERBOARD_URL = 'https://app.perpl.xyz/api/v1/trading/leaderboard/all/vol';
+const MONAD_RPC_URL = 'https://rpc.monad.xyz';
+const PERPL_EXCHANGE_ADDRESS = '0x34B6552d57a35a1D042CcAe1951BD1C370112a6F';
+const PERPL_GET_ACCOUNT_BY_ADDR = '12e8eb2c';
 
 const RPC_METHODS = new Set([
   'eth_chainId', 'eth_blockNumber', 'eth_getBalance',
@@ -28,8 +32,8 @@ app.use((req, res, next) => {
 });
 
 // The editable design file is sometimes opened from the legacy local preview
-// on :8000. Let that local-only page reuse this server's real RISEx proxy.
-app.use('/api/risex/profile', (req, res, next) => {
+// on :8000. Let that local-only page reuse this server's real profile proxies.
+app.use(['/api/risex/profile', '/api/perpl/profile'], (req, res, next) => {
   const origin = String(req.headers.origin || '');
   if (/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i.test(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
@@ -94,11 +98,11 @@ async function fetchJson(url, timeoutMs) {
     const text = await upstream.text();
     let data = null;
     try { data = text ? JSON.parse(text) : null; } catch (error) {
-      throw new Error('RISEx returned invalid JSON.');
+      throw new Error('Upstream returned invalid JSON.');
     }
     if (!upstream.ok) {
       const message = data && data.error && data.error.message;
-      throw new Error(message || ('RISEx HTTP ' + upstream.status));
+      throw new Error(message || ('Upstream HTTP ' + upstream.status));
     }
     return data && data.data !== undefined ? data.data : data;
   } finally {
@@ -223,6 +227,171 @@ app.get('/api/risex/profile', async (req, res) => {
   if (risexProfileCache.size > 1000) {
     const oldest = risexProfileCache.keys().next().value;
     risexProfileCache.delete(oldest);
+  }
+  res.setHeader('Cache-Control', 'private, max-age=15');
+  res.json(value);
+});
+
+function perplCabin(rank) {
+  if (!Number.isFinite(rank) || rank <= 0) return { code: 'OPEN', name: 'NEW TRADER' };
+  if (rank <= 100) return { code: 'F', name: 'FIRST CLASS' };
+  if (rank <= 500) return { code: 'J', name: 'BUSINESS' };
+  if (rank <= 1500) return { code: 'W', name: 'PREMIUM ECONOMY' };
+  if (rank <= 3000) return { code: 'Y+', name: 'ECONOMY PLUS' };
+  return { code: 'Y', name: 'ECONOMY' };
+}
+
+function scaledIntegerToDecimal(value, decimals) {
+  const text = String(value === null || value === undefined ? '0' : value).trim();
+  if (!/^[+-]?\d+$/.test(text)) return null;
+  const negative = text[0] === '-';
+  const digits = text.replace(/^[+-]/, '').replace(/^0+(?=\d)/, '');
+  const padded = digits.padStart(decimals + 1, '0');
+  const whole = decimals ? padded.slice(0, -decimals) : padded;
+  const fraction = decimals ? padded.slice(-decimals).replace(/0+$/, '') : '';
+  return (negative && /[1-9]/.test(digits) ? '-' : '') + whole + (fraction ? '.' + fraction : '');
+}
+
+function perplWord(result, index) {
+  return result.slice(2 + index * 64, 2 + (index + 1) * 64);
+}
+
+function popcountHexWords(words) {
+  let count = 0;
+  for (const word of words) {
+    let bits = BigInt('0x' + (word || '0'));
+    while (bits) {
+      bits &= bits - 1n;
+      count += 1;
+    }
+  }
+  return count;
+}
+
+async function fetchPerplAccount(address) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 22000);
+  const callData = '0x' + PERPL_GET_ACCOUNT_BY_ADDR + '0'.repeat(24) + address.slice(2);
+  try {
+    const upstream = await fetch(MONAD_RPC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'eth_call',
+        params: [{ to: PERPL_EXCHANGE_ADDRESS, data: callData }, 'latest']
+      }),
+      signal: controller.signal
+    });
+    const text = await upstream.text();
+    let payload;
+    try { payload = text ? JSON.parse(text) : null; } catch (error) {
+      throw new Error('Monad RPC returned invalid JSON.');
+    }
+    if (!upstream.ok) throw new Error('Monad RPC HTTP ' + upstream.status);
+    if (payload && payload.error) {
+      // AccountDoesNotExist(address) means this is a valid wallet with no Perpl account yet.
+      if (String(payload.error.data || '').toLowerCase().startsWith('0x03a0e277')) return null;
+      throw new Error(payload.error.message || 'Monad RPC eth_call failed.');
+    }
+    const result = payload && payload.result;
+    if (typeof result !== 'string' || !/^0x[0-9a-f]+$/i.test(result) || result.length < 2 + 9 * 64) {
+      throw new Error('Monad RPC returned an invalid Perpl account tuple.');
+    }
+    const words = Array.from({ length: 9 }, (_, index) => perplWord(result, index));
+    return {
+      accountId: BigInt('0x' + words[0]).toString(),
+      balance: scaledIntegerToDecimal(BigInt('0x' + words[1]).toString(), 6),
+      lockedBalance: scaledIntegerToDecimal(BigInt('0x' + words[2]).toString(), 6),
+      frozen: Number(BigInt('0x' + words[3])),
+      accountAddress: '0x' + words[4].slice(-40).toLowerCase(),
+      openMarkets: popcountHexWords(words.slice(5, 9))
+    };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+let perplLeaderboardCache = { at: 0, rows: [], byAddress: new Map() };
+let perplLeaderboardPending = null;
+async function fetchPerplLeaderboard() {
+  if (perplLeaderboardCache.rows.length && Date.now() - perplLeaderboardCache.at < 30000) {
+    return perplLeaderboardCache;
+  }
+  if (perplLeaderboardPending) return perplLeaderboardPending;
+  perplLeaderboardPending = (async () => {
+    const payload = await fetchJson(PERPL_LEADERBOARD_URL, 26000);
+    const rows = payload && Array.isArray(payload.d) ? payload.d : [];
+    if (!rows.length) throw new Error('Perpl leaderboard returned no rows.');
+    const byAddress = new Map();
+    for (const row of rows) {
+      const rowAddress = String(row && row.a || '').toLowerCase();
+      if (/^0x[0-9a-f]{40}$/.test(rowAddress)) byAddress.set(rowAddress, row);
+    }
+    perplLeaderboardCache = { at: Date.now(), rows, byAddress };
+    return perplLeaderboardCache;
+  })();
+  try {
+    return await perplLeaderboardPending;
+  } finally {
+    perplLeaderboardPending = null;
+  }
+}
+
+const perplProfileCache = new Map();
+app.get('/api/perpl/profile', async (req, res) => {
+  const address = String(req.query.address || '').trim().toLowerCase();
+  if (!/^0x[0-9a-f]{40}$/.test(address) || /^0x0{40}$/.test(address)) {
+    return res.status(400).json({ error: 'Enter a valid EVM wallet address.' });
+  }
+
+  const cached = perplProfileCache.get(address);
+  if (cached && Date.now() - cached.at < 30000) {
+    res.setHeader('Cache-Control', 'private, max-age=15');
+    return res.json(cached.value);
+  }
+
+  const reads = await Promise.allSettled([
+    fetchPerplLeaderboard(),
+    fetchPerplAccount(address)
+  ]);
+  if (reads.every(item => item.status === 'rejected')) {
+    return res.status(502).json({ error: 'Perpl public data is temporarily unavailable.' });
+  }
+
+  const leaderboard = reads[0].status === 'fulfilled' ? reads[0].value : null;
+  const account = reads[1].status === 'fulfilled' ? reads[1].value : null;
+  const row = leaderboard ? leaderboard.byAddress.get(address) || null : null;
+  const volume = row ? scaledIntegerToDecimal(row.v, 6) : (leaderboard ? '0' : null);
+  const hasVolume = volume !== null && /^\d+(?:\.\d+)?$/.test(volume) && BigInt(String(row && row.v || '0')) > 0n;
+  const rawRank = hasVolume ? Number(row.i) : 0;
+  const rank = Number.isSafeInteger(rawRank) && rawRank > 0 ? rawRank : null;
+  const failedSources = ['leaderboard', 'account']
+    .filter((name, index) => reads[index].status === 'rejected');
+  const value = {
+    project: 'perpl',
+    address,
+    network: { name: 'Monad Mainnet', chainId: 143 },
+    volume,
+    netPnl: row ? scaledIntegerToDecimal(row.p, 6) : (leaderboard ? '0' : null),
+    roi: row ? scaledIntegerToDecimal(row.r, 2) : (leaderboard ? '0' : null),
+    rank,
+    cabin: perplCabin(rank),
+    balance: reads[1].status === 'fulfilled' ? (account ? account.balance : '0') : null,
+    lockedBalance: reads[1].status === 'fulfilled' ? (account ? account.lockedBalance : '0') : null,
+    openMarkets: reads[1].status === 'fulfilled' ? (account ? account.openMarkets : 0) : null,
+    accountId: account ? account.accountId : null,
+    frozen: account ? account.frozen : null,
+    badges: row && Array.isArray(row.b) ? row.b.filter(item => typeof item === 'string') : [],
+    sourceCount: 2 - failedSources.length,
+    sourceTotal: 2,
+    failedSources
+  };
+  perplProfileCache.set(address, { at: Date.now(), value });
+  if (perplProfileCache.size > 1000) {
+    const oldest = perplProfileCache.keys().next().value;
+    perplProfileCache.delete(oldest);
   }
   res.setHeader('Cache-Control', 'private, max-age=15');
   res.json(value);
